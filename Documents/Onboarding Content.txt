@@ -1,0 +1,20 @@
+Screen One : 
+Title:- A different way of shopping
+Content:-Your loved ones are the most important part of your life. 
+         That's why e-fam is making your shopping experience easier, 
+         leaving you with plenty of quality time for your family.
+
+Screen Two:
+Title:-   Shopping made faster
+Content:- Get every grocery item you could possibly want without leaving the comfort of your home. 
+          Your convenience is our priority at e-fam.
+
+Screen Three:
+Title :-   Home/Office delivery
+Content :- Having a hectic work-day? Not to worry! e-fam delivers your shopping right to your office, hassle-free!
+
+Screen Four:
+Title :-   Counter pickup
+Content :- Beat the crazy lines at the supermarket. 
+           You can shop with e-fam right on your phone and they will be packed and ready for collection by 
+           the time you get to store!
