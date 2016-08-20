@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+	
+    <include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+          <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/actionbar"
+        layout="@layout/global_footer" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/footer" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+	
+	<!-- ============================================CONTENT=========================================== -->
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+   		android:layout_below="@+id/subHeader"
+	    android:orientation="vertical"
+	    android:gravity="left" >
+	    
+	    <Button
+	        android:id="@+id/optionPickup"
+	        android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="10dp"
+		    android:paddingRight="10dp"
+	        android:text="    Counter Pick Up"
+	        android:textSize="14dp"
+	        android:textColor="@color/grey666"
+        	android:gravity="left|center_vertical"
+	        android:drawableLeft="@drawable/ic_delivery_pickup"
+	        android:drawableRight="@drawable/imagepayment"
+		    android:background="@drawable/customlistshape" />
+	    
+	    <Button
+	        android:id="@+id/optionDelivery"
+	        android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="10dp"
+		    android:paddingRight="10dp"
+	        android:text="    Home Delivery"
+	        android:textSize="14dp"
+	        android:textColor="@color/grey666"
+        	android:gravity="left|center_vertical"
+	        android:drawableLeft="@drawable/ic_delivery_foot"
+	        android:drawableRight="@drawable/imagepayment"
+		    android:background="@drawable/customlistshape" />
+	    
+	    <Button
+	        android:id="@+id/optionDeliveryFoot"
+	         android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+			android:text="       | Foot Delivery"
+	        android:textSize="0dp"
+	        android:textColor="@color/grey666"
+        	android:gravity="left|center_vertical"
+        	android:background="@drawable/customgreenbuttonshape"
+        	android:visibility="gone"/>
+	    
+	     <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/pointerwrapper5"
+        android:layout_below="@id/optionDeliveryFoot"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        >  
+			        
+			        <TextView
+					    android:id="@+id/infoq"
+				        android:layout_height="wrap_content"
+				        android:layout_width="wrap_content"
+				        android:layout_marginTop="30dp"
+					    android:layout_alignParentLeft="true"
+						 android:paddingBottom="0dp"
+					     android:paddingLeft="5dp"
+					     android:paddingRight="5dp"
+					     android:minHeight="0dp"
+						 android:minWidth="0dp"
+					     android:text=""
+					     android:textColor="@color/grey666" 
+						 android:layout_gravity="left"
+					     android:drawableLeft="@drawable/customerinfo"
+					     android:background="@drawable/selector"
+					     />
+			        
+     <RelativeLayout
+	        android:id="@+id/infoqwrap"
+            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+			android:paddingBottom="0dp"
+		    android:paddingTop="5dp"
+		    android:minHeight="0dp"
+			android:minWidth="0dp"
+			android:layout_marginTop="15dp"
+			android:layout_toRightOf="@+id/infoq"
+			android:textSize="12sp"
+	        android:textColor="@color/grey666">
+	            
+			             <Button
+		    android:id="@+id/title1"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="0dp"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="0dp"
+		    android:text="What is Counter Pick up"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/purpleinfo"
+		    android:drawablePadding="10dp"
+		    android:gravity="left"
+		    android:textAlignment="gravity"/>
+			   
+			             <TextView
+        android:id="@+id/text1"
+        android:textSize="14sp"
+	    android:textColor="@color/grey999"
+	    android:paddingTop="0dp"
+		android:paddingBottom="5dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:layout_below="@id/title1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Counter pick up means that once you have completed your shopping you can have your shopping packed and waiting for you at a designated counter at the supermarket. You just come and collect it."
+        android:background="@drawable/infobg" 
+        android:visibility="gone"/>
+			             
+			  <Button
+		    android:id="@+id/title2"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_marginTop="0dp"
+		    android:paddingTop="0dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="0dp"
+		    android:text="What is Home Delivery"
+		 	android:layout_below="@id/text1"
+		    android:textSize="13sp"
+		    android:textColor="@color/col8965ab"
+		    android:background="@drawable/yellowinfo"
+		    android:drawablePadding="10dp"
+		    android:gravity="left"
+		    android:textAlignment="gravity"/>
+			            
+			     
+			  <TextView
+        android:id="@+id/text2"
+        android:textSize="14sp"
+	    android:textColor="@color/grey999"
+	    android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:layout_below="@id/title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home delivery means you can have your shopping delivered to the address you have selected."
+        android:background="@drawable/infobg" 
+        android:visibility="gone"/>
+		
+			</RelativeLayout>			
+			            
+			        </RelativeLayout>
+	       <!-- android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="10dp"
+		    android:paddingRight="10dp"
+	        android:drawableLeft="@drawable/ic_delivery_home"
+	        android:drawableRight="@drawable/ic_corner_right_bottom"
+		    --> 
+	    
+	</LinearLayout>
+
+	<include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        layout="@layout/global_quicklinks2" />
+     
+    <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+    
+</RelativeLayout>

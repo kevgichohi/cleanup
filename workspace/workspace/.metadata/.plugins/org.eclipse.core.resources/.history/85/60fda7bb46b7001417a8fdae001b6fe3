@@ -1,0 +1,46 @@
+package com.example.mobiletrolley;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+ 
+import android.content.res.Resources;
+ 
+public class ShoppingCartHelper {
+  
+ public static final String PRODUCT_INDEX = "PRODUCT_INDEX";
+  
+ private static ArrayList<RequestedResults> catalog;
+ private static ArrayList<RequestedResults> cart;
+  
+ public static ArrayList<RequestedResults> getCatalog(Resources res){
+  if(catalog == null) {
+	RequestedResults d = new RequestedResults();
+	d.item_id = "0";
+    d.item_title = "Empty Cart";
+    d.item_price = "0.00";
+    d.item_size = "0g";
+    //d.item_thumbnail_url = "https://smokesignal.co.ke/mobiletrolley/img/uploads/" + item_thumbnail_url;
+	    
+    catalog.add(d);
+  }
+   
+  return catalog;
+ }
+  
+ public static ArrayList<MyCartSimpleList> getCart() {
+  if(cart == null) {
+	  //MyCartSimpleList d = new MyCartSimpleList();
+	  //d.item_id = "";
+	  //d.item_title = "Empty Cart";
+	  //d.item_price = "";
+	  //d.item_size = "";
+	  //d.item_thumbnail_url = "";
+	  
+	  //cart.add(d);
+  }
+   
+  return cart;
+ }
+ 
+}

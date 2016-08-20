@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.redhering.nunuaraha"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" android:allowBackup="true" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/ThemeInsidePage" >
+        <activity
+            android:name=".ActivityMain"
+            android:label="@string/app_name"
+            android:theme="@style/ThemeFlashPage" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity 
+            android:name=".ActivityGlobalMenu" 
+            android:theme="@style/Theme.Transparent">
+        </activity>
+        
+        <activity
+            android:name=".ActivityMyAccountLogin"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Transparent"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        
+        <activity
+            android:name=".ActivityMyAccount"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <activity
+            android:name=".ActivityMyAccountProfile"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        
+        <activity
+            android:name=".ActivityMyAccountAddresses"
+            android:label="@string/app_name">
+        </activity>
+
+        <activity
+            android:name=".ActivityMyAccountOrders"
+            android:label="@string/app_name" android:theme="@android:style/Theme.Translucent">
+        </activity>
+        
+         <activity
+            android:name=".ActivityMyAccountPastOrders"
+            android:label="@string/app_name" android:theme="@android:style/Theme.Translucent">
+        </activity>
+        
+          <activity
+            android:name=".ActivityMyAccountNewOrders"
+            android:label="@string/app_name" android:theme="@android:style/Theme.Translucent">
+        </activity>
+        
+           <activity
+            android:name=".ActivityMyAccountOrdersLoyalty"
+            android:label="@string/app_name" android:theme="@android:style/Theme.Translucent">
+            
+        </activity>
+        
+        <activity
+            android:name=".ActivityMyAccountOrderView"
+            android:label="@string/app_name" android:theme="@android:style/Theme.Translucent">
+        </activity>
+        
+        <activity
+            android:name=".ActivityTalkToUs"
+            android:label="@string/app_name" android:theme="@android:style/Theme.Translucent">
+        </activity>
+        
+        
+        <activity
+            android:name=".ActivityStep01ListOutlets"
+            android:label="@string/app_name" android:theme="@android:style/Theme.Translucent">
+        </activity>
+
+        <activity
+            android:name=".ActivityStep02ListBrands"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <activity
+            android:name=".ActivityStep03ListNeighbourhood"
+            android:label="@string/app_name" >
+        </activity>
+
+        <activity
+            android:name=".ActivityStep04ListBranches"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- List Shop Aisles Activity -->
+        <activity
+            android:name=".ActivityStep05ListAisles"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- List Shop Products Activity -->
+        <activity
+            android:name=".ActivityStep06ListGoods"
+            android:label="@string/app_name" >
+        </activity>
+
+        <activity
+            android:name=".ActivityStep07ListProducts"
+            android:label="@string/app_name" >
+        </activity>
+
+        <activity
+            android:name=".ActivityStep08ListCart"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <activity
+            android:name=".ActivityStep09ListDeliveryOptions"
+            android:label="@string/app_name">
+        </activity>
+        
+        <activity
+            android:name=".ActivityStep09ListDeliveryOptionsAddresses"
+            android:label="@string/app_name">
+        </activity>
+        
+        <activity
+            android:name=".ActivityStep10ListPaymentOptions"
+            android:label="@string/app_name">
+        </activity>
+        
+        <activity
+            android:name=".ActivityStep11PaymentOptionsGateway"
+            android:label="@string/app_name">
+        </activity>
+        
+        <activity 
+            android:name=".ActivityStep11MyReceipt" 
+            android:theme="@style/Theme.Transparent">
+        </activity>
+        
+         <!-- UserGuide -->
+          <activity
+           android:name=".Userguide"
+           android:label="@string/app_name" android:theme="@android:style/Theme.Translucent">
+       </activity>
+        
+          <!-- Terms -->
+          <activity
+           android:name=".Terms"
+           android:label="@string/app_name" android:theme="@android:style/Theme.Translucent">
+       </activity>
+        
+
+        <!-- Checkout Activity -->
+        <activity
+            android:name=".ActivityShopperDetails"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent">
+        </activity>
+
+        <!-- Thank You Activity -->
+        <activity
+            android:name=".ActivityStep12ThankYou"
+            android:label="@string/app_name" android:theme="@android:style/Theme.Translucent">
+        </activity>
+               
+        <activity
+            android:name=".ActivityTest"
+            android:label="@string/title_activity_activity_test" android:theme="@android:style/Theme.Translucent" >
+        </activity>
+    </application>
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
+
+</manifest>

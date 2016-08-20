@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/quicklinks"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_quicklinks_shape" 
+	android:layout_gravity="bottom|end"
+	android:paddingBottom="8dp">
+    
+     <LinearLayout
+         android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end">
+        
+	   <Button
+	    android:id="@+id/menu_icon"
+        android:layout_height="fill_parent"
+        android:layout_width="0dip"
+        android:layout_weight="1"
+	    android:layout_alignParentLeft="true"
+	    android:layout_centerVertical="true"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="0dp"
+		android:minHeight="0dp"
+	    android:minWidth="0dp"
+	    android:text="Menu"
+	    android:textSize="12sp"
+		android:layout_gravity="bottom|end"
+	    android:textColor="@color/grey666"
+	    android:drawableTop="@drawable/ic_menu_icon"
+	    android:background="@drawable/selector" />
+    
+    <Button
+	    android:id="@+id/shoppingButton"
+		 android:layout_toRightOf="@+id/menu_icon"
+         android:layout_height="fill_parent"
+         android:layout_width="0dip"
+         android:layout_weight="1"
+	   	 android:layout_centerVertical="true"
+		 android:paddingBottom="0dp"
+	     android:paddingTop="5dp"
+	     android:minHeight="0dp"
+		 android:minWidth="0dp"
+	     android:text="Retailers"
+	     android:textSize="12sp"
+	     android:textColor="@color/grey666" 
+		 android:layout_gravity="bottom|end"
+	     android:drawableTop="@drawable/ic_cart_green"
+	     android:background="@drawable/selector"/>
+    
+   
+     <RelativeLayout
+	        android:id="@+id/cartButtonCont"
+            android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:layout_width="0dip"
+			android:paddingBottom="0dp"
+		    android:paddingTop="5dp"
+		    android:layout_marginLeft="5dp"
+			android:layout_toRightOf="@+id/shoppingButton"
+			android:layout_centerVertical="true"
+			android:background="@drawable/selector"
+			android:textSize="12sp"
+	        android:textColor="@color/grey666"
+			android:layout_gravity="bottom|end">
+	    
+	    <Button
+		    android:id="@+id/cartButton"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+			android:paddingBottom="0dp"
+		    android:text="Your Cart"
+		    android:textSize="12sp"
+	    	android:textColor="@color/grey666"
+		    android:drawableTop="@drawable/ic_cart_green"
+	    	android:background="@drawable/selector"/>
+	    
+	    <TextView
+	        android:id="@+id/cartButtonNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+		    android:layout_toRightOf="@+id/cartButton"
+		    android:layout_marginLeft="-22dp"
+    		android:paddingLeft="5dp"
+    		android:paddingRight="5dp"
+    		android:paddingTop="0dp"
+    		android:paddingBottom="0dp"
+            android:background="@drawable/cartnotif"
+            android:textColor="@color/white"/>
+	 </RelativeLayout>
+	
+	    
+	    <Button
+	        android:id="@+id/clearcart"
+            android:layout_height="fill_parent"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+	      	android:layout_centerVertical="true"
+		    android:layout_toRightOf="@+id/cartButtonCont"
+	        android:paddingBottom="0dp"
+		    android:paddingTop="5dp"
+		    android:minHeight="0dp"
+			android:minWidth="0dp"
+	        android:text="Clear Cart" 
+	      	android:textSize="12sp"
+	      	android:textColor="@color/grey666"
+		    android:drawableTop="@drawable/ic_cart_green"
+	      	android:background="@drawable/selector"
+			android:layout_gravity="bottom|end"/>
+	    
+	    <Button
+	        android:id="@+id/proceedToCheckout"
+            android:layout_height="fill_parent"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+	      	android:layout_centerVertical="true"
+	        android:layout_alignParentRight="true"
+	        android:paddingBottom="0dp"
+		    android:paddingTop="5dp"
+		    android:minHeight="0dp"
+			android:minWidth="0dp"
+	        android:text="Checkout" 
+	      	android:textSize="12sp"
+	      	android:textColor="@color/grey666"
+		    android:drawableTop="@drawable/ic_cart_green"
+	      	android:background="@drawable/selector"
+			android:layout_gravity="bottom|end" />
+	     </LinearLayout>
+</RelativeLayout> 

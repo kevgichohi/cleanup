@@ -1,0 +1,303 @@
+package com.redhering.nunuaraha;
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+
+public class ActivityMain extends Activity {
+	public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    SQLiteDatabase nunuaRahaDatabase;
+    
+	LinearLayout layout_progressbar;
+	TextView app_name;
+	TextView InternetIsConnected;
+    Button startshopping;
+    //TextView dislcaimer;
+    Typeface EkMukta_SemiBold;
+    Typeface EkMukta_Light;
+    //TextView Or;
+    //Button myAccount;
+    
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+		layout_progressbar.setVisibility(View.VISIBLE);
+	    sharedPreferences = getSharedPreferences(MY_SESSION,MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+		EkMukta_SemiBold = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-SemiBold.ttf");
+		EkMukta_Light = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+		app_name = (TextView) findViewById(R.id.app_name);
+        InternetIsConnected = (TextView) findViewById(R.id.InternetIsConnected);
+        startshopping = (Button) findViewById(R.id.startShopping);
+        //dislcaimer = (TextView) findViewById(R.id.disclaimer);
+        //Or = (TextView) findViewById(R.id.Or);
+        //myAccount = (Button) findViewById(R.id.myAccount);
+		
+		//APPLY FONT_EKMUKTA_LIGHT TO THE WHOLE LAYOUT
+  	    HelperFont.applyFont(findViewById(R.id.mainParent),getApplicationContext());
+		
+  	    // call AsynTask to perform network operation on separate thread
+  	    //new HttpAsyncTask().execute("http://www.smokesignal.co.ke/mobile_trolley_app/getdatabase.php"); 
+  	    
+		//SET TEXT, APPLY FONTS, SETONCLICKLISTENERS
+  		new ApplyViewParamsTask().execute();
+  		
+  		//sharedPreferences.edit().clear().commit();//Remove all shared preferences
+  		//sharedPreferences.edit().remove("customerInfo").commit();
+	}
+ 
+    public boolean isConnected(){
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()){
+                return true;
+            } else{
+                return false; 
+            }
+    }
+    
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	layout_progressbar.setVisibility(View.GONE);
+            super.onPostExecute(result);
+            
+            //Toast.makeText(getBaseContext(), "Outlets Received!", Toast.LENGTH_LONG).show();
+            //Log.i("Database"," --> "+result);
+            
+            Gson gson = new Gson();
+            List[] jsonDbList = gson.fromJson(result,List[].class);
+            List jsonDbTableListObj = Arrays.asList(jsonDbList);
+            
+            for(int i = 0; i < jsonDbTableListObj.size(); i++){
+            	Object getDbTableObj = jsonDbTableListObj.get(i);
+            	ArrayList dbTable = (ArrayList) getDbTableObj;
+            	
+            	//TABLE NAME
+            	String tableName = dbTable.get(0).toString();
+            	//Log.i("Table"," --> "+tableName);
+            	
+            	//TABLE FIELDS 
+            	String createFields = "";
+            	Object getTableFieldsObj = dbTable.get(1);
+            	ArrayList dbTableFields = (ArrayList) getTableFieldsObj;
+            	for(int j = 0; j < dbTableFields.size(); j++){
+            		String tableField = dbTableFields.get(j).toString();
+            		
+            		if(j == 0){
+            			createFields = createFields+dbTableFields.get(j).toString()+" integer primary key,";
+            		}else if(j == dbTableFields.size()-1){
+            			createFields = createFields+dbTableFields.get(j).toString()+" VARCHAR";
+            		}else{
+            			createFields = createFields+dbTableFields.get(j).toString()+" VARCHAR,";
+            		}
+            	}
+
+        		nunuaRahaDatabase = openOrCreateDatabase("nunuaRahaDatabase",MODE_PRIVATE,null);
+            	nunuaRahaDatabase.execSQL("CREATE TABLE IF NOT EXISTS "+tableName+"("+createFields+");");
+        		//Log.i("Fields"," --> "+createFields);
+            	
+            	
+            	Object getTableRowsObj = dbTable.get(2);
+            	String jsonTableRows = gson.toJson(getTableRowsObj);
+            	try {
+    				JSONArray jsonRowsArray = new JSONArray(jsonTableRows);
+    				for(int k = 0; k < jsonRowsArray.length(); k++){
+    					JSONObject rowObj = jsonRowsArray.getJSONObject(k); 
+    					
+    					String insertValues = "";
+
+			        	ContentValues dbRowData = new ContentValues();
+    					String item_id = rowObj.getString("id");
+    				    
+    				    Cursor cursor = nunuaRahaDatabase.rawQuery("SELECT id FROM " + tableName + " WHERE id = " + item_id,null);
+    				    cursor.moveToFirst();
+
+				        
+    				    if(cursor.getCount() <= 0){
+    				    	//INSERT NEW ENTRY
+				        	for(int j = 0; j < dbTableFields.size(); j++){
+	    	            		String tableField = dbTableFields.get(j).toString();
+	    				    	dbRowData.put(tableField, rowObj.getString(tableField).replaceAll("'","\'"));
+	    	            	}
+				        	nunuaRahaDatabase.insert(tableName, null, dbRowData);
+				        	//nunuaRahaDatabase.execSQL("INSERT INTO "+tableName+" VALUES("+insertValues+");");
+				        }else{
+				        	//UPDATE ENTRY
+				        	for(int j = 0; j < dbTableFields.size(); j++){
+	    	            		String tableField = dbTableFields.get(j).toString();
+	    	            		dbRowData.put(tableField,rowObj.getString(tableField).replaceAll("'","\'"));
+	    	            	}
+				        	nunuaRahaDatabase.update(tableName, dbRowData, "id=" + item_id, null);
+				        	//nunuaRahaDatabase.execSQL("UPDATE "+tableName+" VALUES("+insertValues+");");
+				        }
+    				    cursor.close();
+    					
+    					//Log.i("Values"," --> "+insertValues);
+    					
+    				}
+    	            
+    			}catch (JSONException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			} 
+            	
+            	
+            }
+       }
+        
+            
+        
+		@Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+		
+		
+	}
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+	
+    private class ApplyViewParamsTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+	    	//APPLY FONTS
+			app_name.setTypeface(EkMukta_SemiBold);
+	  		
+	        // check if you are connected or not
+	        if(isConnected()){
+	        	InternetIsConnected.setText("WELCOME TO SHOPPING REDEFINED, ALL THE SUPERMARKETS IN THE COUNTRY IN YOUR POCKET. ENJOY THE NEW SHOPPING EXPERIENCE");
+	            startshopping.setOnClickListener(new View.OnClickListener() {
+	                public void onClick(View v) {
+	                	Intent intent = new Intent(ActivityMain.this, ActivityStep01ListOutlets.class);
+	            	    startActivity(intent);
+	                }
+	            });
+	            
+	            /**myAccount.setOnClickListener(new View.OnClickListener() {
+	                public void onClick(View v) {
+	                	Intent intent = new Intent(ActivityMain.this, ActivityMyAccountLogin.class);
+	            	    startActivity(intent);
+	                }
+	            });**/
+	        }
+	        else{
+	        	InternetIsConnected.setText("You are not connected to the internet. Make sure your data is enabled then reload");
+	        	startshopping.setText("Reload");
+	        	//Or.setVisibility(View.INVISIBLE);
+        		//myAccount.setVisibility(View.INVISIBLE);
+	        	//dislcaimer.setVisibility(View.INVISIBLE);
+	        	startshopping.setOnClickListener(new View.OnClickListener() {
+	                public void onClick(View v) {
+	                    // Perform action on click
+	            	    finish();
+	            	    startActivity(getIntent());
+	                }
+	            });
+	        }
+
+        	layout_progressbar.setVisibility(View.GONE);
+	    }
+	    
+	 }
+    
+	
+}

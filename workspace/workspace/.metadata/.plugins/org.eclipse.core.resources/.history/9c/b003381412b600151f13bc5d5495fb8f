@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingTop="6dip"
+    android:paddingBottom="6dip"
+    android:paddingLeft="11dip"
+    android:paddingRight="11dip"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/customproductslisting" >
+    
+ 	
+    <!-- Thumbnail Image -->
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="70dip"
+        android:layout_height="70dip"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_loader"
+        android:contentDescription="Item"
+	    android:layout_centerVertical="true"
+	    android:layout_centerHorizontal="true"
+	    android:layout_alignParentLeft="true"/>
+    
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/darkgreen"
+        android:layout_marginTop="0dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_toRightOf="@+id/thumbnail" />
+ 
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title" 
+        android:layout_toRightOf="@+id/thumbnail"/>
+ 
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/size"
+        android:layout_toRightOf="@+id/thumbnail"/>
+    
+      <TextView
+        android:id="@+id/itemprice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ksh. 1000"
+        
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/title"/>
+    
+    <Button
+        android:id="@+id/addtocart"
+        android:layout_toRightOf="@+id/title"
+        android:layout_below="@id/itemprice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+	    android:textSize="16sp"
+	    android:textStyle="bold"
+        android:textColor="@color/red"
+	    android:gravity="bottom|center"
+		android:drawableTop="@drawable/addtocart"
+		android:background="@android:color/transparent" /> 
+		
+    <Button
+        android:id="@+id/removefromcart"
+        android:layout_toRightOf="@+id/title"
+        android:layout_below="@id/itemprice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+		android:drawableTop="@drawable/removefromcart"
+		android:background="@android:color/transparent" /> 
+	
+    <!-- Arrow Image -->
+    <ImageView
+        android:id="@+id/arrowRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_corner_right_bottom"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:clickable="false"
+		android:focusable="false"
+		android:focusableInTouchMode="false" />
+ 
+</RelativeLayout>

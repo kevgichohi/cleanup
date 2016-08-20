@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+     android:background="@color/white">
+    
+	<include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+	
+          <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/actionbar"
+        layout="@layout/global_footer" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/footer" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+	
+	<!-- ============================================CONTENT=========================================== -->
+ <ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@id/header"
+    	android:orientation="vertical" >
+	    
+	    <LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:layout_below="@id/header"
+	    	android:orientation="vertical"
+	    	android:layout_marginBottom="10dp" >
+  <LinearLayout
+	  android:id="@+id/listViewCont"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginTop="0dp"
+      android:gravity="center_horizontal"
+      android:orientation="vertical">
+    <LinearLayout 
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:orientation="vertical">
+      <RelativeLayout
+				android:id="@+id/customerDetails"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:gravity="left"
+				android:orientation="vertical"
+				android:layout_marginTop="10dp"
+				android:layout_marginBottom="0dp"
+				android:layout_marginRight="20dp"
+				android:layout_marginLeft="20dp"
+				android:paddingTop="0dp" >
+        <ImageView
+					android:id="@+id/shopLogo"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center"
+					android:visibility="gone" />
+        <TextView
+					android:id="@+id/shopDetails"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/shopLogo"
+					android:textSize="16sp"
+					android:gravity="center"
+					android:textAllCaps="true"
+					android:textColor="@color/grey666" 
+					android:textStyle="bold"
+					android:layout_marginLeft="-13dp"
+					android:paddingLeft="20dp"
+			        android:paddingRight="20dp"/>
+        <TextView
+					android:id="@+id/customerInfo"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/shopDetails"
+					android:text="Customer: "
+					android:textSize="16sp"
+					android:textColor="@color/grey666"
+					android:textStyle="bold"
+					android:paddingLeft="20dp"
+			        android:paddingRight="20dp"/>
+        <TextView
+					android:id="@+id/userName"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/customerInfo"
+					android:textSize="16sp"
+					android:textColor="@color/grey999" 
+					android:paddingLeft="20dp"/>
+        <TextView
+					android:id="@+id/phone"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_toRightOf="@+id/userName"
+					android:layout_below="@+id/customerInfo"
+					android:textSize="16sp" 
+					android:textColor="@color/grey999"
+			        android:paddingRight="20dp"/>
+        <TextView
+					android:id="@+id/email"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/userName"
+					android:textSize="16sp" 
+					android:textColor="@color/grey999"
+					android:paddingLeft="20dp"
+			        android:paddingRight="20dp"/>
+        <TextView
+					android:id="@+id/delivery"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/email"
+					android:textSize="16sp"
+					android:textColor="@color/grey666" 
+					android:textStyle="bold"
+					android:paddingLeft="20dp"
+			        android:paddingRight="20dp"/>
+      </RelativeLayout>
+    </LinearLayout>
+    <LinearLayout
+			   android:id="@+id/receipt"
+			   android:layout_width="fill_parent"
+			   android:layout_height="wrap_content"
+			   android:paddingLeft="20dp"
+			   android:paddingRight="20dp"
+			   android:paddingTop="10dp"
+			   android:paddingBottom="10dp"
+			   android:gravity="left" 
+			   android:layout_marginTop="10dp"
+			    android:background="@drawable/custom_header_receipt"
+				android:textStyle="bold"
+				android:textSize="16sp"
+				android:textColor="@color/grey999" 
+				android:layout_marginRight="20dp"
+			    android:layout_marginLeft="20dp"
+			    android:layout_below="@+id/customerDetails">
+      <TextView
+					android:id="@+id/descriptionLabel"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight=".40"
+					android:text="Description"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"/>
+      <TextView
+					android:id="@+id/qtyLabel"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight=".20"
+					android:text="Qty" 
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"/>
+      <TextView
+					android:id="@+id/priceLabel"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight=".20"
+					android:text="Price"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"/>
+      <TextView
+					android:id="@+id/totalLabel"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight=".20"
+					android:text="Total"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"/>
+    </LinearLayout>
+    
+   		  <ListView
+	        android:id="@+id/receiptView"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	   		android:divider="@null"
+	   		android:dividerHeight="0dip" 
+	   		android:clickable="true"
+			android:focusable="true"
+			android:focusableInTouchMode="true"
+			android:layout_marginRight="30dp"
+			 android:layout_marginLeft="30dp"
+			 
+   			android:layout_below="@+id/receipt"/>
+    
+    <RelativeLayout
+				android:id="@+id/receipt2"
+			    android:layout_width="fill_parent"
+			   	android:layout_height="wrap_content"
+			   	
+   			android:layout_below="@+id/receiptView"
+			    android:paddingTop="10dp"
+			    android:paddingBottom="10dp"
+			    android:paddingLeft="0dp"
+			    android:paddingRight="0dp"
+			    android:gravity="left" 
+			    android:layout_marginTop="0dp"
+			    android:background="@drawable/custom_header_receipt"
+				android:layout_marginRight="20dp"
+			    android:layout_marginLeft="20dp"
+			    android:textStyle="bold"
+				android:textSize="16sp"
+				android:textColor="@color/grey999">
+     
+      <TextView
+					android:id="@+id/reciepttotal6"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Summary" 
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_alignParentLeft="true"
+			   />
+        
+      <RelativeLayout
+				android:id="@+id/receipt3"
+			   	android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			  	android:gravity="left" 
+			   	android:layout_marginBottom="30dp"
+			   	android:paddingBottom="5dp"
+			   	android:paddingLeft="20dp"
+			    android:paddingRight="20dp"
+				android:background="@drawable/custom_header_receipt2" 
+				android:textStyle="bold"
+				android:textSize="16sp"
+				android:textColor="@color/grey999">
+         <LinearLayout
+			   android:layout_width="fill_parent"
+			   android:layout_height="wrap_content"
+			   android:id="@+id/totalitemspaced">
+        <TextView
+					android:id="@+id/totalitemtext"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Total Items" 
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".40"/>
+        <TextView
+					android:id="@+id/totalitem"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="" 
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".20"/>
+         <TextView
+					android:id="@+id/totalitemspace"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="" 
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".20"/>
+          <TextView
+					android:id="@+id/totalitemspace1"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="" 
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".20"/>
+         </LinearLayout>
+        <TextView
+					android:id="@+id/vatratetext"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="VAT RATE" 
+					android:layout_below="@+id/totalitemspaced" 
+					android:layout_alignParentLeft="true"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".80"/>
+        <TextView
+					android:id="@+id/vatrate"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="" 
+					android:layout_below="@+id/totalitemspaced" 
+					android:layout_alignParentRight="true"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".20"/>
+        <TextView
+					android:id="@+id/vatabletext"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Vatable Amt" 
+					android:layout_below="@+id/vatrate" 
+					android:layout_alignParentLeft="true"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".80"/>
+        <TextView
+					android:id="@+id/vatable"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text=""
+					android:layout_below="@+id/vatrate" 
+					android:layout_alignParentRight="true"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".20"/>
+        <TextView
+					android:id="@+id/vatamttext"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="VAT Amt" 
+					android:layout_below="@+id/vatable" 
+					android:layout_alignParentLeft="true"
+					android:textStyle="bold"
+				    android:textSize="16sp"
+				    android:textColor="@color/grey999"
+				    android:layout_weight=".80"/>
+        <TextView
+					android:id="@+id/vatamt"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="" 
+					android:layout_below="@+id/vatable" 
+					android:layout_alignParentRight="true"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".20"/>
+    
+             
+      </RelativeLayout>
+       <TextView
+					android:id="@+id/totalovaral"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Sub-total" 
+					android:textStyle="bold"
+					android:textSize="16sp"
+					
+					android:layout_below="@+id/receipt3" 
+					android:textColor="@color/grey999"
+					android:layout_alignParentLeft="true"
+					android:layout_weight=".80"
+					   android:paddingLeft="20dp"
+			   />
+      <TextView
+					android:id="@+id/totalovaraltext"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="" 
+					android:layout_alignParentRight="true"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".20"
+					android:layout_below="@+id/receipt3" 
+					android:paddingRight="20dp"/>
+    </RelativeLayout>
+    
+    
+    <RelativeLayout
+				android:id="@+id/receipt4"
+			    android:layout_width="fill_parent"
+			   	android:layout_height="wrap_content"
+			    android:paddingTop="10dp"
+			    android:paddingBottom="10dp"
+			    android:paddingLeft="0dp"
+			    android:paddingRight="0dp"
+			    android:gravity="left" 
+			    android:layout_marginTop="10dp"
+			    android:background="@drawable/custom_header_receipt"
+				android:layout_marginRight="20dp"
+			    android:layout_marginLeft="20dp"
+			    android:textStyle="bold"
+				android:textSize="16sp"
+				android:textColor="@color/grey999" >
+     
+         <TextView
+					android:id="@+id/reciepttotal5"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Delivery and Service Fee" 
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_alignParentLeft="true"
+			   />
+        
+      <RelativeLayout
+				android:id="@+id/receipt5"
+			   	android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			  	android:gravity="left" 
+			   	android:layout_marginBottom="30dp"
+			   	android:paddingBottom="5dp"
+			   	android:paddingLeft="20dp"
+			    android:paddingRight="20dp"
+				android:background="@drawable/custom_header_receipt2" 
+				android:textStyle="bold"
+				android:textSize="16sp"
+				android:textColor="@color/grey999">
+       
+         
+        <TextView
+					android:id="@+id/deliverytext"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Delivery Fee"  
+					android:layout_alignParentLeft="true"
+					 
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".80"/>
+        <TextView
+					android:id="@+id/deliveryinfo"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					 
+					android:text="" 
+					android:layout_alignParentRight="true"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".20"/>
+        <TextView
+					android:id="@+id/servicetext"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Service Fee" 
+					android:layout_below="@+id/deliveryinfo" 
+					android:layout_alignParentLeft="true"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".80"/>
+        
+        <TextView
+					android:id="@+id/service"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="" 
+					android:layout_below="@+id/deliveryinfo" 
+					android:layout_alignParentRight="true"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_weight=".20"/>
+        
+      </RelativeLayout>
+       <TextView
+					android:id="@+id/reciepttotal"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Total" 
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_alignParentLeft="true"
+					
+					
+					android:layout_below="@+id/receipt5" 
+					android:layout_weight=".80"
+					   android:paddingLeft="20dp"
+			   />
+      <TextView
+					android:id="@+id/reciepttotaltext"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="" 
+					android:layout_alignParentRight="true"
+					android:textStyle="bold"
+					android:textSize="16sp"
+					android:textColor="@color/grey999"
+					android:layout_below="@+id/receipt5"
+					android:layout_weight=".20"
+					android:paddingRight="20dp"/>
+    </RelativeLayout>
+  </LinearLayout>
+  
+  <RelativeLayout
+	   android:id="@+id/receipttotal2"
+	    android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+       android:layout_marginTop="10dp"
+    	android:layout_marginRight="10dp"
+		android:layout_marginLeft="10dp"
+	   android:padding="10dp"
+	   android:gravity="left"
+	    android:layout_marginBottom="60dp">
+    <Button
+	    android:id="@+id/paycash1"
+	    android:layout_width="fill_parent"
+	    android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="5dp"
+	    android:paddingLeft="0dp"
+	    android:paddingRight="0dp"
+	    android:text="Complete Shopping"
+	    android:textSize="16sp"
+	    android:textColor="@color/white"
+	    android:background="@drawable/customsavebtnshapelogin"
+	    android:visibility="gone" />
+    <Button
+	    android:id="@+id/paycreditcard1"
+	    android:layout_width="wrap_content"
+  		 android:gravity="center"
+	    android:layout_weight=".5"
+	    android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="5dp"
+	    android:paddingLeft="3dp"
+	    android:paddingRight="5dp"
+	    android:text="  Credit Card  "
+	    android:textSize="12sp"
+	    android:textColor="@color/white"
+	    android:drawableRight="@mipmap/card"
+	    android:layout_alignParentLeft="true"
+	    android:background="@drawable/customsavebtnshapelogin"
+	    android:visibility="gone"/>
+    <Button
+	    android:id="@+id/paymobilemoney1"
+	    android:layout_width="wrap_content"
+  		 android:gravity="center"
+	    android:layout_weight=".5"
+	    android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="0dp"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="5dp"
+	    android:paddingLeft="3dp"
+	    android:paddingRight="5dp"
+	    android:text=" Mobile Money "
+	    android:textSize="12sp"
+	    android:textColor="@color/white"
+	    android:drawableRight="@mipmap/mobile"
+	    android:layout_alignParentRight="true"
+	    android:background="@drawable/customsavebtnshapelogin"
+	    android:visibility="gone"/>
+    <!--  Button
+	    android:id="@+id/paymobilemoney1"
+	    android:layout_width="wrap_content"
+   		android:gravity="center"
+	    android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/paycreditcard1"
+        android:layout_marginTop="10dp"
+   		android:layout_alignParentRight="true"
+	    android:layout_weight=".5"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="5dp"
+	    android:paddingLeft="3dp"
+	    android:paddingRight="3dp"
+	    android:text="Mobile Money"
+	    android:textSize="12sp"
+	    android:textColor="@color/white"
+	    android:drawableRight="@drawable/mobile"
+	    android:background="@drawable/customsavebtnshape"
+	    android:visibility="gone"/-->
+  </RelativeLayout>
+ </LinearLayout>
+	  </ScrollView>
+	      
+<include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        layout="@layout/global_quicklinks2" />
+     
+    <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+    
+</RelativeLayout>

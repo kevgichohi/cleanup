@@ -1,0 +1,583 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ListActivity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+
+public class ActivityListBranches extends Activity {
+	
+	ListView listView;
+	LinearLayout layout_progressbar;
+	ListView menuListView;
+	RelativeLayout headersection;
+	LinearLayout listViewCont;
+	
+	ArrayList<RequestedResultsSimpleList> SHOPSBRANCHLIST;
+	AdapterSimpleList myadapter;
+	
+	ArrayList<RequestedResultsSimpleList> OUTLETBRANDSLIST;
+	AdapterMenu menuadapter;
+
+	public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+	
+	//get the passed parameter from the previous activity
+	public static String SELECTED_LOCATION_ID;
+	public static String SELECTED_LOCATION_TITLE;
+	public static String SELECTED_BRAND_ID;
+	public static String SELECTED_BRAND_TITLE;
+	public static String SELECTED_BRAND_LOGO;
+	public static String SELECTED_OUTLET_ID;
+	public static String SELECTED_OUTLET_TITLE;
+	public static String BREADCRUMB;
+	
+	Typeface EkMukta_Light;
+	TextView app_name;
+	TextView previousListLink;
+	LinearLayout rlMenu;
+	TextView headerText;
+	TextView breadcrumb;
+	Button shoppingButton;
+	Button homeButton;
+	Button accountButton;
+	Button cartButton;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.simple_list_scroller);
+		listView = (ListView) findViewById(R.id.simpleListView);
+		menuListView = (ListView) findViewById(R.id.menuListView);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+	    headersection = (RelativeLayout) findViewById(R.id.header);
+	    listViewCont = (LinearLayout) findViewById(R.id.listViewCont);
+	    sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+
+
+		SELECTED_LOCATION_ID = sharedPreferences.getString("selectedLocationId", null);
+		SELECTED_LOCATION_TITLE = sharedPreferences.getString("selectedLocation", null);
+	    SELECTED_OUTLET_ID = sharedPreferences.getString("selectedOutletId", null);
+	    SELECTED_OUTLET_TITLE = sharedPreferences.getString("selectedOutlet", null);
+		SELECTED_BRAND_ID = sharedPreferences.getString("selectedBrandId", null);
+		SELECTED_BRAND_TITLE = sharedPreferences.getString("selectedBrand", null);
+		SELECTED_BRAND_LOGO = sharedPreferences.getString("selectedBrandLogo", null);
+		BREADCRUMB = sharedPreferences.getString("breadcrumbs", null) + " / " + SELECTED_OUTLET_TITLE + " / " + SELECTED_BRAND_TITLE;
+		
+		EkMukta_Light = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+  		app_name = (TextView) findViewById(R.id.app_name);
+		headerText = (TextView) findViewById(R.id.headerText);
+		breadcrumb = (TextView) findViewById(R.id.breadcrumb);
+		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+  		homeButton = (Button) findViewById(R.id.homeButton);
+  		accountButton = (Button) findViewById(R.id.accountButton);
+  		cartButton = (Button) findViewById(R.id.cartButton);
+		
+  		
+  		//SET TEXT, APPLY FONTS, SETONCLICKLISTENERS
+  		new ApplyViewParamsTask().execute();
+	    
+		//Call AsynTask to perform network operation on separate thread
+        new HttpAsyncTask().execute("http://www.smokesignal.co.ke/mobile_trolley_app/getshopsbranches.php");
+		
+		//MENU
+  		final LinearLayout rlMenu = (LinearLayout) findViewById(R.id.menuListViewCont);
+  		rlMenu.setVisibility(View.INVISIBLE);
+        final ImageView menuIcon  = (ImageView) findViewById(R.id.menu_icon);
+        menuIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	if (rlMenu.getVisibility() == View.VISIBLE) {
+            		rlMenu.setVisibility(View.INVISIBLE);
+                    overridePendingTransition(R.anim.slide_in_right_to_left, R.anim.slide_out_left_to_right);
+                    menuIcon.setImageResource(R.drawable.ic_menu_icon);
+            	} else {
+            		rlMenu.setVisibility(View.VISIBLE);
+                    overridePendingTransition(R.anim.slide_out_left_to_right, R.anim.slide_in_right_to_left);
+                    menuIcon.setImageResource(R.drawable.ic_menu_icon_close);
+            	}
+                
+            }
+        });
+        //MENU LIST VIEW
+        TextView previousListLink = (TextView) findViewById(R.id.previousListLink);
+        previousListLink.setText(SELECTED_OUTLET_TITLE);
+        previousListLink.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+			    Intent intent = new Intent(ActivityListBranches.this, ActivityListBrands.class);
+	    	    startActivity(intent);
+			}
+		});
+        
+        OUTLETBRANDSLIST = new ArrayList<RequestedResultsSimpleList>();
+		menuadapter = new AdapterMenu(ActivityListBranches.this, OUTLETBRANDSLIST,EkMukta_Light);
+		menuListView.setAdapter(menuadapter);
+		menuListView.setTextFilterEnabled(true);
+		menuListView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				layout_progressbar.setVisibility(View.VISIBLE);
+				
+			    RequestedResultsSimpleList  item = (RequestedResultsSimpleList) menuListView.getItemAtPosition(position);
+			    
+				editor.putString("selectedBrand",item.item_title);
+	            editor.putString("selectedBrandId",item.item_id);
+	            editor.putString("selectedBrandLogo",item.item_thumbnail_url);
+	            editor.commit();
+	            
+			    Intent intent = new Intent(ActivityListBranches.this, ActivityListDeliveryLocations.class);
+	    	    startActivity(intent);
+			}
+		});
+		
+		
+		//LIST VIEW
+		//RelativeLayout.LayoutParams listViewContParams = (RelativeLayout.LayoutParams) listViewCont.getLayoutParams();
+		//listViewContParams.setMargins(0, 170, 0, 0);
+		//listViewCont.setLayoutParams(listViewContParams);
+  		listView.setDividerHeight(0); 
+  		SHOPSBRANCHLIST = new ArrayList<RequestedResultsSimpleList>();
+		myadapter = new AdapterSimpleList(ActivityListBranches.this, SHOPSBRANCHLIST,EkMukta_Light);
+		listView.setAdapter(myadapter);
+		
+		listView.setTextFilterEnabled(true);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				
+				RequestedResultsSimpleList  item = (RequestedResultsSimpleList) listView.getItemAtPosition(position);
+				try
+		        {
+					String currentBrand = sharedPreferences.getString("selectedBrand", null);
+					String currentBranch = sharedPreferences.getString("selectedBranch", null);
+					String currentBranchId = sharedPreferences.getString("selectedBranchId", null);
+					
+					if(sharedPreferences.contains("selectedBranchId")){
+						if(sharedPreferences.contains("myTrolley") && !currentBranchId.equals(item.item_id)){
+							showDialogSelectBranch(item, position, currentBrand + " " + currentBranch + "?");
+						}else{
+						    Intent intent = new Intent(ActivityListBranches.this, ActivityListAisles.class);
+				    	    startActivity(intent);
+						}
+					}else{
+						
+						editor.putString("selectedBranch",item.item_title);
+			            editor.putString("selectedBranchId",item.item_id);
+			            editor.putString("selectedBranchDeliveryCharges",item.delivery_charge);
+			            editor.commit();
+			            
+					    Intent intent = new Intent(ActivityListBranches.this, ActivityListAisles.class);
+			    	    startActivity(intent);
+					}
+					
+		        }
+		        catch (Exception e) 
+		        {
+		            e.printStackTrace();
+		        }
+			}
+		});
+		
+		
+	}
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();  // Always call the superclass method first
+		
+		myadapter = new AdapterSimpleList(ActivityListBranches.this, SHOPSBRANCHLIST,EkMukta_Light);
+		listView.setAdapter(myadapter);
+		myadapter.notifyDataSetChanged();
+		
+		menuadapter = new AdapterMenu(ActivityListBranches.this, OUTLETBRANDSLIST,EkMukta_Light);
+		menuListView.setAdapter(menuadapter);
+		menuadapter.notifyDataSetChanged();
+		
+		//layout_progressbar.setVisibility(View.GONE);
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        listView.setVisibility(View.GONE);
+	        menuListView.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	layout_progressbar.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            myadapter.notifyDataSetChanged();
+            menuListView.setVisibility(View.VISIBLE);
+            menuadapter.notifyDataSetChanged();
+            super.onPostExecute(result);
+            
+            Toast.makeText(getBaseContext(), "Received "+SELECTED_BRAND_TITLE+" Branches!", Toast.LENGTH_LONG).show();
+            
+	        try {
+				
+				JSONArray jsonArr = new JSONArray(result);
+	        	String[] list_item_ids = new String[jsonArr.length()];
+				String[] list_item_titles = new String[jsonArr.length()];
+				String[] list_delivery_charges = new String[jsonArr.length()];
+				
+				ArrayList<ArrayList<ArrayList<String>>> branchesIdListCont = new ArrayList<ArrayList<ArrayList<String>>>(); //Outer Array
+				ArrayList<ArrayList<String>> branchesIdList = new ArrayList<ArrayList<String>>(); //Inner Array
+	        	
+				for(int i = 0; i < jsonArr.length(); i++){
+					JSONObject jsonObj = jsonArr.getJSONObject(i); 
+					String item_id = jsonObj.getString("id");
+					String item_title = jsonObj.getString("title");
+					String delivery_charge = jsonObj.getString("delivery");
+					
+					ArrayList<String> branchesListInfo = new ArrayList<String>(); //Inner array
+					branchesListInfo.add(item_id);
+					branchesListInfo.add(item_title);
+					branchesIdList.add(new ArrayList<String>(branchesListInfo)); 
+					
+					list_item_ids[i] = item_id;
+					list_item_titles[i] = item_title;
+					list_delivery_charges[i] = delivery_charge;
+					
+					RequestedResultsSimpleList d = new RequestedResultsSimpleList();
+					
+					d.setTitle(item_title);
+					
+				    d.item_id = item_id;
+				    d.item_title = item_title;
+				    d.delivery_charge = delivery_charge;
+				    SHOPSBRANCHLIST.add(d);
+				}
+				
+				//ADD INNER ARRAY TO OUTER ARRAY
+				branchesIdListCont.add(new ArrayList<ArrayList<String>>(branchesIdList)); 
+				branchesIdList.clear();
+	    		Gson gson = new Gson();
+	            String jsonBranchesIdList = gson.toJson(branchesIdListCont);
+	            editor.putString("branchesIdList", jsonBranchesIdList);
+	            editor.commit();
+				
+			}catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
+	        
+	        List[] jsonOutletBrandList;
+        	if(sharedPreferences.contains("outletBrandsIdList")) {
+                String getOutletsBrandList = sharedPreferences.getString("outletBrandsIdList", null);
+                Gson gson = new Gson();
+                jsonOutletBrandList = gson.fromJson(getOutletsBrandList,List[].class);
+                List getjsonOutletsBrandsListCont = Arrays.asList(jsonOutletBrandList);
+                
+                Object getObject = getjsonOutletsBrandsListCont.get(0);
+                ArrayList outletsBrandList = (ArrayList) getObject;
+                
+                
+                for(int i = 0; i < outletsBrandList.size(); i++){
+                	Object outletListObject = outletsBrandList.get(i);
+                	ArrayList outletBrandListInfo = (ArrayList) outletListObject;
+                	
+					String outletbrand_id = outletBrandListInfo.get(0).toString();
+					String outletbrand_title = outletBrandListInfo.get(1).toString();
+					String item_thumbnail_url = outletBrandListInfo.get(2).toString();
+					
+					RequestedResultsSimpleList m = new RequestedResultsSimpleList();
+					
+					m.setId(outletbrand_id);
+					m.setTitle(outletbrand_title);
+					m.setThumbnailUrl(item_thumbnail_url);
+					
+				    m.item_id = outletbrand_id;
+				    m.item_title = outletbrand_title;
+				    m.item_thumbnail_url = item_thumbnail_url;
+				    
+				    OUTLETBRANDSLIST.add(m);
+				}
+                
+                //Log.i("selected item ", "aisle list -->" + aislesList);
+        	}
+        	
+       }
+    
+
+        
+		@Override
+        protected String doInBackground(String... urls) {
+            return GET(urls[0]);
+        }
+		
+	}
+	
+	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            //bmImage.setImageBitmap(result);
+        }
+    }
+	
+	private class ApplyViewParamsTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+	    	//SET TEXTS
+	    	headerText.setText("Select Branch");
+	    	breadcrumb.setText(BREADCRUMB);
+	    	
+	    	//APPLY FONTS
+		    app_name.setTypeface(EkMukta_Light);
+		 	headerText.setTypeface(EkMukta_Light);
+		 	breadcrumb.setTypeface(EkMukta_Light);
+		 	shoppingButton.setTypeface(EkMukta_Light);
+		    homeButton.setTypeface(EkMukta_Light);
+	  		accountButton.setTypeface(EkMukta_Light);
+	  		cartButton.setTypeface(EkMukta_Light);
+	  		
+	  		//ADD BRAND LOGO
+			ImageView logoview = new ImageView(ActivityListBranches.this);
+			logoview.setId(1000);
+			Bitmap logo = null;
+			try {
+				logo = new DownloadImageTask(logoview).execute(SELECTED_BRAND_LOGO).get();
+				logoview.setImageBitmap(logo);
+				headersection.addView(logoview);
+			} catch (InterruptedException | ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			RelativeLayout.LayoutParams headerTextParams = (RelativeLayout.LayoutParams) headerText.getLayoutParams();
+			headerTextParams.setMargins(10, 0, 0, 0);
+			headerTextParams.addRule(RelativeLayout.RIGHT_OF, logoview.getId());
+			headerTextParams.addRule(RelativeLayout.ALIGN_BOTTOM, logoview.getId());
+			headerText.setLayoutParams(headerTextParams);
+
+
+	  		//SET ONCLICKLISTENER
+			shoppingButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	layout_progressbar.setVisibility(View.VISIBLE);
+	            	if(sharedPreferences.contains("myTrolley")) {
+	            		Intent intent = new Intent(ActivityListBranches.this, ActivityListAisles.class);
+	            		startActivity(intent);
+	            	}else{
+	            		Toast.makeText(getBaseContext(), "Select your branch", Toast.LENGTH_LONG).show();
+	            	}
+	            }
+	        }); 
+	  		
+	  		homeButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	Intent intent = new Intent(ActivityListBranches.this, ActivityMain.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        }); 
+	  		
+	  		accountButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	Intent intent = new Intent(ActivityListBranches.this, ActivityMyAccountLogin.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        }); 
+	  		
+	  		//SET NOTIFICATION FOR THE NUMBER OF ITEMS CURRENTLY IN THE TROLLEY
+			TextView cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+			if(sharedPreferences.contains("myTrolley")) {
+				String inMyTrolley = sharedPreferences.getString("myTrolley", null);
+				Gson gson = new Gson();
+				List[] jsonMyTrolley = gson.fromJson(inMyTrolley,List[].class);
+                List getjsonMyTrolley = Arrays.asList(jsonMyTrolley);
+                
+                Object getObject = getjsonMyTrolley.get(0);
+                ArrayList myTrolley = (ArrayList) getObject;
+                Integer numberOfItemsInMyTrolley = myTrolley.size();
+                cartButtonNotification.setText(numberOfItemsInMyTrolley.toString());
+                
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	Intent intent = new Intent(ActivityListBranches.this, ActivityMyCart.class);
+    		    	    startActivity(intent);
+    	                
+    	            }
+    	        });
+			}else{
+				cartButtonNotification.setText("0");
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	Toast.makeText(getBaseContext(), "Your cart is empty!", Toast.LENGTH_LONG).show();
+    	            }
+    	        });
+			}
+	    }
+	    
+	 }
+	
+	public void showDialogSelectBranch(final RequestedResultsSimpleList item, final int position, final String message) throws Exception{
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityListBranches.this);
+        builder.setMessage("You will lose all the items in your trolley at " + message + " Are you sure?");     
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            	layout_progressbar.setVisibility(View.VISIBLE);
+            	
+            	//Clear Cart Session
+                sharedPreferences.edit().remove("myTrolley").commit();
+                
+	            editor.putString("selectedBranch",item.item_title);
+	            editor.putString("selectedBranchId",item.item_id);
+	            editor.putString("selectedBranchDeliveryCharges",item.delivery_charge);
+	            editor.commit();
+	            
+			    Intent intent = new Intent(ActivityListBranches.this, ActivityListAisles.class);
+	    	    startActivity(intent);
+                
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {   
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+    }
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("location_id",SELECTED_LOCATION_ID));
+        nameValuePairs.add(new BasicNameValuePair("brand_id",SELECTED_BRAND_ID));
+        
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+}

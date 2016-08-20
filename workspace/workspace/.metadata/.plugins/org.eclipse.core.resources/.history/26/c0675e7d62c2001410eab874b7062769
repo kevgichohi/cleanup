@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.redhering.nunuaraha"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        android:allowBackup="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/ThemeInsidePage" >
+        
+        <activity
+            android:name="com.redhering.mobiletrolley.ActivityMain"
+            android:label="@string/app_name"
+            android:theme="@style/ThemeFlashPage" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- List Outlets Activity -->
+        <activity
+            android:name="com.redhering.mobiletrolley.ActivityListOutlets"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <!-- Test Loader Progress Bar Activity -->
+        <activity
+            android:name="com.redhering.mobiletrolley.TestLoaderActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- List Shop Brands Activity -->
+        <activity
+            android:name="com.redhering.mobiletrolley.ActivityListBrands"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <!-- List Delivery Areas Activity -->
+        <activity
+            android:name="com.redhering.mobiletrolley.ActivityListDeliveryLocations"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <!-- List Shop Branches Activity -->
+        <activity
+            android:name="com.redhering.mobiletrolley.ActivityListBranches"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <!-- List Shop Aisles Activity -->
+        <activity
+            android:name="com.redhering.mobiletrolley.ActivityListAisles"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <!-- List Shop Products Activity -->
+        <activity
+            android:name="com.redhering.mobiletrolley.ActivityListGoods"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <!-- List Product Brands Activity -->
+        <activity
+            android:name="com.redhering.mobiletrolley.ActivityListProducts"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <!-- My Cart Activity -->
+        <activity
+            android:name="com.redhering.mobiletrolley.ActivityMyCart"
+            android:label="@string/app_name" >
+        </activity>
+    </application>
+    
+    
+    <supports-screens android:resizeable="true"
+        android:smallScreens="true" 
+        android:normalScreens="true" 
+        android:largeScreens="true"
+        android:anyDensity="true" />
+
+</manifest>

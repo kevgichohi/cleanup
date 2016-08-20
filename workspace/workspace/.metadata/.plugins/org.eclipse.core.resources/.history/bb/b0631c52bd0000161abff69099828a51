@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/lightgrey">
+	
+    <include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+          <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/actionbar"
+        layout="@layout/global_footer" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/footer" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+	
+	<!-- ============================================CONTENT=========================================== -->
+	<!-- <WebView
+	    android:id="@+id/paymentGateway"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" /> -->
+	
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+   		android:layout_below="@+id/subHeader"
+	    android:orientation="vertical" >
+	    
+	    	  <ScrollView
+		android:id="@+id/ScrollView01"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@+id/header" >
+	    
+		  <LinearLayout android:layout_width="match_parent"
+			  android:layout_height="match_parent">
+		      <RelativeLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:layout_marginTop="10dp"
+		        android:layout_marginBottom="70dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_marginLeft="10dp"
+		        android:paddingTop="0dp"
+		        android:layout_gravity="left" >
+
+	   <!--  cardataresponse -->
+	       <TextView
+     android:id="@+id/datachargetoken"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:textColor="@color/red"
+     android:layout_marginTop="10dp"
+     android:textSize="18sp"
+     android:visibility="gone"/>
+	    
+	    <EditText
+		      android:id="@+id/creditCardNumber"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/datachargetoken"
+		      android:hint="Credit Card Number"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="text"
+		      android:visibility="gone"/>
+	    
+	     <EditText
+		      android:id="@+id/creditCardExpiry"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/creditCardNumber"
+		      android:hint="Month and year of expiry of credit card"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="text"
+		      android:visibility="gone"/>
+	     
+	     <EditText
+		      android:id="@+id/creditCardCVV"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/creditCardExpiry"
+		      android:hint="3-4 digits of CVV"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="text"
+		      android:visibility="gone"/>
+	     
+	     <EditText
+		      android:id="@+id/cardHolderName"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/creditCardCVV"
+		      android:hint="Card holder name"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="text"
+		      android:visibility="gone"/>
+	     
+	     <EditText
+		      android:id="@+id/cardHolderID"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/cardHolderName"
+		      android:hint="Card holder ID / Passport"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="text"
+		      android:visibility="gone"/>
+	     
+	     
+
+	     
+	     
+	 
+	     
+		    
+	    <Button
+		    android:id="@+id/processPayment"
+		    android:layout_width="fill_parent"
+		    android:layout_height="32dp"
+          	android:layout_below="@id/cardHolderID"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+		    android:text="Process payment"
+	      	android:textStyle="italic"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/customsavebtnshape"
+		    android:visibility="gone"/>
+	    
+	    
+	    <RelativeLayout
+         android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/processPayment">
+        
+         <TextView
+	    android:id="@+id/visa1"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="5dp"
+	    android:text="This App Accepts these Cards"
+	    android:textSize="12sp"
+		android:gravity="center"
+	    android:textColor="@color/grey666"
+	    android:visibility="gone"/>
+        
+      <RelativeLayout
+			   	android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			  	android:gravity="center" 
+			   	android:paddingBottom="5dp"
+			   	android:paddingTop="5dp"
+			   	android:paddingLeft="10dp"
+			    android:paddingRight="10dp"
+				android:background="@drawable/custom_header_receipt4" 
+				android:textStyle="bold"
+				android:textSize="16sp"
+				android:textColor="@color/grey999"
+        	android:layout_below="@id/visa1"
+        	android:id="@+id/visawrapper">
+        
+	   <ImageView
+	    android:id="@+id/visa6"
+        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+	    android:textColor="@color/grey666"
+	    android:src="@drawable/visa6" 
+	    android:visibility="gone"/>
+	   
+	   <ImageView
+	    android:id="@+id/visa7"
+        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+	    android:textColor="@color/grey666"
+	    android:src="@drawable/visa7"
+	     android:layout_toRightOf="@+id/visa6"
+	      android:layout_marginLeft="5dp"
+	    android:visibility="gone"/>
+	    <ImageView
+	    android:id="@+id/visa8"
+        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+	    android:textColor="@color/grey666"
+	    android:src="@drawable/visa8"
+	    android:visibility="gone"
+	    android:layout_marginLeft="5dp"
+	    android:layout_toRightOf="@+id/visa7"/>
+	     <ImageView
+	    android:id="@+id/visa9"
+        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+	    android:textColor="@color/grey666"
+	    android:src="@drawable/visa9"
+	     android:layout_marginLeft="5dp"
+	     android:layout_toRightOf="@+id/visa8"
+	    android:visibility="gone"/>
+		</RelativeLayout>
+		
+              <ImageView
+	    android:id="@+id/visa10"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+	    android:gravity="center"
+	    android:textColor="@color/grey666"
+	    android:src="@drawable/visa10"
+	     android:layout_below="@id/visawrapper"
+	    android:visibility="gone"
+	    
+	    android:layout_marginTop="15dp"/>
+              
+		<TextView
+	    android:id="@+id/visa3"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="0dp"
+	    android:layout_below="@id/visa10"
+	    android:text="E-fam operates in a PCI Compiant Evironment"
+	    
+          	android:layout_marginTop="10dp"
+	    android:textSize="12sp"
+		android:gravity="center"
+	    android:textColor="@color/grey666"
+	    android:visibility="gone"/>
+			    
+			   
+			     </RelativeLayout>
+	    
+	   <!--  cardataresponse -->
+	       <TextView
+     android:id="@+id/mobilechargetoken"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:textColor="@color/green"
+     android:layout_marginTop="10dp"
+     android:textSize="18sp"
+     android:visibility="gone"/>
+	       
+	    
+	     <Button
+       	android:id="@+id/mpesa"
+       	android:layout_marginTop="10dp"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="5dp"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="0dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/payment"
+         android:drawableLeft="@drawable/mpesa"
+        android:visibility="gone"/>
+
+	     <RelativeLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_below="@id/mpesa"
+    android:id="@+id/mpesatopwrap">
+        	   
+         <TextView
+	     android:id="@+id/points"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:textColor="@color/grey999"
+	     android:layout_marginBottom="5dp"
+         android:layout_marginRight="10dp"
+	     android:paddingLeft="10dp"
+	     android:textSize="13sp"
+	     android:visibility="gone"
+	     android:text=" "
+         android:drawableRight="@drawable/ponts"
+         android:layout_alignParentRight="true"/>
+        	
+       <TextView 
+           android:id="@+id/points2" 
+           android:background="@color/bobgrey" 
+           android:layout_below="@id/points"
+           android:layout_width="match_parent" 
+           android:layout_height="1px" 
+           android:visibility="gone"  
+           android:layout_marginBottom="5dp"/>  
+           
+        	   </RelativeLayout>	     
+<RelativeLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/e7e8e9"
+    android:orientation="vertical"
+    android:id="@+id/mpesawrap"
+    android:layout_below="@id/mpesatopwrap">
+	     	    
+	     <TextView
+     android:id="@+id/mpesatext"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:textColor="@color/grey999"
+     android:layout_marginTop="10dp"
+     android:textSize="13sp"
+     android:visibility="gone"
+     android:paddingLeft="10dp"
+     android:text="1. Go to M-pesa Menu\n 2. Select Payment Servcice\n3. Select the Paybill option\n4. Enter  provided business number  \n5. Enter provided account number \n6. Enter the Amount\n7. Press OK to send.\n8. You will recieve a confirmation SMS with your payment reference number.\n 9. Enter your number below."/>
+	     
+	     
+	   <EditText
+		      android:id="@+id/mobilempaymentNumber"
+	          android:layout_below="@id/mpesatext"
+	          android:layout_width="wrap_content"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_marginLeft="5dp"
+              android:layout_marginRight="5dp"
+		      android:hint="254721000000 (12 numbers)"
+		      android:textStyle="italic"
+		      android:background="@color/white"
+		      android:textSize="11sp"
+		      android:inputType="phone" 
+		      android:gravity="left"
+		      android:visibility="gone"
+		      android:padding="5dp"
+		      android:layout_alignParentLeft="true" />
+	     
+	      <Button
+		    android:id="@+id/MobimprocessPayment"
+		    android:layout_width="45dp"
+		    android:layout_height="30dp"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+		    android:text="Submit"
+		    android:layout_below="@id/mpesatext"
+	      	android:textStyle="italic"
+		    android:textSize="12sp"
+		    android:textColor="@color/white"
+		    android:layout_toRightOf="@+id/mobilempaymentNumber"
+		    android:background="@drawable/customsavebtnshapegrey"
+		    android:layout_alignParentRight="true" 
+		    android:visibility="gone"/>
+	       </RelativeLayout>
+	       
+	     
+	    <Button
+	    android:id="@+id/airtelmoney"
+      	android:layout_marginTop="10dp"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="5dp"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="0dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/payment"
+         android:drawableLeft="@drawable/airtelmoney"
+        android:visibility="gone"
+        android:layout_below="@id/mpesawrap"/>
+	    
+        	     <RelativeLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_below="@id/airtelmoney"
+    android:id="@+id/airteltopwrap">
+        	
+       <TextView
+	     android:id="@+id/points3"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:textColor="@color/grey999"
+	     android:layout_marginBottom="5dp"
+         android:layout_marginRight="10dp"
+	     android:paddingLeft="10dp"
+	     android:textSize="13sp"
+	     android:visibility="gone"
+	     android:text=" "
+         android:drawableRight="@drawable/ponts"
+         android:layout_alignParentRight="true"/>
+        	
+       <TextView 
+           android:id="@+id/points4" 
+           android:background="@color/bobgrey" 
+           android:layout_below="@id/points3"
+           android:layout_width="match_parent" 
+           android:layout_height="1px" 
+           android:visibility="gone"  
+           android:layout_marginBottom="5dp"/> 
+        	   </RelativeLayout>
+               
+	      <RelativeLayout 
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:background="@color/e7e8e9"
+		    android:orientation="vertical"
+		    android:layout_below="@id/airtelmoney"
+            android:id="@+id/airtelwrap">
+	   
+	      <TextView
+	     android:id="@+id/airteltext"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:textColor="@color/grey999"
+	     android:layout_marginTop="10dp"
+	     android:paddingLeft="10dp"
+	     android:textSize="13sp"
+	     android:visibility="gone"
+	     android:text="1. Go to Airtel Menu\n 2. Select Payment Servcice\n3. Select the Paybill option\n4. Enter provided business number -- \n5. Enter provided account number -- \n6. Enter the Amount\n7. Press OK to send.\n8. You will recieve a confirmation SMS with your payment reference number.\n 9. Enter your number below."/>
+	    
+	    
+
+	     <EditText
+	      android:id="@+id/mobilepaymentNumber"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:layout_marginLeft="5dp"
+          android:layout_marginRight="5dp"
+          android:layout_below="@id/airteltext"
+	      android:hint="254733000000 (12 numbers)"
+	      android:textStyle="italic"
+	      android:textSize="11sp"
+	      android:inputType="phone" 
+	      android:background="@color/white"
+	      android:visibility="gone"
+	      android:gravity="left"
+	      android:padding="7dp"
+	      android:layout_alignParentLeft="true" />
+	     
+	      <Button
+		    android:id="@+id/MobiprocessPayment"
+		    android:layout_width="45dp"
+		    android:layout_height="30dp"
+          	android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+		     android:layout_below="@id/airteltext"
+		    android:text="Submit"
+	      	android:textStyle="italic"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/customsavebtnshapegrey"
+		    android:visibility="gone"
+		    android:layout_toRightOf="@+id/mobilepaymentNumber"
+		    android:layout_alignParentRight="true" />
+	      
+	      </RelativeLayout>
+	      
+	     </RelativeLayout>
+	   </LinearLayout>
+
+	  </ScrollView>
+	 
+	  	  </LinearLayout>
+<include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        layout="@layout/global_quicklinks" />
+     
+    <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+    
+</RelativeLayout>

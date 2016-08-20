@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+	<include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+    <include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_below="@+id/actionbar"
+        layout="@layout/global_quicklinks" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/quicklinks" 
+	    layout="@layout/global_header" />
+	
+    <!-- =======================================CONTENT===================================== -->
+    <ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@id/header"
+    	android:orientation="vertical" >
+	    
+	    <LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:layout_below="@id/header"
+	    	android:orientation="vertical" >
+	    	
+			<RelativeLayout
+			   android:id="@+id/sectionInfoHeader"
+			   android:layout_width="match_parent"
+			   android:layout_height="wrap_content"
+			   android:background="@drawable/custompagesubtitleshape"
+			   android:gravity="left" >
+			
+			   <TextView
+				    android:id="@+id/sectionInfo"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:layout_centerVertical="true"
+				    android:text="Personal Info"
+				    android:textColor="@color/grey666"
+				    android:textSize="12sp"
+			        android:textAllCaps="true" />
+			   
+			   <ImageButton
+			        android:id="@+id/editCustomerInfo"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+		          	android:layout_alignParentRight="true"
+		          	android:layout_centerVertical="true"
+			        android:layout_weight=".5"
+			        android:background="@null"
+			        android:contentDescription="editCustomerInfo"
+			        android:cropToPadding="true"
+			        android:scaleType="fitEnd"
+			        android:src="@drawable/ic_edit_green"
+		   			android:visibility="gone" />
+			   
+			   <TextView
+				    android:id="@+id/systemMessage"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+			    	android:layout_below="@+id/sectionInfo"
+		          	android:layout_marginTop="10dp"
+				    android:textColor="@color/red"
+				    android:textSize="12sp"
+		   			android:visibility="gone" />
+			   
+			 </RelativeLayout>
+			    
+			 <RelativeLayout
+			    android:id="@+id/personalInfo"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_below="@+id/sectionInfoHeader"
+			    android:paddingLeft="10dp"
+			    android:paddingRight="10dp"
+			    android:gravity="left" >
+			    
+		        <EditText
+			      android:id="@+id/customerFname"
+			      android:layout_width="match_parent"
+			      android:layout_height="wrap_content"
+		          android:layout_marginTop="10dp"
+			      android:hint="First name"
+			      android:textStyle="italic"
+			      android:textSize="13sp"
+			      android:inputType="textCapWords"
+			      android:enabled="false"
+		          android:clickable="true" />
+			    
+			    <EditText
+			      android:id="@+id/customerLname"
+			      android:layout_width="match_parent"
+			      android:layout_height="wrap_content"
+		          android:layout_below="@id/customerFname"
+		          android:layout_marginTop="10dp"
+			      android:hint="Last name"
+			      android:textStyle="italic"
+			      android:textSize="13sp"
+			      android:inputType="textCapWords"
+			      android:enabled="false"
+		          android:clickable="true" />
+			    
+			    <EditText
+			      android:id="@+id/customerEmail"
+			      android:layout_width="match_parent"
+			      android:layout_height="wrap_content"
+		          android:layout_below="@id/customerLname"
+		          android:layout_marginTop="10dp"
+			      android:hint="Email Address"
+			      android:textStyle="italic"
+			      android:textSize="13sp"
+			      android:inputType="textEmailAddress"
+			      android:enabled="false"
+		          android:clickable="true" />
+			    
+			    <EditText
+			      android:id="@+id/customerPhone"
+			      android:layout_width="match_parent"
+			      android:layout_height="wrap_content"
+		          android:layout_below="@id/customerEmail"
+		          android:layout_marginTop="10dp"
+			      android:textStyle="italic"
+			      android:textSize="13sp"
+			      android:enabled="false"
+		          android:clickable="true" />
+			    
+			    <Spinner
+		          android:id="@+id/customerGender"
+		          android:layout_width="match_parent"
+		          android:layout_height="wrap_content"
+		          android:layout_below="@id/customerPhone"
+		          android:prompt="@string/gender_prompt"
+			      android:enabled="false" />
+			    
+			    <Button
+			        android:id="@+id/button"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+		          	android:layout_below="@id/customerGender"
+		          	android:layout_alignParentRight="true"
+			        android:text="Select"
+				    android:textSize="16sp"
+				    android:textColor="@color/white"
+				    android:background="@drawable/customgreenbuttonshape" />
+			    
+			    <EditText
+			        android:id="@+id/customerDOB"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+		          	android:layout_below="@id/customerGender"
+		          	android:layout_toLeftOf="@id/button"
+		          	android:layout_marginTop="10dp"
+		          	android:layout_alignParentLeft="true"
+			      	android:hint="Date of Birth"
+			      	android:textStyle="italic"
+			      	android:textSize="13sp"
+			      	android:enabled="false" />
+			    
+			    
+			    
+			    <Button
+				    android:id="@+id/saveCustomerInfo"
+				    android:layout_width="wrap_content"
+				    android:layout_height="30dp"
+		          	android:layout_below="@id/customerPhone"
+		          	android:layout_marginTop="10dp"
+		          	android:layout_alignParentRight="true"
+				    android:paddingTop="5dp"
+				    android:paddingBottom="5dp"
+				    android:paddingLeft="0dp"
+				    android:paddingRight="0dp"
+				    android:text="Save"
+				    android:textSize="16sp"
+				    android:textColor="@color/white"
+				    android:background="@drawable/customgreenbuttonshape"
+		   			android:visibility="gone"/>
+			    
+			  </RelativeLayout>
+		  </LinearLayout>
+	  </ScrollView>
+    
+      <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_alignParentBottom="true"
+        layout="@layout/global_footer" />
+      
+      <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+ 
+</RelativeLayout>

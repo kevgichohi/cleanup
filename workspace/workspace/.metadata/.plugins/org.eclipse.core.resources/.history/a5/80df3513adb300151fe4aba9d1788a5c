@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+	
+    <include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+    <include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_below="@+id/actionbar"
+        layout="@layout/global_quicklinks" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/quicklinks" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+	
+	<!-- ============================================CONTENT=========================================== -->
+	<!-- <WebView
+	    android:id="@+id/paymentGateway"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" /> -->
+	
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+   		android:layout_below="@+id/subHeader"
+	    android:orientation="vertical" >
+
+	   <!--  cardataresponse -->
+	       <TextView
+     android:id="@+id/datachargetoken"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:textColor="@color/red"
+     android:layout_marginTop="10dp"
+     android:textSize="18sp"
+     android:visibility="gone"/>
+	    
+	    <EditText
+		      android:id="@+id/creditCardNumber"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/datachargetoken"
+		      android:hint="Credit Card Number"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="text"
+		      android:visibility="gone"/>
+	    
+	     <EditText
+		      android:id="@+id/creditCardExpiry"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/creditCardNumber"
+		      android:hint="Month and year of expiry of credit card"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="text"
+		      android:visibility="gone"/>
+	     
+	     <EditText
+		      android:id="@+id/creditCardCVV"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/creditCardExpiry"
+		      android:hint="3-4 digits of CVV"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="text"
+		      android:visibility="gone"/>
+	     
+	     <EditText
+		      android:id="@+id/cardHolderName"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/creditCardCVV"
+		      android:hint="Card holder name"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="text"
+		      android:visibility="gone"/>
+	     
+	     <EditText
+		      android:id="@+id/cardHolderID"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/cardHolderName"
+		      android:hint="Card holder ID / Passport"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="text"
+		      android:visibility="gone"/>
+	     
+	     
+
+	     
+	     
+	 
+	     
+		    
+	    <Button
+		    android:id="@+id/processPayment"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_below="@id/cardHolderID"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+		    android:text="Process payment"
+	      	android:textStyle="italic"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/customgreenbuttonshape"
+		    android:visibility="gone"/>
+	    
+	    
+	    
+	   <!--  cardataresponse -->
+	       <TextView
+     android:id="@+id/mobilechargetoken"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:textColor="@color/green"
+     android:layout_marginTop="10dp"
+     android:textSize="18sp"
+     android:visibility="gone"/>
+	    
+	     <Button
+        android:id="@+id/mpesa"
+          	android:layout_below="@id/processPayment"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mpesa"
+        android:visibility="gone"/>
+	       
+	    <Button
+	        
+        android:id="@+id/airtelmoney"
+          	android:layout_below="@id/mpesa"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/airtelmoney"
+        android:visibility="gone"/>
+	    
+	    
+	     <EditText
+		      android:id="@+id/mobilepaymentNumber"
+		      android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+	          android:layout_below="@id/airtelmoney"
+		      android:hint="Mobile Number 254733949608"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="phone" 
+		      android:visibility="gone"/>
+	     
+	      <Button
+		    android:id="@+id/MobiprocessPayment"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_below="@id/mobilepaymentNumber"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+		    android:text="Process payment"
+	      	android:textStyle="italic"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/customgreenbuttonshape"
+		    android:visibility="gone"/>
+	      
+	      <EditText
+		      android:id="@+id/mobilempaymentNumber"
+	          android:layout_below="@id/MobiprocessPayment"
+	          android:layout_width="fill_parent"
+		      android:layout_height="wrap_content"
+	          android:layout_marginTop="10dp"
+		      android:hint="Mobile Number 254721949608"
+		      android:textStyle="italic"
+		      android:textSize="13sp"
+		      android:inputType="phone" 
+		      android:visibility="gone"/>
+	     
+	      <Button
+		    android:id="@+id/MobimprocessPayment"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_below="@id/mobilempaymentNumber"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+		    android:text="Process payment"
+	      	android:textStyle="italic"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/customgreenbuttonshape"
+		    android:visibility="gone"/>
+	     
+	   </LinearLayout>
+
+	
+	<include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_alignParentBottom="true"
+        layout="@layout/global_footer" />
+     
+    <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+    
+</RelativeLayout>

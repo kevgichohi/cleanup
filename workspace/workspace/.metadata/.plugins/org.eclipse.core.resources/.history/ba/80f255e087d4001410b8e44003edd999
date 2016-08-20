@@ -1,0 +1,482 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+
+
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class ActivityShopperDetails extends Activity {
+	
+	LinearLayout layout_progressbar;
+	RelativeLayout headersection;
+	
+	public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    
+    public Integer TOTAL = 0;
+
+	public static String SELECTED_BRANCH_ID;
+	public static String SELECTED_BRANCH_TITLE;
+	public static String SELECTED_BRAND_ID;
+	public static String SELECTED_BRAND_TITLE;
+	public static String SELECTED_BRAND_LOGO;
+	public static String SELECTED_LOCATION;
+	public static String SELECTED_LOCATION_ID;
+	public static String SELECTED_DELIVERY_CHARGES;
+	public static String USER_FIRST_NAME;
+	public static String USER_LAST_NAME;
+	public static String USER_PHONE_NUMBER;
+	public static String USER_EMAIL_ADDRESS;
+	public static String USER_RESIDENCE_DIRECTION;
+	
+	Boolean error;
+	
+	TextView previousListLink;
+	LinearLayout rlMenu;
+	ImageView menuIcon;
+	Typeface EkMukta_Light;
+	TextView app_name;
+	TextView breadcrumb;
+	TextView headerText;
+	Button shoppingButton;
+	Button homeButton;
+	Button accountButton;
+	Button cartButton;
+	
+	TextView subTotal;
+	TextView subTotalLabel;
+	TextView deliveryChargesLabel;
+	TextView deliveryCharges;
+	TextView total;
+	TextView totalLabel;
+	TextView nameLabel;
+	TextView userName;
+	TextView emailLabel;
+	TextView emailAddress;
+	TextView phoneLabel;
+	TextView phoneNumber;
+	TextView locationLabel;
+	TextView location;
+	TextView direction;
+	Button checkout;
+	Button clearcart;
+	TextView errorMessage;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.checkout);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+	    headersection = (RelativeLayout) findViewById(R.id.header);
+	    sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+	    
+	    SELECTED_BRAND_ID = sharedPreferences.getString("selectedBrandId", null);
+		SELECTED_BRAND_TITLE = sharedPreferences.getString("selectedBrand", null);
+		SELECTED_BRAND_LOGO = sharedPreferences.getString("selectedBrandLogo", null);
+		SELECTED_BRANCH_ID = sharedPreferences.getString("selectedBranchId", null);
+		SELECTED_BRANCH_TITLE = sharedPreferences.getString("selectedBranch", null);
+		SELECTED_LOCATION_ID = sharedPreferences.getString("selectedLocationId", null);
+		SELECTED_LOCATION = sharedPreferences.getString("selectedLocation", null);
+		SELECTED_DELIVERY_CHARGES = sharedPreferences.getString("selectedBranchDeliveryCharges", null);
+		
+		USER_FIRST_NAME = sharedPreferences.getString("userFirstName", null);
+		USER_LAST_NAME = sharedPreferences.getString("userLastName", null);
+		USER_PHONE_NUMBER = sharedPreferences.getString("userPhoneNumber", null);
+		USER_EMAIL_ADDRESS = sharedPreferences.getString("userEmail", null);
+		USER_RESIDENCE_DIRECTION = sharedPreferences.getString("userLastLocationDirection", null);
+		
+		Bundle extras = getIntent().getExtras();
+		String totalPrice = extras.getString("totalPrice");
+		TOTAL = Integer.parseInt(totalPrice);
+		
+		EkMukta_Light = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+  		app_name = (TextView) findViewById(R.id.app_name);
+		headerText = (TextView) findViewById(R.id.headerText);
+		breadcrumb = (TextView) findViewById(R.id.breadcrumb);
+
+  		rlMenu = (LinearLayout) findViewById(R.id.menuListViewCont);
+        menuIcon  = (ImageView) findViewById(R.id.menu_icon);
+		totalLabel = (TextView) findViewById(R.id.totalLabel);
+		total = (TextView) findViewById(R.id.total);
+		subTotalLabel = (TextView) findViewById(R.id.subtotalLabel);
+		subTotal = (TextView) findViewById(R.id.subtotal);
+		deliveryChargesLabel = (TextView) findViewById(R.id.deliveryChargesLabel);
+		deliveryCharges = (TextView) findViewById(R.id.deliveryCharges);
+		errorMessage = (TextView) findViewById(R.id.errors);
+		nameLabel = (TextView) findViewById(R.id.nameLabel);
+		userName = (TextView) findViewById(R.id.userName);
+		emailLabel = (TextView) findViewById(R.id.emailLabel);
+		emailAddress = (TextView) findViewById(R.id.email);
+		phoneLabel = (TextView) findViewById(R.id.phoneLabel);
+		phoneNumber = (TextView) findViewById(R.id.phone);
+		locationLabel = (TextView) findViewById(R.id.deliveryLocationLabel);
+		location = (TextView) findViewById(R.id.deliveryLocation);
+		direction = (TextView) findViewById(R.id.directions);
+		checkout = (Button) findViewById(R.id.checkout);
+		
+  		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+  		homeButton = (Button) findViewById(R.id.homeButton);
+  		accountButton = (Button) findViewById(R.id.accountButton);
+  		cartButton = (Button) findViewById(R.id.cartButton);
+  		
+  		//SET TEXT, APPLY FONTS, SETONCLICKLISTENERS
+  		new ApplyViewParamsTask().execute();
+		
+		// call AsynTask to perform network operation on separate thread
+        new HttpAsyncTask().execute("");
+	}
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();  // Always call the superclass method first
+		layout_progressbar.setVisibility(View.GONE);
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	layout_progressbar.setVisibility(View.GONE);
+            super.onPostExecute(result);
+            Toast.makeText(getBaseContext(), "Checkout", Toast.LENGTH_LONG).show();
+        }
+    
+        
+        @Override
+        protected String doInBackground(String... urls) {
+            return GET(urls[0]);
+        }
+	}
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+
+	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            //bmImage.setImageBitmap(result);
+        }
+    }
+	
+	private class ApplyViewParamsTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+	    	//SET TEXTS
+	    	headerText.setText(SELECTED_BRANCH_TITLE);
+	    	breadcrumb.setText("Checkout");
+			location.setText(SELECTED_LOCATION);
+			userName.setText(USER_FIRST_NAME + " " + USER_LAST_NAME);
+			emailAddress.setText(USER_EMAIL_ADDRESS);
+			phoneNumber.setText(USER_PHONE_NUMBER);
+			direction.setText(USER_RESIDENCE_DIRECTION);
+			
+			Integer deliveryFee = 0;
+			if(!SELECTED_DELIVERY_CHARGES.isEmpty() && SELECTED_DELIVERY_CHARGES != null && SELECTED_DELIVERY_CHARGES != ""){
+				deliveryFee = Integer.parseInt(SELECTED_DELIVERY_CHARGES.replaceAll("[^0-9]", ""));
+			}
+			total.setText("KES."+TOTAL.toString());
+			deliveryCharges.setText("KES."+deliveryFee.toString());
+			Integer thesubTotal = TOTAL + deliveryFee;
+			subTotal.setText("KES."+thesubTotal.toString());
+			
+	    	Log.i("Delivery Charges"," --> " + deliveryFee);
+			
+	    	
+	    	//APPLY FONTS
+		    app_name.setTypeface(EkMukta_Light);
+		 	headerText.setTypeface(EkMukta_Light);
+		 	breadcrumb.setTypeface(EkMukta_Light);
+
+	  		subTotalLabel.setTypeface(EkMukta_Light);
+			subTotal.setTypeface(EkMukta_Light);
+			totalLabel.setTypeface(EkMukta_Light);
+			total.setTypeface(EkMukta_Light);
+			deliveryChargesLabel.setTypeface(EkMukta_Light);
+			deliveryCharges.setTypeface(EkMukta_Light);
+			errorMessage.setTypeface(EkMukta_Light);
+			nameLabel.setTypeface(EkMukta_Light);
+			userName.setTypeface(EkMukta_Light);
+			emailLabel.setTypeface(EkMukta_Light);
+			emailAddress.setTypeface(EkMukta_Light);
+			phoneLabel.setTypeface(EkMukta_Light);
+			phoneNumber.setTypeface(EkMukta_Light);
+			locationLabel.setTypeface(EkMukta_Light);
+			location.setTypeface(EkMukta_Light);
+			direction.setTypeface(EkMukta_Light);
+			checkout.setTypeface(EkMukta_Light);
+	  		
+			shoppingButton.setTypeface(EkMukta_Light);
+		    homeButton.setTypeface(EkMukta_Light);
+	  		accountButton.setTypeface(EkMukta_Light);
+	  		cartButton.setTypeface(EkMukta_Light);
+			
+			
+			
+			errorMessage.setVisibility(View.GONE);
+	  		rlMenu.setVisibility(View.INVISIBLE);
+	  		
+	  		//ADD BRAND LOGO
+			ImageView logoview = new ImageView(ActivityShopperDetails.this);
+			logoview.setId(1000);
+			Bitmap logo = null;
+			try {
+				logo = new DownloadImageTask(logoview).execute(SELECTED_BRAND_LOGO).get();
+				logoview.setImageBitmap(logo);
+				headersection.addView(logoview);
+			} catch (InterruptedException | ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			RelativeLayout.LayoutParams headerTextParams = (RelativeLayout.LayoutParams) headerText.getLayoutParams();
+			headerTextParams.setMargins(10, 0, 0, 0);
+			headerTextParams.addRule(RelativeLayout.RIGHT_OF, logoview.getId());
+			headerTextParams.addRule(RelativeLayout.ALIGN_BOTTOM, logoview.getId());
+			headerText.setLayoutParams(headerTextParams);
+
+
+	  		//SET ONCLICKLISTENER
+			menuIcon.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	if (rlMenu.getVisibility() == View.VISIBLE) {
+	            		rlMenu.setVisibility(View.INVISIBLE);
+	                    overridePendingTransition(R.anim.slide_in_right_to_left, R.anim.slide_out_left_to_right);
+	            	} else {
+	            		rlMenu.setVisibility(View.VISIBLE);
+	                    overridePendingTransition(R.anim.slide_out_left_to_right, R.anim.slide_in_right_to_left);
+	            	}
+	                
+	            }
+	        });
+			
+			checkout.setOnClickListener(new View.OnClickListener() {
+	            public void onClick(View v) {
+	            	
+	            	errorMessage.setVisibility(View.GONE);//Hide all errors before displaying new ones
+	            	error = false;
+	            	
+	            	String directions = direction.getText().toString();
+	            	
+	            	
+	            	
+	            	//VALIDATE DIRECTIONS
+	            	if(directions == null || directions.isEmpty()){
+	            		errorMessage.setVisibility(View.VISIBLE);
+	            		errorMessage.setText("Briefly explain the directions to your residence");
+	            		direction.requestFocus();
+	            		error = true;
+	            	}
+	            	else if(error == false){
+	            		Intent intent = new Intent(ActivityShopperDetails.this, ActivityThankYou.class);
+	            		intent.putExtra("userDirections", directions);
+	            		intent.putExtra("totalPrice", TOTAL.toString());
+			    	    startActivity(intent);
+	            	}
+	            	
+	            	//Log.i("Error"," --> " +error);
+	            }
+	        });
+			
+			shoppingButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	layout_progressbar.setVisibility(View.VISIBLE);
+	            	Intent intent = new Intent(ActivityShopperDetails.this, ActivityListOutlets.class);
+	            	if(sharedPreferences.contains("myTrolley")) {
+	            		intent = new Intent(ActivityShopperDetails.this, ActivityListAisles.class);
+	            	}
+		    	    startActivity(intent);
+	            }
+	        }); 
+	  		
+	  		homeButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	Intent intent = new Intent(ActivityShopperDetails.this, ActivityMain.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        });  
+	  		
+	  		accountButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	Intent intent = new Intent(ActivityShopperDetails.this, ActivityMyAccountLogin.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        });
+	  		
+	  		//SET NOTIFICATION FOR THE NUMBER OF ITEMS CURRENTLY IN THE TROLLEY
+			TextView cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+			if(sharedPreferences.contains("myTrolley")) {
+				String inMyTrolley = sharedPreferences.getString("myTrolley", null);
+				Gson gson = new Gson();
+				List[] jsonMyTrolley = gson.fromJson(inMyTrolley,List[].class);
+                List getjsonMyTrolley = Arrays.asList(jsonMyTrolley);
+                
+                Object getObject = getjsonMyTrolley.get(0);
+                ArrayList myTrolley = (ArrayList) getObject;
+                Integer numberOfItemsInMyTrolley = myTrolley.size();
+                cartButtonNotification.setText(numberOfItemsInMyTrolley.toString());
+    	  		
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	Intent intent = new Intent(ActivityShopperDetails.this, ActivityMyCart.class);
+    		    	    startActivity(intent);
+    	                
+    	            }
+    	        });
+			}else{
+				cartButtonNotification.setText("0");
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	Toast.makeText(getBaseContext(), "Your trolley is empty!", Toast.LENGTH_LONG).show();
+    	            }
+    	        });
+			}
+	    }
+	    
+	 }
+	
+	
+	
+	
+
+}

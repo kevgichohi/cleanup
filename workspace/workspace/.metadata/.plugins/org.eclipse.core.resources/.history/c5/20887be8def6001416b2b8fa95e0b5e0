@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+	<include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+    <include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_below="@+id/actionbar"
+        layout="@layout/global_quicklinks" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/quicklinks" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+      <!-- =======================================CONTENT===================================== -->
+	  <RelativeLayout
+	    android:id="@+id/content"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/header"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="10dp"
+	    android:gravity="left" >
+	    
+	    <TextView
+	      android:id="@+id/userName"
+	      android:layout_width="match_parent"
+	      android:layout_height="wrap_content"
+    	  android:layout_marginTop="5dp"
+	      android:textColor="@color/grey666"
+	      android:textSize="12sp"
+          android:textAllCaps="true" />
+	    
+	    <TextView
+	      android:id="@+id/userPhone"
+	      android:layout_width="match_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_below="@+id/userName"
+    	  android:layout_marginTop="5dp"
+	      android:textColor="@color/grey666"
+	      android:textSize="12sp"
+          android:textAllCaps="true" />
+	    
+	    <TextView
+	      android:id="@+id/userEmail"
+	      android:layout_width="match_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_below="@+id/userPhone"
+    	  android:layout_marginTop="5dp"
+	      android:textColor="@color/grey666"
+	      android:textSize="12sp"
+          android:textAllCaps="true" />
+	    
+	    <TextView
+	      android:id="@+id/userLastLocation"
+	      android:layout_width="match_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_below="@+id/userEmail"
+    	  android:layout_marginTop="5dp"
+	      android:textColor="@color/grey666"
+	      android:textSize="12sp"
+          android:textAllCaps="true" />
+	    
+	    <TextView
+	      android:id="@+id/userLastLocationDirection"
+	      android:layout_width="match_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_below="@+id/userLastLocation"
+    	  android:layout_marginTop="5dp"
+	      android:textColor="@color/grey666"
+	      android:textSize="12sp"
+          android:textAllCaps="true" />
+	    
+	  </RelativeLayout>
+    
+      <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_alignParentBottom="true"
+        layout="@layout/global_footer" />
+      
+      <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+ 
+</RelativeLayout>

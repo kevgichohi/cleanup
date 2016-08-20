@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+     android:background="@color/white">
+    
+    <include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+   <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/actionbar"
+        layout="@layout/global_footer" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/footer" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+	
+	  <!-- ============================================CONTENT=========================================== -->
+	  <ScrollView
+		android:id="@+id/ScrollView01"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@+id/header" >
+	    
+		  <LinearLayout 
+		      android:layout_width="match_parent"
+			  android:layout_height="match_parent" 
+			  android:layout_below="@id/header">
+		      <RelativeLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:layout_marginTop="10dp"
+		        android:layout_marginBottom="20dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_marginLeft="10dp"
+		        android:paddingTop="0dp"
+		        android:layout_gravity="center" >
+			    
+	<ImageView
+	    android:id="@+id/userguideimage1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/userguide1" />
+	<ImageView
+	    android:id="@+id/userguideimage2"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/userguide2"
+	     android:layout_below="@+id/userguideimage1"
+	     />
+			    
+		      </RelativeLayout>
+	  	  </LinearLayout>
+	  </ScrollView>
+	  
+	<include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        layout="@layout/global_quicklinks" />
+</RelativeLayout>

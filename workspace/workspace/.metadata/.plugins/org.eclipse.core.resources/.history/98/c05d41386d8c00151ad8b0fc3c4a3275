@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingBottom="15dip"
+    android:paddingLeft="10dip"
+    android:paddingTop="15dip"
+    android:gravity="left|center"
+    android:background="@drawable/customlistshape" 
+    android:theme="@android:style/Theme.Translucent" >
+    
+ 
+    <TextView
+        android:id="@+id/itemOne"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey666"
+        android:textSize="14sp" />
+    
+    <TextView
+        android:id="@+id/itemTwo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemOne"
+        android:textColor="@color/grey666"
+        android:textSize="14sp" />
+    
+    <TextView
+        android:id="@+id/itemThree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemTwo"
+        android:textColor="@color/grey666"
+        android:textSize="14sp" />
+    
+     
+      
+     
+     <TextView
+        android:id="@+id/itemFour"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemThree"
+        android:textColor="@color/grey666"
+        android:textSize="14sp" 
+        android:visibility="gone" />
+     
+	    
+      <ImageView
+	   android:id="@+id/BranchshopImageeS"
+	   android:src="@drawable/ic_cart_green"
+	   android:layout_width="match_parent"
+	   android:layout_height="wrap_content"
+	   android:layout_below="@+id/itemFour"
+	  	android:visibility="gone" />
+  
+     
+    <Button
+        android:id="@+id/confirmDelivery"
+        android:layout_width="wrap_content" 
+	    android:layout_height="30dp"  
+        android:layout_below="@+id/itemThree"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/customgreenbuttonshape"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:text="Confirm Delivery"
+        android:shadowColor="@color/text_shadow"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+       	android:textAllCaps="true" />
+    
+    <Button
+        android:id="@+id/viewOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_below="@+id/itemThree" 
+        android:layout_alignParentRight="true" 
+        android:layout_marginRight="10dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/customgreenbuttonshape"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:text="View Order"
+        android:shadowColor="@color/text_shadow"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+       	android:textAllCaps="true" />
+ 
+</RelativeLayout>

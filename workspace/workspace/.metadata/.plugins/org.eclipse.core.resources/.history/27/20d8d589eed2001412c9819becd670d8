@@ -1,0 +1,125 @@
+package com.redhering.nunuaraha;
+
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import com.redhering.nunuaraha.R;
+ 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.view.LayoutInflater;
+import android.widget.TextView;
+ 
+@SuppressLint("InflateParams")
+public class AdapterListWithImage extends BaseAdapter {
+    private static ArrayList<RequestedResults> searchArrayList;
+    private LayoutInflater mInflater;
+    private Context context;
+    private Typeface font;
+    private String activityName;
+    
+    public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+ 
+    public AdapterListWithImage(Context ctx, ArrayList<RequestedResults> results, Typeface font) {
+        searchArrayList = results;
+        mInflater = LayoutInflater.from(ctx);
+        this.font = font;
+        context = ctx;
+        activityName = context.getClass().getSimpleName();
+        sharedPreferences = context.getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+    }
+    
+	public int getCount() {
+        return searchArrayList.size();
+    }
+ 
+    public Object getItem(int position) {
+        return searchArrayList.get(position);
+    }
+ 
+    public long getItemId(int position) {
+        return position;
+    }
+ 
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        String ActivityListBrands = "ActivityListBrands";
+        String SELECTED_OUTLET_ID = sharedPreferences.getString("selectedBrandId", null);
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.simple_list_with_image, null);
+            holder = new ViewHolder();
+            holder.title = (TextView) convertView.findViewById(R.id.mylist);
+            holder.itemImage = (ImageView) convertView.findViewById(R.id.itemImage);
+ 
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+ 
+        holder.title.setText(searchArrayList.get(position).getTitle());
+        holder.title.setTypeface(font);
+        
+        Bitmap image = null;
+		try {
+			image = new DownloadImageTask(holder.itemImage).execute(searchArrayList.get(position).getThumbnailUrl()).get();
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+        holder.itemImage.setImageBitmap(image);
+        
+        return convertView;
+    }
+ 
+    static class ViewHolder {
+        TextView title;
+        ImageView itemImage;
+    }
+    
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            //bmImage.setImageBitmap(result);
+        }
+    }
+    
+    private Context getContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

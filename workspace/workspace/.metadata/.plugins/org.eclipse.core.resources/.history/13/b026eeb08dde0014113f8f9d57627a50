@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.redhering.nunuaraha"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="15" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        android:allowBackup="true" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/ThemeInsidePage" >
+        <activity
+            android:name=".ActivityMain"
+            android:label="@string/app_name"
+            android:theme="@style/ThemeFlashPage" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        
+        <activity
+            android:name=".ActivityMyAccountLogin"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        
+        <activity
+            android:name=".ActivityMyAccount"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <activity
+            android:name=".ActivityMyProfile"
+            android:label="@string/app_name" >
+        </activity>
+
+        <activity
+            android:name=".ActivityMyOrders"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <activity
+            android:name=".ActivityViewOrder"
+            android:label="@string/app_name" >
+        </activity>
+        
+        
+        <activity
+            android:name=".ActivityListOutlets"
+            android:label="@string/app_name" >
+        </activity>
+
+        <activity
+            android:name=".ActivityListBrands"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <activity
+            android:name=".ActivityListPickUpOptions"
+            android:label="@string/app_name" >
+        </activity>
+
+        <activity
+            android:name=".ActivityListDeliveryLocations"
+            android:label="@string/app_name" >
+        </activity>
+
+        <activity
+            android:name=".ActivityListBranches"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- List Shop Aisles Activity -->
+        <activity
+            android:name=".ActivityListAisles"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- List Shop Products Activity -->
+        <activity
+            android:name=".ActivityListGoods"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- List Product Brands Activity -->
+        <activity
+            android:name=".ActivityListProducts"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- My Cart Activity -->
+        <activity
+            android:name=".ActivityMyCart"
+            android:label="@string/app_name" >
+        </activity>
+
+        <!-- Checkout Activity -->
+        <activity
+            android:name=".ActivityShopperDetails"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+
+        <!-- Thank You Activity -->
+        <activity
+            android:name=".ActivityThankYou"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".ActivityTest"
+            android:label="@string/title_activity_activity_test" >
+        </activity>
+    </application>
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
+
+</manifest>

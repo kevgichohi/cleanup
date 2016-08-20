@@ -1,0 +1,172 @@
+package com.example.mobiletrolley;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.ListActivity;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class ListShopsBranchesActivity extends ListActivity {
+	
+	//get the passed parameter from the previous activity
+	public static String SELECTED_BRAND = "";
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		//setContentView(R.layout.activity_list_shops_brands);
+
+		Bundle extras = getIntent().getExtras();
+		String selectedBrand = extras.getString("selectedBrand");
+		SELECTED_BRAND = selectedBrand;
+		
+		// call AsynTask to perform network operation on separate thread
+        new HttpAsyncTask().execute("http://www.smokesignal.co.ke/mobile_trolley_app/getshopsbranches.php");
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		
+        
+		@Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "Received Shop Branchess!", Toast.LENGTH_LONG).show();
+            
+	        try {
+	        	
+	        	
+	        	
+	        	ArrayList<String>  BRANCHLIST= new ArrayList<String>();
+	        	JSONArray jsonArr = new JSONArray(result);
+	        	
+				for(int i = 0; i < jsonArr.length(); i++){
+					JSONObject jsonObj = jsonArr.getJSONObject(i); 
+					//String shopid = jsonObj.getString("id");
+					String branchtitle = jsonObj.getString("title");
+					BRANCHLIST.add(branchtitle);
+				}
+				
+				ListView listView = getListView();
+				listView.setDivider(new ColorDrawable(0xFF255505));   //0xAARRGGBB
+				listView.setDividerHeight(1);
+				
+				TextView pagetitle = new TextView(ListShopsBranchesActivity.this);
+				pagetitle.setBackgroundColor(0xFF255505);
+				pagetitle.setTextColor(0xFF000000);
+				pagetitle.setPadding(20,10,20,10);
+				pagetitle.setTextSize(20);
+				pagetitle.setText(SELECTED_BRAND);
+				listView.addHeaderView(pagetitle,null,false);
+				
+				ArrayAdapter mAdapter = new ArrayAdapter<String>(ListShopsBranchesActivity.this, R.layout.activity_list_shops_branches,BRANCHLIST);
+	    		setListAdapter(new ArrayAdapter<String>(ListShopsBranchesActivity.this, R.layout.activity_list_shops_branches,BRANCHLIST));
+	     
+	    		listView.setTextFilterEnabled(true);
+	     
+	    		listView.setOnItemClickListener(new OnItemClickListener() {
+	    			public void onItemClick(AdapterView<?> parent, View view,
+	    					int position, long id) {
+	    			    // When clicked, show a toast with the TextView text
+	    			    Toast.makeText(getApplicationContext(),
+	    				((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+	    			    
+	    			    String selectedBranch = ((TextView) view).getText().toString();
+	    			    
+	    			    Intent intent = new Intent(ListShopsBranchesActivity.this, ListShopsAislesActivity.class);
+	    	    		intent.putExtra("selectedBranch", selectedBranch);
+	    	    	    startActivity(intent);
+	    			}
+	    		});
+	    		
+				
+			}catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+       }
+    }
+	
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("brand",SELECTED_BRAND));
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            HttpResponse response = httpclient.execute(httppost);
+            inputStream = response.getEntity().getContent();
+ 
+            // make GET request to the given URL
+            //HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+ 
+            // receive response as inputStream
+            //inputStream = httpResponse.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+}

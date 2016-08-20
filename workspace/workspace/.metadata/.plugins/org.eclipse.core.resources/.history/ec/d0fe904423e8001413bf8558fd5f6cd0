@@ -1,0 +1,810 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class ActivityListProducts extends Activity {
+	
+	SQLiteDatabase nunuaRahaDatabase;
+	public static final String MY_SESSION = "mySession";
+	SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+	Gson gson;
+	
+	ArrayList<RequestedResults> PRODUCTSBRANDSLIST;
+	AdapterProducts myadapter;
+
+	ArrayList<RequestedResultsSimpleList> AISLELIST;
+	AdapterMenu menuadapter;
+	
+	LinearLayout layout_progressbar;
+	RelativeLayout headersection;
+	RelativeLayout footersection;
+	LinearLayout listViewCont;
+	LinearLayout rlMenu;
+	ListView listView;
+	ListView menuListView;
+	public static String SELECTED_PRODUCT_ID;
+	public static String SELECTED_PRODUCT_TITLE;
+	public static String SELECTED_AISLE_ID;
+	public static String SELECTED_AISLE_TITLE;
+	public static String SELECTED_BRANCH_ID;
+	public static String SELECTED_BRANCH_TITLE;
+	public static String SELECTED_BRAND_ID;
+	public static String SELECTED_BRAND_TITLE;
+	public static String SELECTED_BRAND_LOGO;
+	public static String SELECTED_LOCATION_ID;
+	public static String SELECTED_LOCATION_TITLE;
+	public static String SELECTED_OUTLET_ID;
+	public static String SELECTED_OUTLET_TITLE;
+	public static String PREVGOODSLISTID;
+	public static String PREVGOODSLISTTITLE;
+	public static String NEXTGOODSLISTID;
+	public static String NEXTGOODSLISTTITLE;
+	public static Integer CURRENT_GOODS_LIST_ID_POSITION;
+	public static Integer PREV_GOODS_LIST_ID_POSITION;
+	public static Integer NEXT_GOODS_LIST_ID_POSITION;
+	public static Integer CURRENT_AISLE_ID_POSITION;
+	Typeface EkMukta_Light;
+	TextView app_name;
+	TextView previousListLink;
+	TextView headerText;
+	Button shoppingButton;
+	Button homeButton;
+	Button accountButton;
+	Button cartButton;
+	TextView cartButtonNotification;
+	Button prev;
+	Button next;
+	TextView aisleTitle;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.products_scroller);
+		listView = (ListView) findViewById(R.id.productsListView);
+		menuListView = (ListView) findViewById(R.id.menuListView);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+	    headersection = (RelativeLayout) findViewById(R.id.header);
+	    footersection = (RelativeLayout) findViewById(R.id.footer);
+	    listViewCont = (LinearLayout) findViewById(R.id.listViewCont);
+	    rlMenu = (LinearLayout) findViewById(R.id.menuListViewCont);
+	    sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+	    gson = new Gson();
+		EkMukta_Light = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+  		app_name = (TextView) findViewById(R.id.app_name);
+		headerText = (TextView) findViewById(R.id.headerText);
+		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+  		homeButton = (Button) findViewById(R.id.homeButton);
+  		accountButton = (Button) findViewById(R.id.accountButton);
+  		cartButton = (Button) findViewById(R.id.cartButton);
+  		cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+		prev = (Button) findViewById(R.id.arrowPrev);
+		next = (Button) findViewById(R.id.arrowNext);
+		aisleTitle = (TextView) findViewById(R.id.aisleTitle);
+		
+
+  		//SET TEXT, APPLY FONTS, SETONCLICKLISTENERS
+  		new ApplyViewParamsTask().execute();
+  		
+  		new ScrollAcrossAislesTask().execute();
+  		
+  		//MENU LIST VIEW
+  		new retrieveFromDBTask().execute();
+        AISLELIST = new ArrayList<RequestedResultsSimpleList>();
+		menuadapter = new AdapterMenu(ActivityListProducts.this, AISLELIST,EkMukta_Light);
+		menuListView.setAdapter(menuadapter);
+		new TopMenuTask().execute();
+
+  		
+  		//LIST VIEW
+        new HttpAsyncTask().execute("http://www.smokesignal.co.ke/mobile_trolley_app/ActivityListProducts.php");
+  		PRODUCTSBRANDSLIST = new ArrayList<RequestedResults>();
+		myadapter = new AdapterProducts(ActivityListProducts.this, PRODUCTSBRANDSLIST,cartButtonNotification, layout_progressbar);
+		listView.setAdapter(myadapter);
+        listView.setDividerHeight(0); 
+	}
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();  // Always call the superclass method first
+		myadapter = new AdapterProducts(ActivityListProducts.this, PRODUCTSBRANDSLIST,cartButtonNotification, layout_progressbar);
+		listView.setAdapter(myadapter);
+		myadapter.notifyDataSetChanged();
+		
+		menuadapter = new AdapterMenu(ActivityListProducts.this, AISLELIST,EkMukta_Light);
+		menuListView.setAdapter(menuadapter);
+		menuadapter.notifyDataSetChanged();
+	}
+	
+	private class retrieveFromDBTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        listView.setVisibility(View.GONE);
+	        menuListView.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+        	layout_progressbar.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            myadapter.notifyDataSetChanged();
+            menuListView.setVisibility(View.VISIBLE);
+            menuadapter.notifyDataSetChanged();
+            //super.onPostExecute();
+            
+            Map<String, Integer> cartUnitList = new HashMap<String, Integer>();
+            if(sharedPreferences.contains("myTrolley")) {
+                String getCartList = sharedPreferences.getString("myTrolley", null);
+                Gson gson = new Gson();
+                List[] jsonCartList = gson.fromJson(getCartList,List[].class);
+                List<List> getjsonCartListCont = Arrays.asList(jsonCartList);
+                
+                Object getObject = getjsonCartListCont.get(0);
+                ArrayList<?> cartList = (ArrayList<?>) getObject;
+                
+                for(int i = 0; i < cartList.size(); i++){
+                	Object cartItem = cartList.get(i);
+                	ArrayList<?> cartItemInfo = (ArrayList<?>) cartItem;
+                	String item_id = cartItemInfo.get(0).toString();
+                	
+                	Integer units = 1;
+                	if(cartUnitList.containsKey(item_id)){
+                		units = cartUnitList.get(item_id);
+                		units++;
+                	}
+                	cartUnitList.put(item_id, units);
+                }
+            }
+            
+	    	nunuaRahaDatabase = openOrCreateDatabase("nunuaRahaDatabase",MODE_PRIVATE,null);
+	    	
+	    	Cursor resultsStockCursor = nunuaRahaDatabase.rawQuery("SELECT * FROM hdjgf_shops_stocks WHERE branch_id = "+SELECTED_BRANCH_ID+" AND aisle_id = "+SELECTED_AISLE_ID+" AND product_id = "+SELECTED_PRODUCT_ID,null);
+	    	resultsStockCursor.moveToFirst();
+	    	String stock_id = resultsStockCursor.getString(0);
+	    	
+	    	
+	    	Cursor resultsProductsCursor = nunuaRahaDatabase.rawQuery("SELECT * FROM hdjgf_shops_stocks_brands WHERE stock_id = "+stock_id,null);
+	    	resultsProductsCursor.moveToFirst();
+        	String[] list_item_ids = new String[resultsProductsCursor.getCount()];
+			String[] list_item_titles = new String[resultsProductsCursor.getCount()];
+			
+			int k = 0;
+	    	while (resultsProductsCursor.isAfterLast() == false) {
+				String item_id = resultsProductsCursor.getString(0);
+				String item_title = resultsProductsCursor.getString(1);
+				String item_size = resultsProductsCursor.getString(2);
+				String item_price = resultsProductsCursor.getString(3);
+				String item_thumbnail_url = resultsProductsCursor.getString(4);
+				
+				Integer item_units_in_cart = 0;
+				if(!cartUnitList.isEmpty()){
+					item_units_in_cart = cartUnitList.get(item_id);
+				}
+				
+				list_item_ids[k] = item_id;
+				list_item_titles[k] = item_title;
+				
+				RequestedResults d = new RequestedResults();
+				
+				d.setId(item_id);
+				d.setTitle(item_title);
+			    d.setSize(item_size);
+			    d.setPrice(item_price);
+			    d.setThumbnailUrl("https://smokesignal.co.ke/mobiletrolley/img/uploads/" + item_thumbnail_url);
+			    d.setUnits(item_units_in_cart);
+				
+			    d.item_id = item_id;
+			    d.item_title = item_title;
+			    d.item_price = item_price;
+			    d.item_size = item_size;
+			    d.item_thumbnail_url = "https://smokesignal.co.ke/mobiletrolley/img/uploads/" + item_thumbnail_url;
+			    d.item_units_in_cart = item_units_in_cart;
+			    
+			    PRODUCTSBRANDSLIST.add(d);
+				
+	    	    k++;
+	    	    resultsProductsCursor.moveToNext();
+	    	}
+	    	
+	    	//GET AISLES LIST
+			if(sharedPreferences.contains("currentAisleListPosition")) {
+				CURRENT_AISLE_ID_POSITION = Integer.parseInt(sharedPreferences.getString("currentAisleListPosition", null));
+	        	
+	        	List[] jsonAislesList;
+	        	if(sharedPreferences.contains("ailsesIdList")) {
+	                String getAislesList = sharedPreferences.getString("ailsesIdList", null);
+	                Gson gson = new Gson();
+	                jsonAislesList = gson.fromJson(getAislesList,List[].class);
+	                List getjsonAislesListCont = Arrays.asList(jsonAislesList);
+	                
+	                Object getObject = getjsonAislesListCont.get(0);
+	                ArrayList aislesList = (ArrayList) getObject;
+	                
+	                
+	                TextView previousListLink = (TextView) findViewById(R.id.previousListLink);
+	                previousListLink.setText("Exit "+SELECTED_BRAND_TITLE+ " " +SELECTED_BRANCH_TITLE);
+	                
+	                for(int i = 0; i < aislesList.size(); i++){
+	                	Object aisleListObject = aislesList.get(i);
+	                	ArrayList aisleListInfo = (ArrayList) aisleListObject;
+	                	
+						String aisle_id = aisleListInfo.get(0).toString();
+						String aisle_title = aisleListInfo.get(1).toString();
+						
+						RequestedResultsSimpleList m = new RequestedResultsSimpleList();
+						
+						m.setId(aisle_id);
+						m.setTitle(aisle_title);
+						
+					    m.item_id = aisle_id;
+					    m.item_title = aisle_title;
+					    
+					    AISLELIST.add(m);
+					}
+	                
+	                //Log.i("selected item ", "aisle list -->" + aislesList);
+	        	}
+			}
+	    	
+	    }
+	    
+	 }
+	
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        listView.setVisibility(View.GONE);
+	        menuListView.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	
+        	layout_progressbar.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            myadapter.notifyDataSetChanged();
+            menuListView.setVisibility(View.VISIBLE);
+            menuadapter.notifyDataSetChanged();
+            super.onPostExecute(result);
+            
+            //Toast.makeText(getBaseContext(), SELECTED_AISLE_TITLE + "!", Toast.LENGTH_LONG).show();
+            
+            
+            Map<String, Integer> cartUnitList = new HashMap<String, Integer>();
+            
+            if(sharedPreferences.contains("myTrolley")) {
+                String getCartList = sharedPreferences.getString("myTrolley", null);
+                Gson gson = new Gson();
+                List[] jsonCartList = gson.fromJson(getCartList,List[].class);
+                List<List> getjsonCartListCont = Arrays.asList(jsonCartList);
+                
+                Object getObject = getjsonCartListCont.get(0);
+                ArrayList<?> cartList = (ArrayList<?>) getObject;
+                
+                for(int i = 0; i < cartList.size(); i++){
+                	Object cartItem = cartList.get(i);
+                	ArrayList<?> cartItemInfo = (ArrayList<?>) cartItem;
+                	String item_id = cartItemInfo.get(0).toString();
+                	
+                	Integer units = 1;
+                	if(cartUnitList.containsKey(item_id)){
+                		units = cartUnitList.get(item_id);
+                		units++;
+                	}
+                	cartUnitList.put(item_id, units);
+                }
+            }
+            
+	        try {
+				JSONArray jsonArr = new JSONArray(result);
+	        	String[] list_item_ids = new String[jsonArr.length()];
+				String[] list_item_titles = new String[jsonArr.length()];
+	        	
+				for(int i = 0; i < jsonArr.length(); i++){
+					JSONObject jsonObj = jsonArr.getJSONObject(i); 
+					String item_id = jsonObj.getString("id");
+					String item_title = jsonObj.getString("title");
+					String item_size = jsonObj.getString("size");
+					String item_price = jsonObj.getString("price");
+					String item_thumbnail_url = jsonObj.getString("image");
+					
+					Integer item_units_in_cart = 0;
+					if(!cartUnitList.isEmpty()){
+						item_units_in_cart = cartUnitList.get(item_id);
+					}
+					
+					list_item_ids[i] = item_id;
+					list_item_titles[i] = item_title;
+					
+					RequestedResults d = new RequestedResults();
+					
+					d.setId(item_id);
+					d.setTitle(item_title);
+				    d.setSize(item_size);
+				    d.setPrice(item_price);
+				    d.setThumbnailUrl("https://smokesignal.co.ke/mobiletrolley/img/uploads/" + item_thumbnail_url);
+				    d.setUnits(item_units_in_cart);
+					
+				    d.item_id = item_id;
+				    d.item_title = item_title;
+				    d.item_price = item_price;
+				    d.item_size = item_size;
+				    d.item_thumbnail_url = "https://smokesignal.co.ke/mobiletrolley/img/uploads/" + item_thumbnail_url;
+				    d.item_units_in_cart = item_units_in_cart;
+				    
+				    PRODUCTSBRANDSLIST.add(d);
+				}
+				
+				
+			}catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
+	        //GET AISLES LIST
+			if(sharedPreferences.contains("currentAisleListPosition")) {
+				CURRENT_AISLE_ID_POSITION = Integer.parseInt(sharedPreferences.getString("currentAisleListPosition", null));
+	        	
+	        	List[] jsonAislesList;
+	        	if(sharedPreferences.contains("ailsesIdList")) {
+	                String getAislesList = sharedPreferences.getString("ailsesIdList", null);
+	                Gson gson = new Gson();
+	                jsonAislesList = gson.fromJson(getAislesList,List[].class);
+	                List getjsonAislesListCont = Arrays.asList(jsonAislesList);
+	                
+	                Object getObject = getjsonAislesListCont.get(0);
+	                ArrayList aislesList = (ArrayList) getObject;
+	                
+	                
+	                TextView previousListLink = (TextView) findViewById(R.id.previousListLink);
+	                previousListLink.setText("Exit "+SELECTED_BRAND_TITLE+ " " +SELECTED_BRANCH_TITLE);
+	                
+	                for(int i = 0; i < aislesList.size(); i++){
+	                	Object aisleListObject = aislesList.get(i);
+	                	ArrayList aisleListInfo = (ArrayList) aisleListObject;
+	                	
+						String aisle_id = aisleListInfo.get(0).toString();
+						String aisle_title = aisleListInfo.get(1).toString();
+						
+						RequestedResultsSimpleList m = new RequestedResultsSimpleList();
+						
+						m.setId(aisle_id);
+						m.setTitle(aisle_title);
+						
+					    m.item_id = aisle_id;
+					    m.item_title = aisle_title;
+					    
+					    AISLELIST.add(m);
+					}
+	                
+	                //Log.i("selected item ", "aisle list -->" + aislesList);
+	        	}
+			}
+			
+       }
+    
+        
+        @Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+	}
+	
+	private class ScrollAcrossAislesTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+	    	//GET NEXT AND PREVIOUS ITEMS IDS
+	        if(sharedPreferences.contains("currentGoodsListPosition")) {
+	    		CURRENT_GOODS_LIST_ID_POSITION = Integer.parseInt(sharedPreferences.getString("currentGoodsListPosition", null));
+	        	
+	        	List[] jsonGoodsList;
+	        	if(sharedPreferences.contains("goodsIdList")) {
+	                String getGoodsList = sharedPreferences.getString("goodsIdList", null);
+	                Gson gson = new Gson();
+	                jsonGoodsList = gson.fromJson(getGoodsList,List[].class);
+	                List getjsonGoodsListCont = Arrays.asList(jsonGoodsList);
+	                
+	                Object getObject = getjsonGoodsListCont.get(0);
+	                ArrayList goodsList = (ArrayList) getObject;
+	                
+	                Log.i("selected item ", "next id -->" + goodsList);
+	                
+	                
+	                //=======================PREVIOUS PARAMETERS==============================//
+	            	PREV_GOODS_LIST_ID_POSITION = CURRENT_GOODS_LIST_ID_POSITION;
+	            	if(CURRENT_GOODS_LIST_ID_POSITION > 0){
+	            		PREV_GOODS_LIST_ID_POSITION = CURRENT_GOODS_LIST_ID_POSITION - 1;
+	            		prev.setOnClickListener(new View.OnClickListener() {
+	        	            public void onClick(View v) {
+	        					//SET THE NEW CURRENT POSITION AS THE PREVIOUS THAT HAS JUST BEEN CLICKED
+	        		    		SharedPreferences.Editor editor = sharedPreferences.edit();
+	        		            editor.putString("currentGoodsListPosition",String.valueOf(PREV_GOODS_LIST_ID_POSITION));
+	        		            editor.commit();
+	        	            	
+	        	            	Intent intent = new Intent(ActivityListProducts.this, ActivityListProducts.class);
+	        		    		intent.putExtra("selectedProductId", PREVGOODSLISTID);
+	        		    		intent.putExtra("selectedProductTitle", PREVGOODSLISTTITLE);
+	        		    	    startActivity(intent);
+	        	            }
+	        	        });
+	            	}else{
+	            		prev.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_arrow_left, 0, 0, 0); //Make arrow inactive
+	            		
+	            	}
+	            	Object prevGoodsListOject = goodsList.get(PREV_GOODS_LIST_ID_POSITION);
+	            	ArrayList prevGoodsListInfo = (ArrayList) prevGoodsListOject;
+	                PREVGOODSLISTID = prevGoodsListInfo.get(0).toString();
+	                PREVGOODSLISTTITLE = prevGoodsListInfo.get(1).toString();
+	                Log.i("selected item ", "Prev List Title -->" + PREVGOODSLISTTITLE);
+	                
+	                
+	                
+	                //======================NEXT PARAMETERS=====================================//
+	                NEXT_GOODS_LIST_ID_POSITION = CURRENT_GOODS_LIST_ID_POSITION;
+	            	if(CURRENT_GOODS_LIST_ID_POSITION < goodsList.size() - 1){
+	            		NEXT_GOODS_LIST_ID_POSITION = CURRENT_GOODS_LIST_ID_POSITION + 1;
+	            		next.setOnClickListener(new View.OnClickListener() {
+	        	            public void onClick(View v) {
+	        	            	//SET THE NEW CURRENT POSITION AS THE NEXT THAT HAS JUST BEEN CLICKED
+	        		    		SharedPreferences.Editor editor = sharedPreferences.edit();
+	        		            editor.putString("currentGoodsListPosition",String.valueOf(NEXT_GOODS_LIST_ID_POSITION));
+	        		            editor.commit();
+	        	            	
+	        	            	Intent intent = new Intent(ActivityListProducts.this, ActivityListProducts.class);
+	        		    		
+	        		    		intent.putExtra("selectedProductId", NEXTGOODSLISTID);
+	        		    		intent.putExtra("selectedProductTitle", NEXTGOODSLISTTITLE);
+	        		    	    startActivity(intent);
+	        	            }
+	        	        });
+	            	}else{
+	            		next.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0); //Make arrow inactive
+	            	}
+	            	Object nextGoodsListOject = goodsList.get(NEXT_GOODS_LIST_ID_POSITION);
+	            	ArrayList nextGoodsListInfo = (ArrayList) nextGoodsListOject;
+	            	NEXTGOODSLISTID = nextGoodsListInfo.get(0).toString();
+	            	NEXTGOODSLISTTITLE = nextGoodsListInfo.get(1).toString();
+	                Log.i("selected item ", "next list title -->" + NEXTGOODSLISTTITLE);
+	                
+	            }
+	        	
+	        }
+	    }
+	    
+	}
+	
+	private class TopMenuTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+	    	//MENU
+	  		final LinearLayout rlMenu = (LinearLayout) findViewById(R.id.menuListViewCont);
+	  		rlMenu.setVisibility(View.INVISIBLE);
+	        ImageView menuIcon  = (ImageView) findViewById(R.id.menu_icon);
+	        menuIcon.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	if (rlMenu.getVisibility() == View.VISIBLE) {
+	            		rlMenu.setVisibility(View.INVISIBLE);
+	                    overridePendingTransition(R.anim.slide_in_right_to_left, R.anim.slide_out_left_to_right);
+	            	} else {
+	            		rlMenu.setVisibility(View.VISIBLE);
+	                    overridePendingTransition(R.anim.slide_out_left_to_right, R.anim.slide_in_right_to_left);
+	            	}
+	                
+	            }
+	        });
+
+	        menuListView.setTextFilterEnabled(true);
+	 		menuListView.setOnItemClickListener(new OnItemClickListener() {
+	 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	 				layout_progressbar.setVisibility(View.VISIBLE);
+	 				
+	 			    RequestedResultsSimpleList  item = (RequestedResultsSimpleList) menuListView.getItemAtPosition(position);
+	 			    
+	 			    sharedPreferences = getSharedPreferences(MY_SESSION,MODE_PRIVATE);
+	 	    		SharedPreferences.Editor editor = sharedPreferences.edit();
+	 	            editor.putString("currentAisleListPosition",String.valueOf(position));
+	 	            editor.putString("selectedAisle",item.item_title);
+	 	            editor.putString("selectedAisleId",item.item_id);
+	 	            editor.commit();
+	 	            
+	 			    Intent intent = new Intent(ActivityListProducts.this, ActivityListGoods.class);
+	 	    	    startActivity(intent);
+	 			}
+	 		});
+	    }
+	    
+	 }
+	
+	private class ApplyViewParamsTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+	    	SELECTED_OUTLET_ID = sharedPreferences.getString("selectedOutletId", null);
+		    SELECTED_OUTLET_TITLE = sharedPreferences.getString("selectedOutlet", null);
+		    SELECTED_LOCATION_ID = sharedPreferences.getString("selectedLocationId", null);
+			SELECTED_LOCATION_TITLE = sharedPreferences.getString("selectedLocation", null);
+			SELECTED_BRAND_ID = sharedPreferences.getString("selectedBrandId", null);
+			SELECTED_BRAND_TITLE = sharedPreferences.getString("selectedBrand", null);
+			SELECTED_BRAND_LOGO = sharedPreferences.getString("selectedBrandLogo", null);
+			SELECTED_BRANCH_ID = sharedPreferences.getString("selectedBranchId", null);
+			SELECTED_BRANCH_TITLE = sharedPreferences.getString("selectedBranch", null);
+			SELECTED_AISLE_ID = sharedPreferences.getString("selectedAisleId", null);
+			SELECTED_AISLE_TITLE = sharedPreferences.getString("selectedAisle", null);
+			Bundle extras = getIntent().getExtras();
+			SELECTED_PRODUCT_ID = extras.getString("selectedProductId");
+			SELECTED_PRODUCT_TITLE = extras.getString("selectedProductTitle");
+			app_name.setTypeface(EkMukta_Light);
+	    	headerText.setText(SELECTED_BRANCH_TITLE);
+			aisleTitle.setText(SELECTED_AISLE_TITLE+" : "+SELECTED_PRODUCT_TITLE);
+		    
+			//ADD BRAND LOGO
+	    	footersection.setVisibility(View.VISIBLE);
+	    	ImageView logoview = (ImageView) findViewById(R.id.shopLogo);
+			Bitmap logo = null;
+			try {
+				logo = new DownloadImageTask(logoview).execute(SELECTED_BRAND_LOGO).get();
+				logoview.setImageBitmap(logo); 
+				//headersection.addView(logoview); 
+				RelativeLayout.LayoutParams logoParams = (RelativeLayout.LayoutParams) logoview.getLayoutParams();
+				logoParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+				logoParams.addRule(RelativeLayout.CENTER_VERTICAL);
+				logoview.setLayoutParams(logoParams);
+			} catch (InterruptedException | ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			
+	        
+	        //SET NOTIFICATION FOR THE NUMBER OF ITEMS CURRENTLY IN THE TROLLEY
+			if(sharedPreferences.contains("myTrolley")) {
+				String inMyTrolley = sharedPreferences.getString("myTrolley", null);
+				Gson gson = new Gson();
+				List[] jsonMyTrolley = gson.fromJson(inMyTrolley,List[].class);
+                List getjsonMyTrolley = Arrays.asList(jsonMyTrolley);
+                
+                Object getObject = getjsonMyTrolley.get(0);
+                ArrayList myTrolley = (ArrayList) getObject;
+                Integer numberOfItemsInMyTrolley = myTrolley.size();
+                cartButtonNotification.setText(numberOfItemsInMyTrolley.toString());
+                
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	//layout_progressbar.setVisibility(View.VISIBLE);
+    	            	Intent intent = new Intent(ActivityListProducts.this, ActivityMyCart.class);
+    		    	    startActivity(intent);
+    	                
+    	            }
+    	        });
+			}else{
+				if(cartButtonNotification.getText() != "0"){
+					cartButton.setOnClickListener(new View.OnClickListener() {
+	    	            @Override
+	    	            public void onClick(View v) {
+	    	            	//layout_progressbar.setVisibility(View.VISIBLE);
+	    	            	Intent intent = new Intent(ActivityListProducts.this, ActivityMyCart.class);
+	    		    	    startActivity(intent);
+	    	                
+	    	            }
+	    	        });
+				}else{
+					cartButtonNotification.setText("0");
+	    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+	    	            @Override
+	    	            public void onClick(View v) {
+	    	            	Toast.makeText(getBaseContext(), "Your cart is empty!", Toast.LENGTH_LONG).show();
+	    	            }
+	    	        });
+				}
+			}
+			
+			//SET COLOR
+			shoppingButton.setTextColor(getResources().getColor(R.color.green));
+
+	  		//SET ONCLICKLISTENER=
+	  		homeButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	//layout_progressbar.setVisibility(View.VISIBLE);
+	            	Intent intent = new Intent(ActivityListProducts.this, ActivityMain.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        }); 
+	  		
+	  		accountButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	//layout_progressbar.setVisibility(View.VISIBLE);
+	            	Intent intent = new Intent(ActivityListProducts.this, ActivityMyAccountLogin.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        }); 
+			
+	    }
+	 }
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("branch_id",SELECTED_BRANCH_ID));
+        nameValuePairs.add(new BasicNameValuePair("aisle_id",SELECTED_AISLE_ID));
+        nameValuePairs.add(new BasicNameValuePair("product_id",SELECTED_PRODUCT_ID));
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+
+	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            //bmImage.setImageBitmap(result);
+        }
+    }
+	
+	
+	
+	
+
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="black33">#33000000</color>
+    <color name="black66">#66000000</color>
+    <color name="black99">#99000000</color>
+    <color name="blackCC">#CC000000</color>
+    <color name="blackEE">#EE000000</color>
+    <color name="grey333">#333333</color>
+    <color name="greyEEE">#EEEEEE</color>
+    <color name="grey666">#666666</color>
+    <color name="greyCCC">#CCCCCC</color>
+    <color name="grey999">#999999</color>
+    <color name="white">#FFFFFF</color>
+	<color name="whitet">#99662D91</color>
+    <color name="lightgreen">#662D91</color>
+    <color name="green">#662D91</color>
+    <color name="darkgreen">#662D91</color>
+    <color name="text_shadow">#7F000000</color>
+    <color name="red">#FF0000</color>
+    <color name="blue">#3399cc</color>
+    <color name="purple">#662D91</color>
+    <color name="yellow">#ffde16</color>
+    <color name="bobgrey">#a7a9ac</color>
+	<color name="lightgrey">#f1f1f2</color>
+	<color name="e7e8e9">#e7e8e9</color>
+	<color name="col8965ab">#8965ab</color>
+	<color name="loginpopup">#c9cbcccc</color>
+	
+</resources>

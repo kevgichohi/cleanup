@@ -1,0 +1,213 @@
+package com.example.mobiletrolley;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.ListActivity;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class ListShopsBrandsActivity extends ListActivity {
+	
+	//get the passed parameter from the previous activity
+	public static String SELECTED_SHOP = "";
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+
+		Bundle extras = getIntent().getExtras();
+		String selectedShop = extras.getString("selectedShop");
+		SELECTED_SHOP = selectedShop;
+		
+		//Dynamically assign page title
+		Resources res = this.getResources();
+		String text = String.format(res.getString(R.string.title_activity_list_shops_brands), "Supermarkets");
+		//CharSequence styledText = Html.fromHtml(text);
+		
+		// call AsynTask to perform network operation on separate thread
+        new HttpAsyncTask().execute("http://www.smokesignal.co.ke/mobile_trolley_app/getshopsbrands.php");
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		
+        
+		@Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "Received Shop Brands!", Toast.LENGTH_LONG).show();
+            
+	        try {
+	        	
+	        	ListView listView = getListView();
+				listView.setDivider(new ColorDrawable(0xFF255505));   //0xAARRGGBB
+				listView.setDividerHeight(1);
+				
+				TextView pagetitle = new TextView(ListShopsBrandsActivity.this);
+				pagetitle.setBackgroundColor(0xFF255505);
+				pagetitle.setTextColor(0xFF000000);
+				pagetitle.setPadding(20,10,20,10);
+				pagetitle.setTextSize(20);
+				pagetitle.setText(SELECTED_SHOP);
+				listView.addHeaderView(pagetitle,null,false);
+	        	
+	        	JSONArray jsonArr = new JSONArray(result);
+	        	Object[] brandOject = new Object[jsonArr.length()];
+	        	ArrayList<Object>  BRANDLIST = new ArrayList<Object>(Arrays.asList(brandOject));
+	        	
+				for(int i = 0; i < jsonArr.length(); i++){
+					JSONObject jsonObj = jsonArr.getJSONObject(i); 
+					int item_id = Integer.parseInt(jsonObj.getString("id"));
+					String item_title = jsonObj.getString("title");
+					BRANDLIST.add(item_id,item_title);
+				}
+				
+
+	        	ArrayAdapter<Object> myAdapter = new ArrayAdapter<Object>(ListShopsBranchesActivity.this, R.layout.activity_list_shops_branches,BRANDLIST);
+	        	setListAdapter(myAdapter);
+	        	
+	        	ArrayList<String>  BRANDLIST= new ArrayList<String>();
+	        	JSONArray jsonArr = new JSONArray(result);
+	        	
+				for(int i = 0; i < jsonArr.length(); i++){
+					JSONObject jsonObj = jsonArr.getJSONObject(i); 
+					//String shopid = jsonObj.getString("id");
+					String brandtitle = jsonObj.getString("title");
+					BRANDLIST.add(brandtitle);
+				}
+				
+				ListView listView = getListView();
+				listView.setDivider(new ColorDrawable(0xFF255505));   //0xAARRGGBB
+				listView.setDividerHeight(1);
+				
+				TextView pagetitle = new TextView(ListShopsBrandsActivity.this);
+				pagetitle.setBackgroundColor(0xFF255505);
+				pagetitle.setTextColor(0xFF000000);
+				pagetitle.setPadding(20,10,20,10);
+				pagetitle.setTextSize(20);
+				pagetitle.setText(SELECTED_SHOP);
+				listView.addHeaderView(pagetitle,null,false);
+				
+	    		setListAdapter(new ArrayAdapter<String>(ListShopsBrandsActivity.this, R.layout.activity_list_shops_brands,BRANDLIST));
+	     
+	    		
+	    		listView.setTextFilterEnabled(true);
+	     
+	    		listView.setOnItemClickListener(new OnItemClickListener() {
+	    			public void onItemClick(AdapterView<?> parent, View view,
+	    					int position, long id) {
+	    			    // When clicked, show a toast with the TextView text
+	    			    Toast.makeText(getApplicationContext(),
+	    				((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+	    			    
+	    			    String selectedBrand = ((TextView) view).getText().toString();
+	    			    
+	    			    Intent intent = new Intent(ListShopsBrandsActivity.this, ListShopsBranchesActivity.class);
+	    	    		intent.putExtra("selectedBrand", selectedBrand);
+	    	    	    startActivity(intent);
+	    			}
+	    		});
+	    		
+				
+			}catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+       }
+    }
+	
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("shop",SELECTED_SHOP));
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            HttpResponse response = httpclient.execute(httppost);
+            inputStream = response.getEntity().getContent();
+ 
+            // make GET request to the given URL
+            //HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+ 
+            // receive response as inputStream
+            //inputStream = httpResponse.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    onBackPressed();
+	    return true;
+	}
+}

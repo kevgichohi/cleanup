@@ -1,0 +1,14 @@
+INDEX VERSION 1.126+C:\Users\valeriana.itenyo\workspace\.metadata\.plugins\org.eclipse.jdt.core
+678598959.index
+704015033.index
+848856923.index
+2018081289.index
+2035355586.index
+2863807870.index
+2367170898.index
+1284074322.index
+3880133408.index
+203589519.index
+3393806664.index
+715257351.index
+432054192.index

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainParent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+	    
+	<include 
+	    android:id="@+id/actionbar" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+    <include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_below="@+id/actionbar"
+        layout="@layout/global_quicklinks" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/quicklinks" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	  
+	
+	<!-- ============================================LISTVIEW=========================================== -->    
+    <RelativeLayout
+	  android:id="@+id/listViewCont"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+  	  android:layout_below="@+id/header"
+      android:gravity="center_horizontal"
+      android:orientation="vertical" >
+      
+	  <ListView
+        android:id="@+id/simpleListView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+   		android:divider="@null"
+   		android:dividerHeight="0dip" 
+   		android:clickable="true"
+		android:focusable="true"
+		android:focusableInTouchMode="true"/>
+    </RelativeLayout>
+      
+    <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_alignParentBottom="true"
+        layout="@layout/global_footer" />
+	  
+    <include android:id="@+id/loginForm" layout="@layout/login_form" />
+	  
+	<include android:id="@+id/ratingForm" layout="@layout/rating_form" />
+      
+	<include android:id="@+id/menuListViewCont" layout="@layout/global_main_nav" />
+     
+    <include android:id="@+id/progressbar_view" layout="@layout/global_progress_bar" />
+ 
+</RelativeLayout>

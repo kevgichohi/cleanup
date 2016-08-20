@@ -1,0 +1,22 @@
+e-fam 
+
+User: efamcom_trolley 
+Database: efamcom_mobiletrolley
+
+pass: 30aOub5Cg2
+
+
+efaminventory@gmail.com
+20efaminventory16
+
+keystore pass 1
+Efam2016
+
+key creation:
+
+alias: efam
+password: Efam2016
+first :efam
+city : Nairobi
+
+FTP Details

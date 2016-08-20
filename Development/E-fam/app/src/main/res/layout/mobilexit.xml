@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/lightgrey">
+	
+    <include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+          <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/actionbar"
+        layout="@layout/global_footer" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/footer" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+	
+	<!-- ============================================CONTENT=========================================== -->
+	<!-- <WebView
+	    android:id="@+id/paymentGateway"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" /> -->
+	
+	<LinearLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+   		android:layout_below="@+id/subHeader"
+	    android:orientation="vertical" >
+	    
+	    	  <ScrollView
+		android:id="@+id/ScrollView01"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@+id/header" >
+	    
+		  <LinearLayout android:layout_width="match_parent"
+			  android:layout_height="match_parent">
+			  
+		      <RelativeLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:layout_marginTop="10dp"
+		        android:layout_marginBottom="70dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_marginLeft="10dp"
+		        android:paddingTop="0dp"
+		        android:layout_gravity="left" >
+		        
+		          
+		          <RelativeLayout
+				    android:id="@+id/loadingPanel"
+				    android:layout_width="match_parent"
+				    android:layout_height="match_parent"
+				    android:gravity="center" 
+				    android:layout_marginTop="15dp"
+				    android:layout_marginBottom="15dp">
+				
+				    <ProgressBar
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:indeterminate="true" />
+				</RelativeLayout>
+
+
+      
+       	         <TextView
+    
+     android:id="@+id/mobilechargetoken"
+     android:layout_below="@+id/loadingPanel"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:textColor="@color/green"
+     android:layout_marginTop="15dp"
+     android:textSize="18sp"/>
+        
+	     </RelativeLayout>
+	   </LinearLayout>
+
+	  </ScrollView>
+	 
+	  	  </LinearLayout>
+<!--  include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        layout="@layout/global_quicklinks"-->
+     
+    <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+    
+</RelativeLayout>

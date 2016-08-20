@@ -1,0 +1,243 @@
+package com.redhering.nunuaraha;
+
+
+import java.util.ArrayList;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+ 
+@SuppressLint("InflateParams")
+public class AdapterSimpleList extends BaseAdapter {
+    private static ArrayList<RequestedResultsSimpleList> searchArrayList;
+    private LayoutInflater mInflater;
+    private Context context;
+    private Typeface font;
+    private String activityName; //instance variable
+    
+    SQLiteDatabase nunuaRahaDatabase;
+    
+    public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+ 
+    public AdapterSimpleList(Context ctx, ArrayList<RequestedResultsSimpleList> results, Typeface font) {
+        searchArrayList = results;
+        mInflater = LayoutInflater.from(ctx);
+        this.font = font;
+        context = ctx;
+        activityName = context.getClass().getSimpleName();
+        sharedPreferences = context.getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+    }
+    
+	public int getCount() {
+        return searchArrayList.size();
+    }
+ 
+    public Object getItem(int position) {
+        return searchArrayList.get(position);
+    }
+ 
+    public long getItemId(int position) {
+        return position;
+    }
+    
+    @Override
+    public boolean isEnabled(int position){
+    	return true;
+    }
+    
+   
+ 
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        String ActivityListOutlets = "ActivityStep01ListOutlets";
+        String ActivityListBranches = "ActivityStep04ListBranches";
+        String ActivityMyAddresses = "ActivityMyAccountAddresses";
+        String Activityneighbour = "ActivityStep03ListNeighbourhood";
+        
+        if (convertView == null) {
+        	if(activityName.equals(ActivityMyAddresses)){
+        		convertView = mInflater.inflate(R.layout.simple_listaddress, null);
+        		
+        	
+        		
+        		AdapterView<ListAdapter> listView;
+				// inflate other items here : 
+                /*Button deleteButton = (Button) convertView.findViewById(R.id.arrowRight);
+                 deleteButton.setTag(position);
+
+                deleteButton.setOnClickListener(
+                    new Button.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Integer index = (Integer) convertView.getTag();
+                            searchArrayList.remove(index.intValue());  
+                            notifyDataSetChanged();
+                        }
+                    });
+        		 */
+        		
+        	        // inflate other items here : 
+        	        Button deleteButton = (Button) convertView.findViewById(R.id.arrowRight);
+        	         deleteButton.setTag(position);
+
+        	        deleteButton.setOnClickListener(
+        	            new Button.OnClickListener() {
+        	                @Override
+        	                public void onClick(View v) {
+        	                    //View view = null;
+								//Integer index = (Integer) view.getTag();
+        	                	int pos = (int)v.getTag();
+        	                    searchArrayList.remove(pos);  
+        	                    
+        	                    nunuaRahaDatabase = openOrCreateDatabase("nunuaRahaDatabase",MODE_PRIVATE,null);
+        	                    nunuaRahaDatabase.delete("hdjgf_locations","id=?",new String[]{pos});
+        	                    
+        	                    notifyDataSetChanged();
+        	                
+        	                }
+        	            }
+        	        );
+        		
+        		
+        	}else if(activityName.equals(Activityneighbour)){
+        		convertView = mInflater.inflate(R.layout.simple_listneighbourhood, null);
+        	}
+        	
+        	else{
+        		convertView = mInflater.inflate(R.layout.simple_list, null);
+        	}
+            holder = new ViewHolder();
+            holder.title = (TextView) convertView.findViewById(R.id.mysimplelist);
+            
+            //Delivery charges view only appears on ActivityStep04ListBranches
+            /**if(activityName.equals(ActivityStep04ListBranches)){
+	            holder.deliverycharge = new TextView(context.getApplicationContext());
+	            ((ViewGroup) convertView).addView(holder.deliverycharge);
+	            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)holder.deliverycharge.getLayoutParams();
+	            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+	            params.addRule(RelativeLayout.RIGHT_OF, R.id.mysimplelist);
+	            params.addRule(RelativeLayout.LEFT_OF, R.id.arrowRight);
+	            holder.deliverycharge.setLayoutParams(params); //causes layout update
+            }**/
+            
+            if(activityName.equals(ActivityListOutlets) || activityName.equals(ActivityListBranches)){
+	            holder.currentSelection = new TextView(context.getApplicationContext());
+	            ((ViewGroup) convertView).addView(holder.currentSelection);
+	            RelativeLayout.LayoutParams currentSelectionParams = (RelativeLayout.LayoutParams)holder.currentSelection.getLayoutParams();
+	            currentSelectionParams.addRule(RelativeLayout.BELOW, R.id.mysimplelist);
+	            holder.currentSelection.setLayoutParams(currentSelectionParams); //causes layout update
+            }
+            
+ 
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+ 
+        holder.title.setText(searchArrayList.get(position).getTitle());
+        holder.title.setTypeface(font);
+        
+        //Delivery charges view only appears on ActivityStep04ListBranches
+        if(activityName.equals(ActivityListBranches)){
+        	/**String charges = searchArrayList.get(position).getDeliveryCharge();
+        	String freedelivery = "Free Delivery";
+        	holder.deliverycharge.setText(" - " + charges);
+    		holder.deliverycharge.setTypeface(font,Typeface.ITALIC);
+        	
+        	//Asigning text color based on the text info
+        	holder.deliverycharge.setTextColor(context.getResources().getColor(R.color.blue));
+        	if(charges.equals(freedelivery)){
+        		holder.deliverycharge.setTextColor(context.getResources().getColor(R.color.red));
+        	}**/
+        	
+        	if(sharedPreferences.contains("selectedBranchId") && sharedPreferences.contains("myTrolley")) {
+                String SELECTED_BRANCH_ID = sharedPreferences.getString("selectedBranchId", null);
+	        	if(SELECTED_BRANCH_ID.equals(searchArrayList.get(position).getId())){
+	            	holder.currentSelection.setText("(Your trolley is here)");
+	            	holder.currentSelection.setTypeface(font,Typeface.ITALIC);
+	            	holder.currentSelection.setTextColor(context.getResources().getColor(R.color.green));
+	            	holder.currentSelection.getLayoutParams().height = 30;
+	            }else{
+	            	holder.currentSelection.setText("");
+	            	holder.currentSelection.getLayoutParams().height = 0;
+	            }
+	        	Log.i("Current Branch --> "+SELECTED_BRANCH_ID, "This Branch --> " + searchArrayList.get(position).getId());
+        	}else{
+            	holder.currentSelection.setText("");
+            	holder.currentSelection.getLayoutParams().height = 0;
+            }
+        	
+        }
+        
+        if(activityName.equals(ActivityListOutlets)){
+        	if(sharedPreferences.contains("selectedOutletId") && sharedPreferences.contains("myTrolley")) {
+                String SELECTED_OUTLET_ID = sharedPreferences.getString("selectedOutletId", null);
+	        	if(SELECTED_OUTLET_ID.equals(searchArrayList.get(position).getId())){
+	            	holder.currentSelection.setText("(Your trolley is here)");
+	            	holder.currentSelection.setTypeface(font,Typeface.ITALIC);
+	            	holder.currentSelection.setTextColor(context.getResources().getColor(R.color.green));
+	            	holder.currentSelection.getLayoutParams().height = 30;
+	            	Log.i("Current Outlet --> "+SELECTED_OUTLET_ID, "This Outlet --> " + searchArrayList.get(position).getId());
+	            }else{
+	            	holder.currentSelection.setText("");
+	            	holder.currentSelection.getLayoutParams().height = 0;
+	            }
+        	}else{
+            	holder.currentSelection.setText("");
+            	holder.currentSelection.getLayoutParams().height = 0;
+            }
+        }
+        
+        //convertView.setClickable(true);
+        //convertView.setFocusable(true);
+        //convertView.setBackgroundResource(android.R.drawable.menuitem_background);
+        
+        
+        return convertView;
+    }
+ 
+    private Object getResources() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	static class ViewHolder {
+        public Object arrowRight;
+		TextView title;
+        TextView deliverycharge;
+        TextView currentSelection;
+        ImageView itemImage;
+    }
+    
+    
+    private Context getContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void remove(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+}

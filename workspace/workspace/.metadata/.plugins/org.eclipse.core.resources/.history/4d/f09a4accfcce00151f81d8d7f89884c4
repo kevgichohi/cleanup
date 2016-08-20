@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingBottom="10dip"
+    android:paddingLeft="10dip"
+    android:paddingTop="10dip"
+    android:gravity="left|center"
+    android:background="@drawable/customlistshape"
+	android:descendantFocusability="blocksDescendants"
+	android:focusable="false"
+	android:focusableInTouchMode="false" >
+    
+ 	
+    <TextView
+        android:id="@+id/mysimplelist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey666"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:capitalize="sentences"
+        android:gravity="left" />
+    
+    
+    <!-- Arrow Image -->
+    <ImageView
+        android:id="@+id/arrowRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_corner_right_bottom"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:clickable="false"
+		android:focusable="false"
+		android:focusableInTouchMode="false" />
+ 
+</RelativeLayout>

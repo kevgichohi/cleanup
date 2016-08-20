@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/quicklinks"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+	android:layout_below="@+id/actionbar"
+    android:layout_margin="0dp"
+    android:background="@drawable/custom_quicklinks_shape"
+    android:gravity="center" >
+    
+    <Button
+	    android:id="@+id/homeButton"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="5dp"
+	    android:paddingLeft="0dp"
+	    android:paddingRight="0dp"
+	    android:text="Home"
+	    android:textSize="12sp"
+	    android:textColor="@color/grey999"
+	    android:fontFamily="roboto-regular" 
+	    android:drawableTop="@drawable/ic_home_green"
+	    android:background="@drawable/selector"/>
+    
+    <Button
+	    android:id="@+id/accountButton"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/homeButton"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="5dp"
+	    android:paddingLeft="0dp"
+	    android:paddingRight="0dp"
+	    android:text="Account"
+	    android:textSize="12sp"
+	    android:textColor="@color/grey999"
+	    android:fontFamily="roboto-regular" 
+	    android:drawableTop="@drawable/ic_account_green"
+	    android:background="@drawable/selector"/>
+    
+    <Button
+	    android:id="@+id/shoppingButton"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/accountButton"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="5dp"
+	    android:paddingLeft="0dp"
+	    android:paddingRight="0dp"
+	    android:text="Shop"
+	    android:textSize="12sp"
+	    android:textColor="@color/grey999"
+	    android:fontFamily="roboto-regular" 
+	    android:drawableTop="@drawable/shopping_bag_green"
+	    android:background="@drawable/selector"/>
+    
+    <RelativeLayout
+	    android:id="@+id/cartButtonCont"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_toRightOf="@+id/shoppingButton"
+	    android:padding="0dp"
+	    android:gravity="center" >
+	    
+	    <Button
+		    android:id="@+id/cartButton"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+		    android:text="Cart"
+		    android:textSize="12sp"
+	    	android:textColor="@color/grey999"
+		    android:fontFamily="roboto-regular" 
+		    android:drawableTop="@drawable/ic_cart_green"
+	    	android:background="@drawable/selector"/>
+	    
+	    <TextView
+	        android:id="@+id/cartButtonNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+    		android:layout_alignParentRight="true"
+    		android:layout_marginRight="10dp"
+    		android:paddingLeft="5dp"
+    		android:paddingRight="5dp"
+    		android:paddingTop="0dp"
+    		android:paddingBottom="0dp"
+            android:background="@color/red"
+            android:textColor="@color/white"/>
+	 </RelativeLayout>
+    
+</RelativeLayout> 

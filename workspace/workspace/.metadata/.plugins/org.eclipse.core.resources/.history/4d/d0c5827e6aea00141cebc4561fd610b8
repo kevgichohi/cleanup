@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+	
+    <include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+    <include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_below="@+id/actionbar"
+        layout="@layout/global_quicklinks" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/quicklinks" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+	
+	<!-- ============================================CONTENT=========================================== -->
+	<ScrollView
+		android:id="@+id/ScrollView01"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@+id/subHeader" >
+	    
+		  <LinearLayout android:layout_width="match_parent"
+			  android:layout_height="match_parent">
+		      <RelativeLayout
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:gravity="left"
+		        android:orientation="vertical"
+		        android:layout_marginTop="10dp"
+		        android:layout_marginBottom="20dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_marginLeft="10dp"
+		        android:paddingTop="0dp" >
+			    
+			    <TextView
+				    android:id="@+id/nameLabel"
+				    android:layout_width="150dp"
+				    android:layout_height="wrap_content"
+			      	android:text="Name: "
+			      	android:textSize="14sp"
+			      	android:textStyle="bold" />
+			    
+			    <TextView
+				    android:id="@+id/userName"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+		        	android:layout_toRightOf="@+id/nameLabel"
+			      	android:textSize="14sp"
+			      	android:textStyle="italic" />
+			    
+			    <TextView
+				    android:id="@+id/emailLabel"
+				    android:layout_width="150dp"
+				    android:layout_height="wrap_content"
+		        	android:layout_below="@+id/nameLabel"
+			      	android:text="Email: "
+			      	android:textSize="14sp"
+			      	android:textStyle="bold" />
+			    
+			    <TextView
+				    android:id="@+id/email"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+		        	android:layout_toRightOf="@+id/emailLabel"
+		        	android:layout_below="@+id/userName"
+			      	android:textSize="14sp"
+			      	android:textStyle="italic" />
+			    
+			    <TextView
+				    android:id="@+id/phoneLabel"
+				    android:layout_width="150dp"
+				    android:layout_height="wrap_content"
+		        	android:layout_below="@+id/emailLabel"
+			      	android:text="Phone: "
+			      	android:textSize="14sp"
+			      	android:textStyle="bold" />
+			    
+			    <TextView
+				    android:id="@+id/phone"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+		        	android:layout_toRightOf="@+id/phoneLabel"
+		        	android:layout_below="@+id/emailLabel"
+			      	android:textSize="14sp"
+			      	android:textStyle="italic" />
+			    
+			    <TextView
+			      android:id="@+id/deliveryLocationLabel"
+				  android:layout_width="150dp"
+			      android:layout_height="wrap_content"
+		          android:layout_below="@+id/phoneLabel"
+			      android:text="Delivery Location : "
+			      android:textSize="14sp"
+			      android:textStyle="bold"/>
+			    
+			    <TextView
+			      android:id="@+id/deliveryLocation"
+			      android:layout_width="wrap_content"
+			      android:layout_height="wrap_content"
+		          android:layout_below="@+id/phoneLabel"
+		          android:layout_toRightOf="@+id/deliveryLocationLabel"
+			      android:text="Location"
+			      android:textSize="14sp"
+				  android:textStyle="italic"/>
+			    
+			    <EditText
+				    android:id="@+id/directions"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+		        	android:layout_below="@+id/deliveryLocationLabel"
+				    android:hint="Briefly explain the direction to your residence"
+				    android:inputType="text|textMultiLine"
+			      	android:textSize="14sp"
+			      	android:textStyle="italic" 
+			      	android:minLines="3"/>
+			    
+			    <Button
+			        android:id="@+id/checkout"
+			      	android:layout_width="wrap_content"
+			        android:layout_height="30dp"
+		        	android:layout_alignParentLeft="true"
+		        	android:layout_below="@+id/directions"
+		        	android:layout_marginTop="10dp" 
+			        android:paddingBottom="0dip"
+				    android:paddingLeft="10dip"
+				    android:paddingRight="10dip"
+				    android:paddingTop="0dip"
+			        android:text="Proceed to checkout"
+			      	android:textSize="16sp"
+			      	android:textColor="@color/white"
+			      	android:shadowColor="@color/text_shadow"
+		          	android:shadowDx="1"
+		          	android:shadowDy="1"
+		          	android:shadowRadius="1"
+			      	android:background="@drawable/customgreenbuttonshape" />
+		      </RelativeLayout>
+	  	  </LinearLayout>
+	</ScrollView>
+	
+	<!-- ============================================RECEIPT=========================================== -->
+	<RelativeLayout
+	   android:id="@+id/receipt"
+	   android:layout_width="match_parent"
+	   android:layout_height="wrap_content"
+   	   android:layout_below="@+id/ScrollView01"
+	   android:background="@drawable/custompagesubtitleshape"
+	   android:gravity="left" >
+	
+	   <TextView
+	     android:id="@+id/receiptHeaderText"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:textColor="@color/grey333"
+	     android:textSize="14sp"
+	     android:textAllCaps="true" />
+	   
+	 </RelativeLayout>
+	
+	<include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_alignParentBottom="true"
+        layout="@layout/global_footer" />
+      
+	<include 
+	    android:id="@+id/menuListViewCont" 
+   		android:layout_width="250dp"
+   		android:layout_height="match_parent"
+   		android:layout_below="@+id/actionbar"
+	    layout="@layout/global_main_nav" />
+     
+    <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+    
+</RelativeLayout>

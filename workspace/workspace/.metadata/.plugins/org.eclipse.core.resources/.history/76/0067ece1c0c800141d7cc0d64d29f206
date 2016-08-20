@@ -1,0 +1,364 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+
+
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class ActivityShopperDetails extends Activity {
+	
+	LinearLayout layout;
+	RelativeLayout headersection;
+	
+	public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    
+    public static Integer TOTAL = 0;
+
+	public static String SELECTED_BRANCH_ID;
+	public static String SELECTED_BRANCH_TITLE;
+	public static String SELECTED_BRAND_ID;
+	public static String SELECTED_BRAND_TITLE;
+	public static String SELECTED_BRAND_LOGO;
+	public static String SELECTED_LOCATION;
+	
+	TextView breadcrumb;
+	TextView headerText;
+	TextView subTotal;
+	TextView subTotalLabel;
+	TextView firstName;
+	TextView lastName;
+	TextView emailAddress;
+	TextView phoneNumber;
+	TextView getCode;
+	TextView verifyNumberExplain;
+	TextView verifyCode;
+	TextView locationLabel;
+	TextView location;
+	TextView direction;
+	Button checkout;
+	Button clearcart;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.checkout);
+	    layout = (LinearLayout) findViewById(R.id.progressbar_view);
+	    headersection = (RelativeLayout) findViewById(R.id.header);
+	    sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+
+	    Bundle extras = getIntent().getExtras();
+	    
+		String selectedBranchId = extras.getString("selectedBranchId");
+		SELECTED_BRANCH_ID = selectedBranchId;
+		
+		String selectedBranchTitle = extras.getString("selectedBranchTitle");
+		SELECTED_BRANCH_TITLE = selectedBranchTitle;
+		
+		String selectedBrandId = extras.getString("selectedBrandId");
+		SELECTED_BRAND_ID = selectedBrandId;
+		
+		String selectedBrandTitle = extras.getString("selectedBrandTitle");
+		SELECTED_BRAND_TITLE = selectedBrandTitle;
+		
+		String selectedBrandLogo = extras.getString("selectedBrandLogo");
+		SELECTED_BRAND_LOGO = selectedBrandLogo;
+		
+		String totalPrice = extras.getString("totalPrice");
+		TOTAL = Integer.parseInt(totalPrice);
+		
+		SELECTED_LOCATION = sharedPreferences.getString("selectedLocation", null);
+
+		
+	    //FONTS
+  		Typeface EkMukta_Light = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+  		
+  		//APP NAME
+  		TextView app_name = (TextView) findViewById(R.id.app_name);
+		app_name.setTypeface(EkMukta_Light);
+		
+		//MENU
+  		final LinearLayout rlMenu = (LinearLayout) findViewById(R.id.menuListViewCont);
+  		rlMenu.setVisibility(View.INVISIBLE);
+        ImageView menuIcon  = (ImageView) findViewById(R.id.menu_icon);
+        menuIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	if (rlMenu.getVisibility() == View.VISIBLE) {
+            		rlMenu.setVisibility(View.INVISIBLE);
+                    overridePendingTransition(R.anim.slide_in_right_to_left, R.anim.slide_out_left_to_right);
+            	} else {
+            		rlMenu.setVisibility(View.VISIBLE);
+                    overridePendingTransition(R.anim.slide_out_left_to_right, R.anim.slide_in_right_to_left);
+            	}
+                
+            }
+        });
+  		
+  		//BRAND LOGO FOR SELECTED OUTLET
+		ImageView logoview = new ImageView(ActivityShopperDetails.this);
+		logoview.setId(1000);
+		Bitmap logo = null;
+		try {
+			logo = new DownloadImageTask(logoview).execute(SELECTED_BRAND_LOGO).get();
+			logoview.setImageBitmap(logo);
+			headersection.addView(logoview);
+			
+			RelativeLayout.LayoutParams logoParams = (RelativeLayout.LayoutParams) logoview.getLayoutParams();
+			logoParams.width = 150;
+			logoParams.setMargins(0, 0, 0, 0);
+			logoParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+			logoview.setLayoutParams(logoParams);
+			
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	    
+		//HEADER
+		headerText = (TextView) findViewById(R.id.headerText);
+		headerText.setText(SELECTED_BRANCH_TITLE);
+		headerText.setTypeface(EkMukta_Light);
+
+		RelativeLayout.LayoutParams headerTextParams = (RelativeLayout.LayoutParams) headerText.getLayoutParams();
+		headerTextParams.setMargins(10, 0, 0, 0);
+		headerTextParams.addRule(RelativeLayout.RIGHT_OF, logoview.getId());
+		headerTextParams.addRule(RelativeLayout.ALIGN_BOTTOM, logoview.getId());
+		headerText.setLayoutParams(headerTextParams);
+		
+		//BREADCRUMB
+		breadcrumb = (TextView) findViewById(R.id.breadcrumb);
+		breadcrumb.setText("Checkout");
+		breadcrumb.setTypeface(EkMukta_Light);
+		
+		subTotalLabel = (TextView) findViewById(R.id.subtotalLabel);
+		subTotalLabel.setTypeface(EkMukta_Light);
+		
+		subTotal = (TextView) findViewById(R.id.subtotal);
+		subTotal.setText("KES."+TOTAL.toString());
+		subTotal.setTypeface(EkMukta_Light);
+		
+		firstName = (TextView) findViewById(R.id.firstName);
+		firstName.setTypeface(EkMukta_Light);
+		
+		lastName = (TextView) findViewById(R.id.lastName);
+		lastName.setTypeface(EkMukta_Light);
+		
+		emailAddress = (TextView) findViewById(R.id.email);
+		emailAddress.setTypeface(EkMukta_Light);
+		
+		phoneNumber = (TextView) findViewById(R.id.phone);
+		phoneNumber.setTypeface(EkMukta_Light);
+		
+		getCode = (Button) findViewById(R.id.getCode);
+		getCode.setTypeface(EkMukta_Light);
+		getCode.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	//GENERATE RANDOM NUMBER BTWN 10000 AND 100000
+            	Random r = new Random();
+            	int randomNumber = r.nextInt(100000 - 10000) + 10000;
+            	String verificationCode = String.valueOf(randomNumber);
+            	String myPhoneNumber = phoneNumber.getText().toString();
+            	
+            	SmsManager sms = SmsManager.getDefault();
+     	        try {
+     	            sms.sendTextMessage(myPhoneNumber, null, verificationCode, null, null);
+     	        }
+     	        catch(IllegalArgumentException e){
+
+     	        }
+     	       Toast.makeText(getBaseContext(), "Verification Code Sent!", Toast.LENGTH_LONG).show();
+            }
+        });
+		
+		verifyNumberExplain = (TextView) findViewById(R.id.verificationCodeExplanation);
+		verifyNumberExplain.setTypeface(EkMukta_Light);
+		
+		verifyCode = (TextView) findViewById(R.id.verifyCode);
+		verifyCode.setTypeface(EkMukta_Light);
+		
+		locationLabel = (TextView) findViewById(R.id.deliveryLocationLabel);
+		locationLabel.setTypeface(EkMukta_Light);
+		
+		location = (TextView) findViewById(R.id.deliveryLocation);
+		location.setTypeface(EkMukta_Light);
+		location.setText(SELECTED_LOCATION);
+		
+		direction = (TextView) findViewById(R.id.directions);
+		direction.setTypeface(EkMukta_Light);
+		
+		//CHECKOUT BUTTON
+		checkout = (Button) findViewById(R.id.checkout);
+		checkout.setText("Checkout - KES."+TOTAL.toString());
+		checkout.setTypeface(EkMukta_Light);
+		checkout.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	Intent intent = new Intent(ActivityShopperDetails.this, ActivityShopperDetails.class);
+	    		intent.putExtra("selectedBranchTitle", SELECTED_BRANCH_TITLE);
+	    		intent.putExtra("selectedBranchId", SELECTED_BRANCH_ID);
+	    		intent.putExtra("selectedBrandTitle", SELECTED_BRAND_TITLE);
+	    		intent.putExtra("selectedBrandId", SELECTED_BRAND_ID);
+	    		intent.putExtra("selectedBrandLogo", SELECTED_BRAND_LOGO);
+	    	    startActivity(intent);
+            }
+        });
+		
+		
+		// call AsynTask to perform network operation on separate thread
+        new HttpAsyncTask().execute("");
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+	        layout.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	
+        	layout.setVisibility(View.GONE);
+            super.onPostExecute(result);
+            
+            Toast.makeText(getBaseContext(), "Checkout", Toast.LENGTH_LONG).show();
+              
+                
+        }
+    
+        
+        @Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+	}
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+
+	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            //bmImage.setImageBitmap(result);
+        }
+    }
+	
+	
+	
+	
+	
+
+}

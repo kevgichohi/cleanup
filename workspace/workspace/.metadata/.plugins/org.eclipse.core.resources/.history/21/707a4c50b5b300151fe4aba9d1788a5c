@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/menuListViewCont"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent"
+   android:paddingTop="64dp"
+   android:orientation="vertical"
+   android:gravity="left" >
+   
+   <RelativeLayout
+	   android:layout_width="250dp"
+	   android:layout_height="fill_parent"
+       android:orientation="vertical"
+	   android:gravity="left"
+	   android:background="@color/bobgrey" >
+	   
+	   <TextView
+	     android:id="@+id/home"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:paddingTop="10dp"
+	     android:paddingBottom="10dp"
+	     android:paddingLeft="20dp"
+	     android:text="Home"
+	     android:textColor="@color/white"
+	     android:textSize="16sp"
+	     android:background="@drawable/custom_mainnav_selector"/>
+	   
+	   <TextView
+	     android:id="@+id/pastOrdersReceipts"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:layout_below="@+id/home"
+	     android:paddingTop="10dp"
+	     android:paddingBottom="10dp"
+	     android:paddingLeft="20dp"
+	     android:text="My Orders"
+	     android:textColor="@color/white"
+	     android:textSize="16sp"
+	     android:background="@drawable/custom_mainnav_selector"/>
+	   
+	   <TextView
+	     android:id="@+id/changeInfo"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:layout_below="@+id/pastOrdersReceipts"
+	     android:paddingTop="10dp"
+	     android:paddingBottom="10dp"
+	     android:paddingLeft="20dp"
+	     android:text="My Information"
+	     android:textColor="@color/white"
+	     android:textSize="16sp"
+	     android:background="@drawable/custom_mainnav_selector"/>
+	   
+	   <TextView
+	     android:id="@+id/changeAddress"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:layout_below="@+id/changeInfo"
+	     android:paddingTop="10dp"
+	     android:paddingBottom="10dp"
+	     android:paddingLeft="20dp"
+	     android:text="My Address"
+	     android:textColor="@color/white"
+	     android:textSize="16sp"
+	     android:background="@drawable/custom_mainnav_selector"/>
+	   
+	   <TextView
+	     android:id="@+id/userGuide"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:layout_below="@+id/changeAddress"
+	     android:paddingTop="10dp"
+	     android:paddingBottom="10dp"
+	     android:paddingLeft="20dp"
+	     android:text="Help"
+	     android:textColor="@color/white"
+	     android:textSize="16sp"
+	     android:background="@drawable/custom_mainnav_selector"/>
+	   
+	   <TextView
+	     android:id="@+id/feedback"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:layout_below="@+id/userGuide"
+	     android:paddingTop="10dp"
+	     android:paddingBottom="10dp"
+	     android:paddingLeft="20dp"
+	     android:text="Talk To Us"
+	     android:textColor="@color/white"
+	     android:textSize="16sp"
+	     android:background="@drawable/custom_mainnav_selector"/>
+	   
+	   
+	   <TextView
+	     android:id="@+id/terms"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:layout_below="@+id/feedback"
+	     android:paddingTop="10dp"
+	     android:paddingBottom="10dp"
+	     android:paddingLeft="20dp"
+	     android:text="Terms"
+	     android:textColor="@color/white"
+	     android:textSize="16sp"
+	     android:background="@drawable/custom_mainnav_selector"/>
+	   
+	   <TextView
+	     android:id="@+id/exit"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:layout_below="@+id/terms"
+	     android:paddingTop="10dp"
+	     android:paddingBottom="10dp"
+	     android:paddingLeft="20dp"
+	     android:text="Exit"
+	     android:textColor="@color/white"
+	     android:textSize="16sp"
+	     android:background="@drawable/custom_mainnav_selector"/>
+	     
+	     
+	   
+	   <Button
+		    android:id="@+id/menu_icon"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	   		android:layout_alignParentTop="true"
+	   		android:layout_alignParentRight="true"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="10dp"
+		    android:textSize="12sp"
+		    android:textColor="@color/white"
+		    android:drawableTop="@drawable/ic_menu_icon_close"
+		    android:background="@drawable/selector" />
+	  </RelativeLayout>
+ </LinearLayout>

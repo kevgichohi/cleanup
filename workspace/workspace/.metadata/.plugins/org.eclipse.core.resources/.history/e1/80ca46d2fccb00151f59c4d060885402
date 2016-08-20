@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/quicklinks"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_quicklinks_shape" 
+	android:layout_gravity="bottom|end">
+    
+    <LinearLayout 
+	 android:id="@+id/linearLayout4"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:weightSum="5"
+	android:layout_centerHorizontal="true"
+	android:orientation="horizontal" 
+	android:gravity="bottom"
+	android:layout_alignParentBottom="true"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp" >
+   
+	   <Button
+	    android:id="@+id/menu_icon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="0dp"
+	    android:paddingLeft="0dp"
+	    android:paddingRight="0dp"
+	    android:text="Menu"
+	    android:textSize="12sp"
+	    android:textColor="@color/grey666"
+	    android:drawableTop="@drawable/ic_menu_icon"
+	    android:background="@drawable/selector"
+	     android:layout_weight="0.33" />
+    
+    <Button
+	    android:id="@+id/shoppingButton"
+		 android:layout_toRightOf="@+id/menu_icon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="0dp"
+	    android:text="Shops"
+	    android:textSize="12sp"
+	    android:textColor="@color/grey666" 
+	    android:drawableTop="@drawable/ic_money_green"
+	    android:background="@drawable/selector"
+	     android:layout_weight="1"/>
+    
+   
+     <RelativeLayout
+	    android:id="@+id/cartButtonCont"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+		android:layout_toRightOf="@+id/shoppingButton"
+		android:background="@drawable/selector"
+	    android:paddingBottom="0dp"
+	    android:paddingTop="5dp"
+	    android:layout_weight="1">
+	    
+	    <Button
+		    android:id="@+id/cartButton"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+		    android:text="Your Cart"
+		    android:textSize="12sp"
+	    	android:textColor="@color/grey666"
+		    android:drawableTop="@drawable/ic_cart_green"
+	    	android:background="@drawable/selector"/>
+	    
+	    <TextView
+	        android:id="@+id/cartButtonNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+		    android:layout_toRightOf="@+id/cartButton"
+    		android:layout_marginLeft="-22dp"
+    		android:paddingLeft="5dp"
+    		android:paddingRight="5dp"
+    		android:paddingTop="0dp"
+    		android:paddingBottom="0dp"
+            android:background="@color/red"
+            android:textColor="@color/white"/>
+	 </RelativeLayout>
+	
+	    
+	    <Button
+	        android:id="@+id/clearcart"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+		    android:layout_toRightOf="@+id/cartButtonCont"
+	        android:paddingBottom="0dp"
+		    android:paddingTop="5dp"
+	        android:text="Clear Cart" 
+	      	android:textSize="12sp"
+	      	android:textColor="@color/grey666"
+		    android:drawableTop="@drawable/ic_menu_icon_close_green"
+	      	android:background="@drawable/selector"
+	      	android:layout_weight="1"/>
+	    
+	    <Button
+	        android:id="@+id/proceedToCheckout"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	      	
+	      	android:layout_toRightOf="@+id/clearcart"
+	        android:paddingBottom="0dp"
+		    android:paddingTop="5dp"
+	        android:text="Pay" 
+	      	android:textSize="12sp"
+	      	android:textColor="@color/grey666"
+		    android:drawableTop="@drawable/ic_money_pay"
+	      	android:background="@drawable/selector"
+	      	android:layout_weight="1"/>
+	    </LinearLayout>
+</RelativeLayout> 

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+    
+    <!-- ============================================LOADING PROGRESS BAR=========================================== -->
+    <LinearLayout
+	    android:id="@+id/progressbar_view"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:gravity="center_horizontal"
+	    android:orientation="vertical"
+    	android:paddingTop="50dp" >
+	
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:gravity="center"
+	        android:orientation="horizontal" >
+	
+	        <ProgressBar
+	            style="?android:attr/progressBarStyle"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" />
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Loading..." />
+	    </LinearLayout>
+	
+	    <View
+	        android:layout_width="fill_parent"
+	        android:layout_height="1dp"
+	        android:background="#C0C0C0" />
+	</LinearLayout>
+	
+	
+    <!-- ============================================LISTVIEW=========================================== -->
+    <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:orientation="vertical"
+      android:layout_marginTop="180dp"
+      android:layout_marginBottom="0dp"
+      android:paddingTop="0dp" >
+      
+	  <ListView
+        android:id="@+id/productsListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+	  
+    </LinearLayout>
+	  
+    
+	<!-- =======================================ACTIONBAR===================================== -->
+	<RelativeLayout
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:background="@drawable/custom_actionbar_shape"
+	    android:gravity="left" >
+	    
+	    <!-- Thumbnail Image -->
+	    <ImageView
+	        android:id="@+id/menu_icon"
+	        android:layout_width="25dp"
+	        android:layout_height="25dp"
+    		android:layout_marginTop="5dp"
+    		android:layout_marginBottom="10dp"
+    		android:layout_marginRight="50dp"
+	        android:src="@drawable/ic_menu_icon" />
+	
+	    <TextView
+	      android:id="@+id/app_name"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:text="@string/app_name"
+          android:layout_toRightOf="@id/menu_icon"
+	      android:textColor="#FFFFFF"
+	      android:textSize="20sp" />
+	 </RelativeLayout>
+	  
+     <!-- =========================================HEADER================================ -->
+	 <RelativeLayout
+	    android:id="@+id/header"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:background="@drawable/custompagetitleshape"
+	    android:gravity="left" >
+	
+	    <TextView
+	      android:id="@+id/headerText"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:text="Branch"
+	      android:textColor="@color/green"
+	      android:textSize="18sp"
+          android:textAllCaps="true"
+	      android:shadowColor="@color/text_shadow"
+          android:shadowDx="1"
+          android:shadowDy="1"
+          android:shadowRadius="1"/>
+	    
+	    <Button
+	        android:id="@+id/checkout"
+	        android:layout_width="wrap_content"
+	        android:layout_height="30dp"
+	        android:layout_marginTop="30dp"
+        	android:layout_alignParentLeft="true"
+        	android:layout_below="@+id/headerText"
+	        android:text="Checkout" 
+	        android:paddingBottom="0dip"
+		    android:paddingLeft="20dip"
+		    android:paddingRight="20dip"
+		    android:paddingTop="0dip"
+	      	android:textSize="16sp"
+	      	android:textColor="@color/white"
+	      	android:background="@drawable/customgreybuttonshape" />
+	    
+	    <Button
+	        android:id="@+id/clearcart"
+	        android:layout_width="wrap_content"
+	        android:layout_height="30dp"
+	        android:layout_marginTop="30dp"
+        	android:layout_alignParentRight="true"
+        	android:layout_below="@+id/headerText"
+	        android:text="Empty Trolley" 
+	        android:paddingBottom="0dip"
+		    android:paddingLeft="20dip"
+		    android:paddingRight="20dip"
+		    android:paddingTop="0dip"
+	      	android:textSize="16sp"
+	      	android:textColor="@color/white"
+	      	android:background="@drawable/customgreybuttonshape" />
+	    
+	    <TextView
+	      android:id="@+id/breadcrumb"
+	      android:layout_width="match_parent"
+	      android:layout_height="wrap_content"
+	      android:layout_below="@+id/headerText"
+	      android:text="You Are Here"
+	      android:textColor="@color/grey999"
+	      android:textSize="16sp"
+          android:textAllCaps="true" />
+	  </RelativeLayout>
+
+	 <!-- ==========================================MENU====================================== -->
+	  <LinearLayout
+	    android:id="@+id/menuListViewCont"
+	    android:layout_width="250dp"
+	    android:layout_height="match_parent"
+	    android:layout_marginTop="40dp"
+	    android:layout_alignParentTop="true"
+	    android:layout_alignParentLeft="true"
+	    android:gravity="left"
+      	android:orientation="vertical"
+	    android:background="@color/blackCC" >
+	    
+	    <ListView
+	        android:id="@+id/menuListView"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent" />
+	  </LinearLayout>
+	  
+	  <!-- =========================================LOGO======================================= -->
+	  <RelativeLayout
+	    android:id="@+id/headerlogo"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:background="@drawable/customlogoshape"
+	    android:gravity="right" >
+	    
+	    <!-- Thumbnail Image -->
+	    <ImageView
+	        android:id="@+id/logo"
+	        android:layout_width="75dip"
+	        android:layout_height="75dip"
+	        android:src="@drawable/ic_image" />
+	  </RelativeLayout>
+	  
+      <!-- ==========================================FOOTER======================================== -->
+	  <RelativeLayout
+	    android:id="@+id/footer"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_margin="0dp"
+	    android:background="@drawable/custompagetitleshape"
+	    android:gravity="left" >
+	
+	    <TextView
+	      android:id="@+id/footerText"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:layout_margin="5dp"
+	      android:text=""
+	      android:textColor="#000"
+	      android:textSize="20sp" />
+	  </RelativeLayout>
+ 
+</RelativeLayout>

@@ -1,0 +1,173 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+public class ActivityMyAccountOrdersLoyalty extends Activity {
+	
+	SQLiteDatabase nunuaRahaDatabase;
+	public static final String MY_SESSION = "mySession";
+	private static final int TIMEOUT_MILLISEC = 0;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    Gson gson;
+    Bundle extras;
+    ArrayAdapter<String> dataAdapter;
+    
+	TextView app_name;
+	LinearLayout layout_progressbar;
+	Button menuIcon;
+	TextView headerText;
+	Button shoppingButton;
+	Button cartButton;
+	TextView cartButtonNotification;
+	
+
+	Typeface EkMukta_Light;
+	
+	private	Button title1;
+	private	TextView text0;
+	private	TextView text1;
+	private	TextView text11;
+	
+    
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+		setContentView(R.layout.loyaltypoints);
+		menuIcon  = (Button) findViewById(R.id.menu_icon);
+		sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+		editor = sharedPreferences.edit();
+		gson = new Gson();
+		extras = getIntent().getExtras();
+  		headerText = (TextView) findViewById(R.id.headerText);
+  		app_name = (TextView) findViewById(R.id.app_name);
+  		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+  		cartButton = (Button) findViewById(R.id.cartButton);
+  		
+  	
+
+		cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+  		
+  	
+  	//LOAD QUICKLINKS
+  		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
+  		
+  		helperQuickLinks.create(menuIcon,shoppingButton,cartButton,cartButtonNotification,ActivityMyAccountOrdersLoyalty.this,sharedPreferences);
+  		
+  		
+  	
+  		String page = null;
+  		try {
+  			page = new Communicator().executeHttpGet("http://www.smokesignal.co.ke/mobile_trolley_app/getmyloyalty.php");
+  		} catch (Exception e) {
+	  		// TODO Auto-generated catch block
+	  		e.printStackTrace();
+  		}
+  		
+  		JSONArray jsonArray = null;
+  		 Log.i("Entry Data"," --> "+page);
+  		try {
+  			jsonArray = new JSONArray(page);
+  		} catch (JSONException e) {
+	  		// TODO Auto-generated catch block
+	  		e.printStackTrace();
+  		}
+  		
+  		for (int i = 0 ; i < jsonArray.length(); i++ ) {
+  			try {
+	  			//JSONObject entry = (JSONObject) jsonArray.get(i);
+	  			JSONObject c = jsonArray.getJSONObject(i);
+	  			
+	  			text1.setText(c.optString("loyaltypoints"));
+	  			
+	  		 //Log.i("Entry Data"," --> "+entry);
+	  		 
+	  		 //Log.i("entry loyalty","-->"+entry->loyaltypoints);
+	  		// now get the data from each entry
+	  		} catch (JSONException e) {
+		  		// TODO Auto-generated catch block
+		  		e.printStackTrace();
+	  		}
+  		  
+  		}
+  		
+  		
+  	}
+	
+	
+	
+	
+	
+	
+	@Override
+		public void onBackPressed() {
+			finish();
+			overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+		}
+		
+		@Override
+		public void finish() {
+		    super.finish();
+			overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+		}
+		
+		@Override
+		public void onResume() {
+			super.onResume();  // Always call the superclass method first
+			overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+		}
+		
+}
+		

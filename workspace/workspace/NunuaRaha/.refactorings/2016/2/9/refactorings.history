@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;simple_list_products.xml&apos; to &apos;simple_list_products.xml&apos;&#x0D;&#x0A;- Original project: &apos;NunuaRaha&apos;&#x0D;&#x0A;- Destination element: &apos;simple_list_products.xml&apos;&#x0D;&#x0A;- Original element: &apos;simple_list_products.xml&apos;" description="Copy file" element1="res/layout/simple_list_products.xml" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1456304244778" target="/NunuaRaha/res/layout/simple_list_products.xml" units="0" version="1.0"/>
+</session>

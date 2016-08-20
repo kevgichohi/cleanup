@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="left"
+    android:orientation="vertical"
+     android:background="@color/white">
+    
+    <include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+             <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/actionbar"
+        layout="@layout/global_footer" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/footer" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+	
+	  <!-- ============================================CONTENT=========================================== -->
+	  <ScrollView
+		android:id="@+id/ScrollView01"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@+id/header" >
+	    
+		  <LinearLayout android:layout_width="match_parent"
+			  android:layout_height="match_parent">
+		      <RelativeLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:layout_marginTop="10dp"
+		        android:layout_marginBottom="70dp"
+		        android:layout_marginRight="10dp"
+		        android:layout_marginLeft="10dp"
+		        android:paddingTop="0dp"
+		        android:layout_gravity="left" >
+			    
+			 <Button
+		    android:id="@+id/title1"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="0dp"
+		    android:text="FACILITATOR"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/customsavebtnshapegrey"
+		    android:drawablePadding="10dp"
+		    android:drawableLeft="@drawable/facilitator"
+		    android:gravity="left"
+		    android:textAlignment="gravity"/>
+			 
+		<TextView
+        android:id="@+id/text11"
+        android:textSize="14sp"
+	    android:textColor="@color/grey999"
+	    android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:layout_below="@id/title1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="E-FAM IS FACILITATOR BETWEEN CUSTOMER AND OUTLET"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="gone" />
+	
+	<TextView
+        android:id="@+id/text1"
+        android:textSize="14sp"
+	    android:textColor="@color/grey999"
+	    android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:layout_below="@id/text11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="E-FAM is a communications platform for facilitating the connection between individuals seeking to order food, beverage and any other consumer products from selected retail, wholesale and manufacturing entities E-fam assists by retrieving and delivering the products to and on behalf of customers who have authorized the purchase. The additional service fees the customer pays that are above the price of the products and are for the purpose of engaging the outlets in perform the services. The customer acknowledges and agrees to the services conditions."
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="gone" />
+	
+	
+	
+	 <Button
+		    android:id="@+id/title2"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_below="@id/text1"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="0dp"
+		    android:text="SELECT TRANSACTIONS"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/customsavebtnshapegrey"
+		    android:drawablePadding="10dp"
+		    android:drawableLeft="@drawable/selecttrans"
+		    android:gravity="left"
+		    android:textAlignment="gravity"/>
+	 
+	 <TextView
+        android:id="@+id/text22"
+        android:textSize="14sp"
+       	android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:layout_below="@id/title2"
+	    android:textColor="@color/grey999"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TRANSACTIONS INVOLVING ALCOHOLIC BEVERAGES"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="gone"/>
+	
+	<TextView
+        android:id="@+id/text2"
+        android:textSize="14sp"
+       	android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:layout_below="@id/text22"
+	    android:textColor="@color/grey999"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alcoholic beverages may only be purchased by individuals, including without limitation Customers, who are at least eighteen (18) years old ('Legal Age'). If you are a customer, you expressly represent and warrant that: (i) You are of legal age; and (ii) You will provide bonafide identification showing your legal age to your outlet upon delivery to you pursuant to the outlet Services of any product that include alcoholic beverages."
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="gone"/>
+	
+	
+	
+		 <Button
+		    android:id="@+id/title3"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_below="@id/text2"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="0dp"
+		    android:text="USER ACCOUNT"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/customsavebtnshapegrey" 
+		    android:drawablePadding="10dp"
+		    android:drawableLeft="@drawable/useraccount"
+		    android:gravity="left"
+		    android:textAlignment="gravity"/>
+	<TextView
+        android:id="@+id/text3"
+        android:textSize="14sp"
+	    android:textColor="@color/grey999"
+	  	android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:layout_below="@id/title3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You are the sole authorized user of any account you create with E-FAM. You are responsible for maintaining the confidentiality of any password or account number provided by you or E-FAM for accessing the support. You are solely and fully responsible for all activities that occur under your password or account. E-FAM has no control over the use of any user's account and expressly disclaims any liability derived therefrom. Should you suspect that any unauthorized party may be using your password or account, you will notify E-FAM immediately. You may opt-out of receiving text messages from us by emailing cs@E-FAM.com. If you provide your cell phone number to E-FAM pursuant to the use of the services, you hereby affirmatively consent to our use of your cell phone number for calls and texts in order to perform the services."
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="gone"/>
+	
+	 <Button
+		    android:id="@+id/title4"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_below="@id/text3"
+          	android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="0dp"
+		    android:text="DISCLAIMER"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/customsavebtnshapegrey"
+		    android:drawablePadding="10dp"
+		    android:drawableLeft="@drawable/disclamair"
+		    android:gravity="left"
+		    android:textAlignment="gravity"/>
+	
+	<TextView
+        android:id="@+id/text4"
+        android:textSize="14sp"
+	    android:textColor="@color/grey999"
+	  	android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"        	
+		android:layout_below="@id/title4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Use of the support is entirely at your own risk. Changes are periodically made to the APP and may be made at any time without notice to you. The support is provided on an 'as is' basis without warranties of any kind, either express or implied, including, but not limited to, warranties of merchantability, fitness for a particular purpose and non-infringement. E-FAM makes no warranties or representations about the accuracy or completeness of the content provided through the support or the content of any APPs linked to the E-FAM APP. E-FAM assumes no liability or responsibility for any (i) Errors, mistakes, or inaccuracies of content; (ii) Personal injury or property damage, of any nature whatsoever, resulting (iii) Any unauthorized access to or use of E-FAM's secure servers and/or any and from your access to and use of the E-FAM APP or the support; all personal information and/or financial information stored therein.E-FAM does not warrant that the APP will operate error-free or that the APP and its server are free of computer viruses and other harmful goods. If your use of the APP results in the need for servicing or replacing equipment or data, E-FAM shall not be responsible for those costs. E-FAM, to the fullest extent permitted by law, disclaims all warranties, whether express or implied, including without limitation the warranty of merchantability, non-infringement of third party rights and the warranty of fitness for a particular purpose. E-FAM makes no warranties about the accuracy, reliability, completeness or timeliness of the content, services, support, software, text, graphics or links. E-FAM and its affiliates and licensors cannot and do not guarantee that any personal information supplied by you will not be misappropriated, intercepted, deleted, destroyed or used by others."
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="gone"/>
+			    
+	
+			    
+		      </RelativeLayout>
+	  	  </LinearLayout>
+	  </ScrollView>
+	  
+	<include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        layout="@layout/global_quicklinks" />
+</RelativeLayout>

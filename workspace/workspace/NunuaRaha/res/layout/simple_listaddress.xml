@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingBottom="10dip"
+    android:paddingLeft="10dip"
+    android:gravity="left|center"
+	android:descendantFocusability="blocksDescendants"
+	android:focusable="false"
+	android:background="@drawable/customlistshape"
+	android:focusableInTouchMode="false" >
+    <!--  android:background="@drawable/customproductslisting" -->
+ 	
+    <TextView
+        android:id="@+id/mysimplelist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey666"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:capitalize="sentences"
+        android:gravity="left" 
+        android:paddingTop="10dip"/>
+    
+    
+    <!-- Arrow Image -->
+   
+    
+     <Button
+       	android:id="@+id/arrowRight"
+       	android:layout_marginTop="-5dp"
+	    android:paddingTop="0dp"
+	    android:paddingBottom="5dp"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:text="delete  "
+        android:background="@drawable/selector"
+        android:drawableRight="@drawable/delete"
+        android:layout_alignParentRight="true"/>
+ 
+</RelativeLayout>

@@ -1,0 +1,496 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+
+public class ActivityMyAccountLogin extends Activity {
+	
+	ListView listView;
+	ListView menuListView;
+	LinearLayout layout_progressbar;
+	RelativeLayout loginForm;
+	LinearLayout rlMenu;
+	ImageView menuIcon;
+	TextView headerText;
+	TextView breadcrumb;
+	Button shoppingButton;
+	Button homeButton;
+	Button accountButton;
+	Button cartButton;
+	TextView app_name;
+	
+	TextView errorMessage;
+	Boolean error;
+	EditText phoneNumber;
+	EditText firstName;
+	EditText lastName;
+	EditText emailAddress;
+	Button getCode;
+	EditText verifyCode;
+	Button login;
+	String prevActivity;
+	String totalPrice;
+	
+	ArrayList<RequestedSimpleListOrders> MYORDERS;
+	AdapterListOrders myadapter;
+
+	public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+	
+    public static String MY_PHONE_NUMBER;
+    public static Typeface FONT_EKMUKTA_LIGHT;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.login);
+		listView = (ListView) findViewById(R.id.simpleListView);
+		menuListView = (ListView) findViewById(R.id.menuListView);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+		loginForm = (RelativeLayout) findViewById(R.id.loginForm);
+		rlMenu = (LinearLayout) findViewById(R.id.menuListViewCont);
+		menuIcon  = (ImageView) findViewById(R.id.menu_icon);
+		sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+		editor = sharedPreferences.edit();
+		FONT_EKMUKTA_LIGHT = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+		Bundle extras = getIntent().getExtras();
+		prevActivity = "";
+		if(extras != null) {
+			prevActivity = extras.getString("prevActivity");
+			totalPrice = extras.getString("totalPrice");
+		}
+		
+
+  		rlMenu.setVisibility(View.INVISIBLE);
+		
+
+		breadcrumb = (TextView) findViewById(R.id.breadcrumb);
+  		headerText = (TextView) findViewById(R.id.headerText);
+  		app_name = (TextView) findViewById(R.id.app_name);
+  		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+  		homeButton = (Button) findViewById(R.id.homeButton);
+  		accountButton = (Button) findViewById(R.id.accountButton);
+  		cartButton = (Button) findViewById(R.id.cartButton);
+  		
+  		errorMessage = (TextView) findViewById(R.id.errors);
+		phoneNumber = (EditText) findViewById(R.id.phoneNumber);
+		firstName = (EditText) findViewById(R.id.firstName);
+		lastName =(EditText) findViewById(R.id.lastName);
+		emailAddress = (EditText) findViewById(R.id.emailAddress);
+		getCode = (Button) findViewById(R.id.getCode);
+		verifyCode = (EditText) findViewById(R.id.verifyCode);
+		login = (Button) findViewById(R.id.login);
+  		
+  		if(sharedPreferences.contains("userPhoneNumber")) {
+  			Intent intent = new Intent(ActivityMyAccountLogin.this, ActivityMyAccount.class);
+    	    startActivity(intent);
+  		}else{
+  			 //SET TEXT, APPLY FONTS, SETONCLICKLISTENERS
+  	  		new ApplyViewParamsTask().execute();
+  		}
+        
+	}
+	
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();  // Always call the superclass method first
+		layout_progressbar.setVisibility(View.GONE);
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        listView.setVisibility(View.GONE);
+	        super.onPreExecute();
+	    }
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	layout_progressbar.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            myadapter.notifyDataSetChanged();
+            super.onPostExecute(result);
+            
+            Toast.makeText(getBaseContext(), "Orders Received!", Toast.LENGTH_LONG).show();
+            Log.i("Orders"," --> "+result);
+            
+	        try {
+	        	
+	        	JSONArray jsonArr = new JSONArray(result);
+	        	String[] list_item_ids = new String[jsonArr.length()];
+				String[] list_item_titles = new String[jsonArr.length()];
+	        	
+				for(int i = 0; i < jsonArr.length(); i++){
+					JSONObject jsonObj = jsonArr.getJSONObject(i); 
+					String item_id = jsonObj.getString("id");
+					String item_ref_number = jsonObj.getString("ref_number");
+					String item_status = jsonObj.getString("status");
+					String date = jsonObj.getString("created");
+					String outlet = jsonObj.getString("shop_brand_id");
+					String branch = jsonObj.getString("shop_branch_id");
+					String amount = jsonObj.getString("subtotal");
+					
+					list_item_ids[i] = item_id;
+					list_item_titles[i] = date;
+					
+					RequestedSimpleListOrders d = new RequestedSimpleListOrders();
+					
+					d.setItemId(item_id);
+					d.setItemRefNumber(item_ref_number);
+					d.setItemStatus(item_status);
+					d.setItemOne(date);
+					d.setItemTwo(outlet + " - " + branch);
+					d.setItemThree(amount);
+					
+					d.item_id = item_id;
+					d.item_ref_number = item_ref_number;
+					d.item_status = item_status;
+				    d.item_one = date;
+				    d.item_two = outlet + " - " + branch;
+				    d.item_three = amount;
+				    
+				    MYORDERS.add(d);
+				}
+				
+				
+			}catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+       }
+        
+        
+
+		@Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+	}
+
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("phone_number",MY_PHONE_NUMBER));
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+	
+	private class ApplyViewParamsTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+
+  			//MENU ICON
+  			menuIcon.setImageResource(R.drawable.ic_account_grey);
+	  		
+	    	//SET TEXTS
+	  		headerText.setText("Login");
+			breadcrumb.setText("Home / My Account / Login");
+			
+			//SET FONT
+			app_name.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		headerText.setTypeface(FONT_EKMUKTA_LIGHT);
+			breadcrumb.setTypeface(FONT_EKMUKTA_LIGHT);
+			shoppingButton.setTypeface(FONT_EKMUKTA_LIGHT);
+		    homeButton.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		accountButton.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		cartButton.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		phoneNumber.setTypeface(FONT_EKMUKTA_LIGHT);
+			firstName.setTypeface(FONT_EKMUKTA_LIGHT);
+			lastName.setTypeface(FONT_EKMUKTA_LIGHT);
+			emailAddress.setTypeface(FONT_EKMUKTA_LIGHT);
+			getCode.setTypeface(FONT_EKMUKTA_LIGHT);
+			verifyCode.setTypeface(FONT_EKMUKTA_LIGHT);
+			login.setTypeface(FONT_EKMUKTA_LIGHT);
+			errorMessage.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		
+	  		//SET COLOR
+	  		accountButton.setTextColor(getResources().getColor(R.color.green));
+	  		
+	  		//SET ONCLICKLISTENER
+	  		getCode.setOnClickListener(new View.OnClickListener() {
+	            public void onClick(View v) {
+	            	String myPhoneNumber = phoneNumber.getText().toString();
+	            	
+	            	if(myPhoneNumber == null || myPhoneNumber.isEmpty()){
+	            		errorMessage.setVisibility(View.VISIBLE);
+	    	      		errorMessage.setText("Enter your mobile number");
+	    	      		phoneNumber.requestFocus();
+	            	}else{
+		            	//GENERATE RANDOM NUMBER BTWN 10000 AND 100000
+		            	Random r = new Random();
+		            	int randomNumber = r.nextInt(100000 - 10000) + 10000;
+		            	String verificationCode = String.valueOf(randomNumber);
+		            	
+			    		SharedPreferences.Editor editor = sharedPreferences.edit();
+			            editor.putString("userVerificationCode",verificationCode);
+			            editor.putString("userPhoneNumber",myPhoneNumber);
+			            editor.commit();
+			            
+		            	SmsManager sms = SmsManager.getDefault();
+		     	        try {
+		     	            sms.sendTextMessage(myPhoneNumber, null, verificationCode, null, null);
+		     	        }
+		     	        catch(IllegalArgumentException e){
+		
+		     	        }
+		     	       Toast.makeText(getBaseContext(), "Verification Code Sent!", Toast.LENGTH_LONG).show();
+	            	}
+	     	      
+	            }
+	        });
+	  		
+	  		login.setOnClickListener(new View.OnClickListener() {
+	            public void onClick(View v) {
+	            	
+	            	errorMessage.setVisibility(View.GONE);//Hide all errors before displaying new ones
+	            	error = false;
+	            	
+	            	String fName = firstName.getText().toString();
+	            	String lName = lastName.getText().toString();
+	            	String email = emailAddress.getText().toString();
+	            	String vCode = verifyCode.getText().toString();
+	            	String phone = phoneNumber.getText().toString();
+	            	String order = sharedPreferences.getString("myTrolley", null);
+	            	String savedPhoneNumber = sharedPreferences.getString("userPhoneNumber", null);
+	            	String savedVerifyCode = sharedPreferences.getString("userVerificationCode", null);
+	            	
+	            	//VALIDATE FIRST NAME
+	            	if(fName == null || fName.isEmpty()){
+	            		errorMessage.setVisibility(View.VISIBLE);
+	            		errorMessage.setText("Fill in your first name");
+	            		firstName.requestFocus();
+	            		error = true;
+	                    //Log.i("Submit info error", "---> Fill in your first name");
+	            	}
+	            	
+	            	//VALIDATE LAST NAME
+	            	else if(lName == null || lName.isEmpty()){
+	            		errorMessage.setVisibility(View.VISIBLE);
+	            		errorMessage.setText("Fill in your last name");
+	            		lastName.requestFocus();
+	            		error = true;
+	            	}
+	            	
+	            	//VALIDATE EMAIL
+	            	else if(email == null || email.isEmpty()){
+	            		errorMessage.setVisibility(View.VISIBLE);
+	            		errorMessage.setText("Fill in your email address");
+	            		emailAddress.requestFocus();
+	            		error = true;
+	            	}
+	            	
+	            	//VALIDATE PHONE
+	            	else if(phone == null || phone.isEmpty()){
+	            		errorMessage.setVisibility(View.VISIBLE);
+	            		errorMessage.setText("Enter your phone number");
+	            		phoneNumber.requestFocus();
+	            		error = true;
+	            	}
+	            	
+	            	//VALIDATE CODE
+	            	else if(!sharedPreferences.contains("userVerificationCode")) {
+	            		errorMessage.setVisibility(View.VISIBLE);
+	            		errorMessage.setText("Invalid verification code. Click on the button below to get code");
+	            		verifyCode.requestFocus();
+	            		error = true;
+	            	}
+	            	else if(vCode.compareTo(savedVerifyCode) != 0){
+	            		errorMessage.setVisibility(View.VISIBLE);
+	            		errorMessage.setText("Invalid verification code. Check your sms for the valid code");
+	            		verifyCode.requestFocus();
+	            		error = true;
+            		}
+	            	
+	            	else if(error == false){
+	            		editor.putString("userFirstName",fName);
+	    	            editor.putString("userLastName",lName);
+	    	            editor.putString("userEmail",email);
+	    	            editor.commit();
+	    	            
+	    	            sharedPreferences.edit().remove("userVerificationCode").commit();
+	    	            
+	            		if(prevActivity.equals("ActivityMyCart")){
+		            		Intent intent = new Intent(ActivityMyAccountLogin.this, ActivityShopperDetails.class);
+		            		intent.putExtra("totalPrice", totalPrice);
+				    	    startActivity(intent);
+	            		}else{
+	            			Intent intent = new Intent(ActivityMyAccountLogin.this, ActivityMyAccount.class);
+				    	    startActivity(intent);
+	            		}
+	            	}
+	            	
+	            	Log.i("Error"," --> " +error);
+	            }
+	        });
+	  		
+	  		shoppingButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	layout_progressbar.setVisibility(View.VISIBLE);
+	            	Intent intent = new Intent(ActivityMyAccountLogin.this, ActivityListOutlets.class);
+	            	if(sharedPreferences.contains("myTrolley")) {
+	            		intent = new Intent(ActivityMyAccountLogin.this, ActivityListAisles.class);
+	            	}
+		    	    startActivity(intent);
+	            }
+	        }); 
+	  		
+	  		homeButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	Intent intent = new Intent(ActivityMyAccountLogin.this, ActivityMain.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        });  
+	  		
+	  		accountButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	Intent intent = new Intent(ActivityMyAccountLogin.this, ActivityMyAccountLogin.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        });
+	  		
+	  		//SET NOTIFICATION FOR THE NUMBER OF ITEMS CURRENTLY IN THE TROLLEY
+			TextView cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+			if(sharedPreferences.contains("myTrolley")) {
+				String inMyTrolley = sharedPreferences.getString("myTrolley", null);
+				Gson gson = new Gson();
+				List[] jsonMyTrolley = gson.fromJson(inMyTrolley,List[].class);
+                List getjsonMyTrolley = Arrays.asList(jsonMyTrolley);
+                
+                Object getObject = getjsonMyTrolley.get(0);
+                ArrayList myTrolley = (ArrayList) getObject;
+                Integer numberOfItemsInMyTrolley = myTrolley.size();
+                cartButtonNotification.setText(numberOfItemsInMyTrolley.toString());
+    	  		
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	Intent intent = new Intent(ActivityMyAccountLogin.this, ActivityMyCart.class);
+    		    	    startActivity(intent);
+    	                
+    	            }
+    	        });
+			}else{
+				cartButtonNotification.setText("0");
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	Toast.makeText(getBaseContext(), "Your trolley is empty!", Toast.LENGTH_LONG).show();
+    	            }
+    	        });
+			}
+			
+			
+	    }
+	    
+	 }
+}

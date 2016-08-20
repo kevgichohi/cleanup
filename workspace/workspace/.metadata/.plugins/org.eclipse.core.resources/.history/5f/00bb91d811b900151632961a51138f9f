@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/quicklinks"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_quicklinks_shape" >
+    
+   
+
+    
+	   <Button
+	    android:id="@+id/menu_icon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="0dp"
+	    android:paddingLeft="0dp"
+	    android:paddingRight="0dp"
+	    android:text="Menu"
+	    android:textSize="12sp"
+	    android:textColor="@color/grey999"
+	    android:drawableTop="@drawable/ic_menu_icon"
+	    android:background="@drawable/selector" />
+    
+    <Button
+	    android:id="@+id/shoppingButton"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" 
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="0dp"
+	    android:paddingLeft="0dp"
+	    android:paddingRight="0dp"
+	    android:text="Shops"
+	    android:textSize="12sp"
+	    android:textColor="@color/grey999" 
+	    android:drawableTop="@drawable/ic_cart_green"
+	    android:background="@drawable/selector"/>
+    
+   
+     <RelativeLayout
+	    android:id="@+id/cartButtonCont"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+         android:layout_alignParentRight="true"
+	    android:padding="0dp" >
+	    
+	    <Button
+		    android:id="@+id/cartButton"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	    	android:layout_alignParentRight="true"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+		    android:text="Your Cart"
+		    android:textSize="12sp"
+	    	android:textColor="@color/grey999"
+		    android:drawableTop="@drawable/ic_money_green"
+	    	android:background="@drawable/selector"/>
+	    
+	    <TextView
+	        android:id="@+id/cartButtonNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+    		android:layout_alignParentRight="true"
+    		android:layout_marginRight="10dp"
+    		android:paddingLeft="5dp"
+    		android:paddingRight="5dp"
+    		android:paddingTop="0dp"
+    		android:paddingBottom="0dp"
+            android:background="@color/red"
+            android:textColor="@color/white"/>
+	 </RelativeLayout>
+	
+	    
+	    <Button
+	        android:id="@+id/clearcart"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+		    android:layout_marginLeft="10dp"
+	      	android:layout_centerVertical="true"
+		    android:layout_toRightOf="@+id/backToAisles"
+	        android:paddingBottom="0dp"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="5dp"
+		    android:paddingTop="0dp"
+		    android:minHeight="0dp"
+			android:minWidth="0dp"
+	        android:text="Empty Cart" 
+	      	android:textSize="12sp"
+	      	android:textColor="@color/grey666"
+		    android:drawableTop="@drawable/ic_menu_icon_close_green"
+	      	android:background="@drawable/selector"
+   			android:visibility="gone"/>
+	    
+	    <Button
+	        android:id="@+id/proceedToCheckout"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	      	android:layout_centerVertical="true"
+	        android:layout_alignParentRight="true"
+	        android:paddingBottom="0dp"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="5dp"
+		    android:paddingTop="0dp"
+		    android:minHeight="0dp"
+			android:minWidth="0dp"
+	        android:text="Proceed to Pay" 
+	      	android:textSize="12sp"
+	      	android:textColor="@color/grey666"
+		    android:drawableTop="@drawable/ic_money_green"
+	      	android:background="@drawable/selector"
+   			android:visibility="gone" />
+</RelativeLayout> 

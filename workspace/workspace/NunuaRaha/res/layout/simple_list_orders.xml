@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingBottom="15dip"
+    android:paddingLeft="10dip"
+    android:paddingTop="15dip"
+    android:gravity="left|center"
+    android:background="@drawable/customlistshape" 
+    android:theme="@android:style/Theme.Translucent" >
+    
+  
+   
+    
+    
+    <TextView
+        android:id="@+id/itemOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey666"
+        android:textSize="14sp" />
+     <TextView
+        android:id="@+id/itemFour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemOne"
+        android:textColor="@color/grey666"
+        android:textSize="14sp" 
+        android:gravity="left"/>
+     
+    
+    <TextView
+        android:id="@+id/itemTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemFour"
+        android:textColor="@color/grey666"
+        android:textSize="14sp" 
+        android:gravity="left"/>
+    
+    <TextView
+        android:id="@+id/itemThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemTwo"
+        android:textColor="@color/grey666"
+        android:textSize="14sp" 
+        android:gravity="left"/>
+    
+     
+      
+     
+     
+     
+     
+	    
+      <TextView
+	   android:id="@+id/BranchshopImageeS"
+        android:drawableRight="@drawable/unseen"
+            android:textColor="@color/bobgrey"
+	   android:layout_width="wrap_content"
+	   android:layout_height="wrap_content"
+	   android:gravity="right"
+	   android:text="Received  "
+	   android:layout_alignParentRight="true" 
+	   android:layout_toRightOf="@+id/itemOne"
+	   android:paddingLeft="5dp"
+	   android:layout_marginRight="3dp"/>
+      
+      <TextView
+	    android:id="@+id/BranchshopImageeS1"
+        android:drawableRight="@drawable/unseen"
+            android:textColor="@color/bobgrey"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/BranchshopImageeS" 
+	  	android:gravity="right"
+	  	android:text="Processing  "
+	  	android:layout_alignParentRight="true" 
+	  	android:layout_marginTop="5dp"
+	  	android:paddingLeft="5dp"
+	  	android:layout_toRightOf="@+id/itemOne"
+	  	android:layout_marginRight="3dp"/>
+      
+      <!-- ImageView
+	   android:id="@+id/BranchshopImageeS2"
+	   android:src="@drawable/unseen"
+	   android:layout_width="wrap_content"
+	   android:layout_height="wrap_content"
+	   android:layout_below="@+id/BranchshopImageeS1" 
+	   android:gravity="right"
+	   android:text="Delivered"
+	   android:layout_alignParentRight="true" 
+	   android:layout_marginTop="5dp"
+	   android:layout_toRightOf="@+id/itemOne"
+	   android:layout_marginRight="3dp"/-->
+      
+      <TextView
+      android:id="@+id/BranchshopImageeS2"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:drawableRight="@drawable/unseen"
+       android:textColor="@color/bobgrey"
+       android:layout_below="@+id/BranchshopImageeS1" 
+	   android:gravity="right"
+	   android:text="Delivered  "
+	   android:layout_alignParentRight="true" 
+	   android:layout_marginTop="5dp"
+	   android:paddingLeft="5dp"
+	   android:layout_toRightOf="@+id/itemOne"
+	   android:layout_marginRight="3dp"/>
+  
+     
+    <Button
+        android:id="@+id/confirmDelivery"
+        android:layout_width="wrap_content" 
+	    android:layout_height="30dp"  
+        android:layout_below="@+id/itemThree"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/customgreenbuttonshape_2"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:text="Rate service"
+        android:shadowColor="@color/text_shadow"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+       	android:textAllCaps="true" 
+       		android:visibility="gone"/>
+    
+        
+     <Button
+        android:id="@+id/viewOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp" 
+        android:layout_alignParentRight="true" 
+        android:layout_below="@+id/itemThree"
+        android:layout_marginRight="3dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/customsavebtnshapegrey"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:text="View Order"
+        android:shadowColor="@color/text_shadow"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+       	android:textAllCaps="true" />
+   
+    <!--  Button
+        android:id="@+id/rateButton"
+        android:layout_width="wrap_content" 
+	    android:layout_height="30dp"  
+        android:layout_below="@+id/itemThree"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/customgreenbuttonshape"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:text="Rate"
+        android:shadowColor="@color/text_shadow"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+       	android:textAllCaps="true" 
+       	android:layout_toRightOf="@+id/confirmDelivery"
+       	android:layout_alignParentRight="true" /-->
+    
+         <Button
+        android:id="@+id/reorder"
+        android:layout_width="match_parent" 
+	    android:layout_height="30dp"  
+        android:paddingTop="0dp"
+		android:layout_marginRight="10dp"
+		android:layout_marginTop="10dp"
+        android:paddingBottom="0dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:background="@drawable/customsavebtnshapegrey"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+		android:text="Reorder"
+       	android:textAllCaps="true" 
+       	android:layout_below="@id/confirmDelivery"
+     	android:layout_centerVertical="true"
+     	android:visibility="gone"/>
+ 
+</RelativeLayout>

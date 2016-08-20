@@ -1,0 +1,366 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+
+public class ActivityMyOrders extends Activity {
+	
+	ListView listView;
+	ListView menuListView;
+	LinearLayout layout_progressbar;
+	RelativeLayout loginForm;
+	LinearLayout rlMenu;
+	ImageView menuIcon;
+	TextView headerText;
+	TextView breadcrumb;
+	Button shoppingButton;
+	Button homeButton;
+	Button accountButton;
+	Button cartButton;
+	TextView app_name;
+	
+	ArrayList<RequestedSimpleListOrders> MYORDERS;
+	AdapterListOrders myadapter;
+
+	public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+	
+    public static String MY_PHONE_NUMBER;
+    public static Typeface FONT_EKMUKTA_LIGHT;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.simple_list_scroller);
+		listView = (ListView) findViewById(R.id.simpleListView);
+		menuListView = (ListView) findViewById(R.id.menuListView);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+		loginForm = (RelativeLayout) findViewById(R.id.loginForm);
+		rlMenu = (LinearLayout) findViewById(R.id.menuListViewCont);
+		menuIcon  = (ImageView) findViewById(R.id.menu_icon);
+		sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+		editor = sharedPreferences.edit();
+		FONT_EKMUKTA_LIGHT = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+		
+
+		breadcrumb = (TextView) findViewById(R.id.breadcrumb);
+  		headerText = (TextView) findViewById(R.id.headerText);
+  		app_name = (TextView) findViewById(R.id.app_name);
+  		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+  		homeButton = (Button) findViewById(R.id.homeButton);
+  		accountButton = (Button) findViewById(R.id.accountButton);
+  		cartButton = (Button) findViewById(R.id.cartButton);
+		
+	    
+	    //SET TEXT, APPLY FONTS, SETONCLICKLISTENERS
+  		new ApplyViewParamsTask().execute();
+  		
+  		if(sharedPreferences.contains("userPhoneNumber")) {
+  			MY_PHONE_NUMBER = sharedPreferences.getString("userPhoneNumber", null);
+  			
+  			Log.i("selected item ", "row clicked --> " + MY_PHONE_NUMBER);
+            
+            //Call AsynTask to perform network operation on separate thread
+            new HttpAsyncTask().execute("http://www.smokesignal.co.ke/mobile_trolley_app/getmyorders.php");
+            
+            //LIST VIEW
+      		MYORDERS = new ArrayList<RequestedSimpleListOrders>();
+    		myadapter = new AdapterListOrders(ActivityMyOrders.this, MYORDERS,FONT_EKMUKTA_LIGHT);
+      		listView.setDividerHeight(0); //remove the default divider line 
+    		listView.setAdapter(myadapter);
+    		listView.setTextFilterEnabled(true);
+    		listView.setOnItemClickListener(new OnItemClickListener() {
+    			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    				RequestedSimpleListOrders  item = (RequestedSimpleListOrders) listView.getItemAtPosition(position);
+    				
+    				//ADD TO SESSION
+    				editor.putString("order_date",item.item_one);
+    	            editor.putString("order_shop",item.item_two);
+    	            editor.putString("order_amount",item.item_three);
+    	            editor.commit();
+    				
+    			    Intent intent = new Intent(ActivityMyOrders.this, ActivityListPickUpOptions.class);
+    	    	    startActivity(intent);
+    			}
+    		});
+  		}else{
+  			Intent intent = new Intent(ActivityMyOrders.this, ActivityMyAccountLogin.class);
+    	    startActivity(intent);
+  		}
+        
+	}
+	
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();  // Always call the superclass method first
+		layout_progressbar.setVisibility(View.GONE);
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        listView.setVisibility(View.GONE);
+	        super.onPreExecute();
+	    }
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	layout_progressbar.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            myadapter.notifyDataSetChanged();
+            super.onPostExecute(result);
+            
+            Toast.makeText(getBaseContext(), "Orders Received!", Toast.LENGTH_LONG).show();
+            Log.i("Orders"," --> "+result);
+            
+	        try {
+	        	
+	        	JSONArray jsonArr = new JSONArray(result);
+	        	String[] list_item_ids = new String[jsonArr.length()];
+				String[] list_item_titles = new String[jsonArr.length()];
+	        	
+				for(int i = 0; i < jsonArr.length(); i++){
+					JSONObject jsonObj = jsonArr.getJSONObject(i); 
+					String item_id = jsonObj.getString("id");
+					String item_ref_number = jsonObj.getString("ref_number");
+					String item_status = jsonObj.getString("status");
+					String date = jsonObj.getString("created");
+					String outlet = jsonObj.getString("shop_brand_id");
+					String branch = jsonObj.getString("shop_branch_id");
+					String amount = jsonObj.getString("subtotal");
+					
+					list_item_ids[i] = item_id;
+					list_item_titles[i] = date;
+					
+					RequestedSimpleListOrders d = new RequestedSimpleListOrders();
+					
+					d.setItemId(item_id);
+					d.setItemRefNumber(item_ref_number);
+					d.setItemStatus(item_status);
+					d.setItemOne(date);
+					d.setItemTwo(outlet + " - " + branch);
+					d.setItemThree(amount);
+					
+					d.item_id = item_id;
+					d.item_ref_number = item_ref_number;
+					d.item_status = item_status;
+				    d.item_one = date;
+				    d.item_two = outlet + " - " + branch;
+				    d.item_three = amount;
+				    
+				    MYORDERS.add(d);
+				}
+				
+				
+			}catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+       }
+        
+        
+
+		@Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+	}
+
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("phone_number",MY_PHONE_NUMBER));
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+	
+	private class ApplyViewParamsTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+  			//MENU ICON
+  			menuIcon.setImageResource(R.drawable.ic_account_grey);
+	  		
+	    	//SET TEXTS
+	  		headerText.setText("My Orders");
+			breadcrumb.setText("Home / My Account / My Orders");
+			
+			//SET FONT
+			app_name.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		headerText.setTypeface(FONT_EKMUKTA_LIGHT);
+			breadcrumb.setTypeface(FONT_EKMUKTA_LIGHT);
+			shoppingButton.setTypeface(FONT_EKMUKTA_LIGHT);
+		    homeButton.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		accountButton.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		cartButton.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		
+	  		//SET COLOR
+	  		accountButton.setTextColor(getResources().getColor(R.color.green));
+	  		
+	  		//SET ONCLICKLISTENER
+	  		shoppingButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	layout_progressbar.setVisibility(View.VISIBLE);
+	            	Intent intent = new Intent(ActivityMyOrders.this, ActivityListOutlets.class);
+	            	if(sharedPreferences.contains("myTrolley")) {
+	            		intent = new Intent(ActivityMyOrders.this, ActivityListAisles.class);
+	            	}
+		    	    startActivity(intent);
+	            }
+	        }); 
+	  		
+	  		homeButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	Intent intent = new Intent(ActivityMyOrders.this, ActivityMain.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        });  
+	  		
+	  		accountButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	Intent intent = new Intent(ActivityMyOrders.this, ActivityMyAccountLogin.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        });
+	  		
+	  		//SET NOTIFICATION FOR THE NUMBER OF ITEMS CURRENTLY IN THE TROLLEY
+			TextView cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+			if(sharedPreferences.contains("myTrolley")) {
+				String inMyTrolley = sharedPreferences.getString("myTrolley", null);
+				Gson gson = new Gson();
+				List[] jsonMyTrolley = gson.fromJson(inMyTrolley,List[].class);
+                List getjsonMyTrolley = Arrays.asList(jsonMyTrolley);
+                
+                Object getObject = getjsonMyTrolley.get(0);
+                ArrayList myTrolley = (ArrayList) getObject;
+                Integer numberOfItemsInMyTrolley = myTrolley.size();
+                cartButtonNotification.setText(numberOfItemsInMyTrolley.toString());
+    	  		
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	Intent intent = new Intent(ActivityMyOrders.this, ActivityMyCart.class);
+    		    	    startActivity(intent);
+    	                
+    	            }
+    	        });
+			}else{
+				cartButtonNotification.setText("0");
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	Toast.makeText(getBaseContext(), "Your trolley is empty!", Toast.LENGTH_LONG).show();
+    	            }
+    	        });
+			}
+			
+			
+	    }
+	    
+	 }
+}

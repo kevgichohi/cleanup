@@ -1,0 +1,179 @@
+package com.redhering.nunuaraha;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import org.apache.http.util.EncodingUtils;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.view.View;
+import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.redhering.nunuaraha.R;
+
+public class CopyOfActivityStep10ListPaymentOptionsGateway extends Activity {
+	public static final String MY_SESSION = "mySession";
+	SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+	public static ArrayList<RequestedResultsSimpleList> DELIVERYOPTIONS;
+	AdapterSimpleList myadapter;
+	
+	LinearLayout layout_progressbar;
+	RelativeLayout headersection;
+	public static String SELECTED_BRANCH_ID;
+	public static String SELECTED_BRANCH_TITLE;
+	public static String SELECTED_BRAND_ID;
+	public static String SELECTED_BRAND_TITLE;
+	public static String SELECTED_BRAND_LOGO;
+	public static String SELECTED_OUTLET_ID;
+	public static String SELECTED_OUTLET_TITLE;
+	public static String USER_PHONE_NUMBER;
+	Typeface EkMukta_Light;
+	TextView app_name;
+	Button menuIcon;
+	TextView cartButtonNotification;
+	TextView headerText;
+	Button shoppingButton;
+	Button cartButton;
+	WebView webView;
+	ImageView shopLogoview;
+    String extStorageDirectory;
+    Bitmap bm;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_payment_options_gateway);
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+		initViews();
+  		
+  		if(sharedPreferences.contains("loggedIn") && sharedPreferences.contains("customerInfo")) {
+  			headerText.setText("Payment Options");
+  			
+			//LOAD QUICKLINKS
+	  		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
+	  		helperQuickLinks.create(menuIcon,shoppingButton,cartButton,cartButtonNotification,CopyOfActivityStep10ListPaymentOptionsGateway.this,sharedPreferences);
+	  		new ApplyViewParamsTask().execute();
+
+			//DISPLAY OUTLET LOGO
+	        File file = new File(extStorageDirectory+"/NunuaRaha/", SELECTED_BRAND_LOGO);
+	        BitmapFactory.Options options = new BitmapFactory.Options();
+	        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+	        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+	        shopLogoview.setImageBitmap(bitmap);
+  			
+  		}else{
+  			Intent intent = new Intent(CopyOfActivityStep10ListPaymentOptionsGateway.this, ActivityMyAccountLogin.class);
+  			intent.putExtra("from" , "ActivityStep09ListDeliveryOptions");
+    	    startActivity(intent);
+  		}
+	}
+	
+	private void initViews() {
+		extStorageDirectory = Environment.getExternalStorageState().toString();
+  	    extStorageDirectory = Environment.getExternalStorageDirectory().toString();
+  	    
+  	    layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+	    headersection = (RelativeLayout) findViewById(R.id.header);
+	    sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+	    SELECTED_OUTLET_ID = sharedPreferences.getString("selectedOutletId", null);
+	    SELECTED_OUTLET_TITLE = sharedPreferences.getString("selectedOutlet", null);
+	    SELECTED_BRAND_ID = sharedPreferences.getString("selectedBrandId", null);
+		SELECTED_BRAND_TITLE = sharedPreferences.getString("selectedBrand", null);
+		SELECTED_BRAND_LOGO = sharedPreferences.getString("selectedBrandLogo", null);
+		SELECTED_BRANCH_ID = sharedPreferences.getString("selectedBranchId", null);
+		SELECTED_BRANCH_TITLE = sharedPreferences.getString("selectedBranch", null);
+		USER_PHONE_NUMBER = sharedPreferences.getString("userPhoneNumber", null);
+		EkMukta_Light = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+		app_name = (TextView) findViewById(R.id.app_name);
+		menuIcon  = (Button) findViewById(R.id.menu_icon);
+		headerText = (TextView) findViewById(R.id.headerText);
+		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+		cartButton = (Button) findViewById(R.id.cartButton);
+		cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+		shopLogoview = (ImageView) findViewById(R.id.shopLogo);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+	}
+	
+	@Override
+	public void finish() {
+	    super.finish();
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();  // Always call the superclass method first
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+		
+	}
+	
+	private class ApplyViewParamsTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+			layout_progressbar.setVisibility(View.GONE);
+			
+			/**webView = (WebView) findViewById(R.id.paymentGateway);
+			webView.getSettings().setJavaScriptEnabled(true);
+			
+			String postUrl = "https://www.jambopay.com/JPExpress.aspx";
+			
+			String jp_item_type = "cart";
+			String jp_item_name = "Nakumatt";
+			String order_id = "455879";
+			String jp_business = "business@nunuaraha.com";
+			String jp_amount_1 = "1500";
+			String jp_amount_2 = "0";
+			String jp_amount_5 = "0";
+			String jp_payee = "email@yourcustomer.com";
+			String jp_shipping = "Yumm!";
+			String jp_rurl = "http://www.yourwebsite.com/testpost/Result.aspx?ii=0";
+			String jp_furl = "http://www.yourwebsite.com/testpost/Result.aspx?ii=1";
+			String jp_curl = "http://www.yourwebsite.com/testpost/Result.aspx?ii=2";
+			String image = "https://www.jambopay.com/jp_image/paynow.png";
+			
+
+			String postData = "jp_item_type="+jp_item_type+"&jp_item_name="+jp_item_name+"&order_id="+order_id+"&jp_business="+jp_business+"&jp_amount_1="+jp_amount_1+"&jp_amount_2="+jp_amount_2+"&jp_amount_5="+jp_amount_5+"&jp_payee="+jp_payee+"&jp_shipping="+jp_shipping+"&jp_rurl="+jp_rurl+"&jp_furl="+jp_furl+"&jp_curl="+jp_curl+"&image="+image;
+
+			
+			webView.postUrl(postUrl,EncodingUtils.getBytes(postData, "BASE64"));
+			//webView.loadUrl("http://www.google.com");**/
+	  		
+
+	    }
+	    
+	 }
+
+	
+}

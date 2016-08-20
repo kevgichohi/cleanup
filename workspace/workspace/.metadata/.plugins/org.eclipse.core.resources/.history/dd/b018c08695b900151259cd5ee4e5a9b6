@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingTop="6dip"
+    android:paddingBottom="6dip"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/customproductslisting" >
+    
+ 	
+    <!-- Thumbnail Image -->
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="70dip"
+        android:layout_height="70dip"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_loader"
+        android:contentDescription="Item"
+	    android:layout_centerVertical="true"
+	    android:layout_centerHorizontal="true"
+	    android:layout_alignParentLeft="true"
+	    android:layout_margin="3dp"/>
+		
+
+    <TextView
+        android:id="@+id/title"
+		android:layout_toRightOf="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/darkgreen"
+        android:layout_marginTop="0dp"
+        android:textSize="14sp"
+        android:textStyle="bold" 
+        android:layout_margin="3dp"/>
+ 
+    <TextView
+        android:id="@+id/size"
+		android:layout_toRightOf="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title" 
+         android:layout_marginRight="7dp"
+	     android:layout_marginLeft="5dp"/>
+ 
+    <TextView
+        android:id="@+id/price"
+		android:layout_toRightOf="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/size"
+         android:layout_marginRight="10dp"
+	     android:layout_marginLeft="5dp"/>
+
+      
+	  <TextView
+        android:id="@+id/itemperprice"
+        android:layout_width="wrap_content"
+		android:layout_toRightOf="@+id/title"
+		android:layout_alignParentRight="true"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+	    android:textStyle="bold"
+	    android:layout_marginRight="10dp"
+	    android:layout_marginLeft="10dp"/>
+    	
+
+    
+    <Button
+
+        android:id="@+id/addtocart"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_margin="0dp"
+		android:padding="0dp"
+		android:drawableLeft="@drawable/add"
+        android:layout_below="@id/itemperprice"
+		android:layout_toRightOf="@+id/title"
+		android:background="@drawable/addtocart"
+		android:scaleType="fitCenter"/> 
+		
+		
+    <Button
+
+        android:id="@+id/removefromcart"
+		android:layout_toRightOf="@+id/addtocart"
+        android:layout_below="@id/itemperprice"
+        android:layout_width="20dp"
+        android:layout_height="30dp"
+		android:padding="0dp"
+		android:layout_margin="0dp"
+		android:drawableLeft="@drawable/removefromcart"
+		android:background="@drawable/removefile"  /> 
+	
+    <!-- Arrow Image -->
+    <ImageView
+        android:id="@+id/arrowRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_corner_right_bottom"
+        android:layout_alignParentBottom="true"
+        android:clickable="false"
+		android:focusable="false"
+		android:focusableInTouchMode="false" />
+ 
+</RelativeLayout>

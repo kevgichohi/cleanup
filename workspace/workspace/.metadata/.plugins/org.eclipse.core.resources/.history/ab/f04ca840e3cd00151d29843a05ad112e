@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="@color/lightgrey">
+    
+	<include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+     <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/actionbar"
+        layout="@layout/global_footer" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/footer" 
+	    layout="@layout/global_header" />
+	
+    <!-- =======================================CONTENT===================================== -->
+    <ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@id/header"
+    	android:orientation="vertical"  
+    	android:background="@color/e7e8e9"
+    	android:layout_marginTop="10dp"
+    	android:paddingBottom="15dp">
+	    
+	    <LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:layout_below="@id/header"
+	    	 android:layout_marginTop="0dp"
+		      android:layout_marginBottom="40dp"
+		      android:gravity="center_horizontal"
+		      android:orientation="vertical"
+		      android:paddingTop="0dp" >
+	    	
+			<RelativeLayout
+			   android:id="@+id/sectionInfoHeader"
+			   android:layout_width="match_parent"
+			   android:layout_height="wrap_content"
+			   android:background="@drawable/custompagesubtitleshape"
+			   android:gravity="left" >
+			
+			   <TextView
+				    android:id="@+id/sectionInfo"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:layout_centerVertical="true"
+				    android:text="Give Us Feedback"
+				    android:textColor="@color/grey666"
+				    android:textSize="12sp"
+			        android:textAllCaps="true"
+			        android:visibility="gone" />
+			   
+			   <TextView
+				    android:id="@+id/systemMessage"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+			    	android:layout_below="@+id/sectionInfo"
+		          	android:layout_marginTop="10dp"
+				    android:textColor="@color/red"
+				    android:textSize="12sp"
+		   			android:visibility="gone" />
+			 </RelativeLayout>
+			    
+			 <RelativeLayout
+			    android:id="@+id/personalInfo"
+			    android:layout_width="fill_parent"
+			    android:layout_height="fill_parent"
+			    android:layout_below="@+id/sectionInfoHeader"
+			    android:padding="20dp"
+			    android:gravity="left" >
+					   <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        
+        android:id="@+id/pointerwrapper">  
+			   			  <Spinner
+			      android:id="@+id/shop"
+            android:layout_height="fill_parent"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+		          android:layout_marginTop="10dp"
+			      android:textSize="13sp"
+			      android:textColor="@color/green"
+			      android:prompt="@string/neighbourhood_prompt" 
+			      android:visibility="gone" />
+			     <TextView 
+		        android:id="@+id/call"
+            android:layout_height="fill_parent"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+	   			android:paddingLeft="0dp"
+	   			android:paddingRight="0dp"
+		         android:minHeight="0dp"
+			     android:minWidth="0dp"
+			     android:layout_marginLeft="10dp"
+		        android:drawableLeft="@drawable/talktouscall"
+        		android:layout_alignParentLeft="true" 
+        		android:layout_gravity="left"/>
+			     
+			     <TextView 
+		        android:id="@+id/msg"
+            android:layout_height="fill_parent"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+	   			android:paddingLeft="0dp"
+	   			android:paddingRight="0dp"
+	   			android:layout_marginRight="30dp"
+	   			android:layout_marginLeft="30dp"
+	   			android:paddingBottom="0dp"
+		         android:minHeight="0dp"
+			     android:minWidth="0dp"
+   				 android:layout_toRightOf="@id/call"
+		        android:drawableLeft="@drawable/talktousmsg" 
+		        android:layout_gravity="center" />
+			     
+			     <TextView 
+		        android:id="@+id/email"
+		        android:layout_width="54dp"
+		        android:layout_height="wrap_content"		     
+	   			android:paddingLeft="0dp"
+	   			android:paddingRight="0dp"
+	   			android:layout_marginRight="10dp"
+   				 android:layout_toRightOf="@id/msg"
+		         android:minHeight="0dp"
+			     android:minWidth="0dp"
+		        android:drawableLeft="@drawable/talktousemail"
+	    		android:layout_alignParentRight="true" 
+	    		android:layout_gravity="right"/>
+			   
+			     </LinearLayout>
+			     
+			     <TextView 
+		        android:id="@+id/pointer"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+	   			android:paddingLeft="0dp"
+	   			android:paddingRight="40dp"
+	   			android:paddingTop="0dp"
+	   			android:layout_marginBottom="0dp"
+	   			android:layout_marginLeft="0dp"
+				android:layout_below="@id/email"
+	   			android:visibility="gone"	
+		        android:drawableTop="@drawable/talktouspointer" 
+		        android:layout_alignParentRight="true"
+		        android:layout_gravity="right"/>
+			    
+			     
+			    <RelativeLayout 
+			      android:layout_width="fill_parent"
+			  	  android:layout_height="wrap_content" 
+			  	  android:layout_below="@id/pointerwrapper" 
+			  	  android:background="@drawable/customshapetalktous"
+			  	  android:paddingTop="0dp"
+	   			  android:paddingBottom="0dp"
+	   			  android:layout_marginTop="-20dp"
+	   			  android:layout_gravity="right">
+	   
+			     <EditText
+			      android:id="@+id/youremail"
+			      android:layout_width="match_parent"
+			      android:layout_height="wrap_content"
+		          android:layout_marginTop="10dp"
+			      android:hint="Your Email"
+			      android:textStyle="italic"
+			      android:textSize="13sp"
+		          android:clickable="true" 
+		          android:visibility="gone"/>
+			    
+			     
+			    <EditText
+			      android:id="@+id/talkToUs"
+			      android:layout_width="match_parent"
+			      android:layout_height="80dp"
+		          android:layout_below="@id/youremail"
+		          android:layout_marginTop="10dp"
+			      android:hint="Your Message"
+			      android:textStyle="italic"
+			      android:textSize="13sp"
+			      android:inputType="textMultiLine"
+		          android:clickable="true" 
+		          android:visibility="gone"/>
+			    
+			    <Button
+				    android:id="@+id/submitFeedback"
+				    android:layout_width="match_parent"
+				    android:layout_height="30dp"
+		          	android:layout_below="@id/talkToUs"
+		          	android:layout_marginTop="10dp"
+		          	android:layout_marginBottom="10dp"
+		          	android:layout_alignParentRight="true"
+				    android:paddingTop="5dp"
+				    android:paddingBottom="5dp"
+				    android:paddingLeft="0dp"
+				    android:paddingRight="0dp"
+				    android:text="Submit"
+				    android:textSize="16sp"
+				    android:textColor="@color/white"
+				    android:visibility="gone"
+				    android:background="@drawable/customsavebtnshape"/>
+			    </RelativeLayout>
+			  </RelativeLayout>
+		  </LinearLayout>
+	  </ScrollView>
+    
+
+      
+       <include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        layout="@layout/global_quicklinks" />
+      
+      <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+ 
+</RelativeLayout>

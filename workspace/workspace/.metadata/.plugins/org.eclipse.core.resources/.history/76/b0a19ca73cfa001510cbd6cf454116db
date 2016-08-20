@@ -1,0 +1,401 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+public class ActivityStep12ThankYou extends Activity {
+	
+	LinearLayout layout_progressbar;
+	RelativeLayout headersection;
+	
+	public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    
+    public static String TOTAL;
+    public static String reciepttotaltextdata2;
+    public static String  paymentOption;
+
+	public static String CUSTOMER_FIRST_NAME;
+	public static String CUSTOMER_LAST_NAME;
+	public static String CUSTOMER_EMAIL_ADDRESS;
+	public static String CUSTOMER_PHONE_NUMBER;
+	public static String CUSTOMER_ADDRESS;
+	public static String CUSTOMER_ADDRESS_DESCRIPTION;
+	public static String CUSTOMER_ORDER;
+	public static String CUSTOMER_ORDER_ITEM_PRICE;
+	public static String SELECTED_LOCATION_ID;
+	public static String SELECTED_BRANCH_ID;
+	public static String SELECTED_BRANCH_TITLE;
+	public static String SELECTED_BRAND_ID;
+	public static String SELECTED_BRAND_TITLE;
+	public static String SELECTED_BRAND_LOGO;
+	public static String SELECTED_LOCATION;
+	public static String SELECTED_DELIVERY_CHARGES;
+	public static String Transaction_Ref;
+	public static String Transaction_type;
+	
+	public static String selectedOutletId;
+
+	
+	Typeface EkMukta_Light;
+	TextView headerText;
+	TextView thankYouMessage;
+	TextView thankYouMessage2;
+	TextView thankYouMessage3;
+	TextView app_name;
+	Button menuIcon;
+	Button shoppingButton;
+	Button cartButton;
+	TextView cartButtonNotification;
+	Button shoppingEnded;
+	TextView exit;
+	
+	TextView outlet;
+	TextView outletext;
+	TextView totald;
+	TextView totaltext;
+	TextView ordertext;
+	TextView order;
+	
+	TextView collection;
+	TextView collectiontext;
+	
+	TextView payment;
+	TextView paymenttext;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.thankyou);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+	    headersection = (RelativeLayout) findViewById(R.id.header);
+	    EkMukta_Light = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+	    sharedPreferences = getSharedPreferences(MY_SESSION,MODE_PRIVATE);
+		editor = sharedPreferences.edit();
+		TOTAL = sharedPreferences.getString("myTrolleyTotal", null);
+		reciepttotaltextdata2 = sharedPreferences.getString("reciepttotaltextdata", null);
+		paymentOption = sharedPreferences.getString("paymentOption", null);
+		
+		selectedOutletId = sharedPreferences.getString("selectedOutletId", null);;
+		
+		
+		//PICKUP OPTION
+		if(sharedPreferences.getString("deliverShopping", null).equals("No")){
+			SELECTED_DELIVERY_CHARGES = "0";
+			CUSTOMER_ADDRESS = "Pick Up";
+		}
+		//DELIVERY OPTION
+		else{
+			SELECTED_DELIVERY_CHARGES = "300";
+			CUSTOMER_ADDRESS = sharedPreferences.getString("deliveryAddress", null);
+		}
+
+		CUSTOMER_ORDER = sharedPreferences.getString("myTrolley", null);
+		CUSTOMER_ORDER_ITEM_PRICE = sharedPreferences.getString("myTrolleyItemPrice", null);
+		CUSTOMER_FIRST_NAME = sharedPreferences.getString("customerFirstName", null);
+		CUSTOMER_LAST_NAME = sharedPreferences.getString("customerLastName", null);
+		CUSTOMER_EMAIL_ADDRESS = sharedPreferences.getString("customerEmail", null);
+		CUSTOMER_PHONE_NUMBER = sharedPreferences.getString("userPhoneNumber", null);
+		Transaction_Ref = sharedPreferences.getString("transactionRef", null);
+		Transaction_type = sharedPreferences.getString("paymentMode", null);
+		
+	    SELECTED_BRAND_ID = sharedPreferences.getString("selectedBrandId", null);
+		SELECTED_BRAND_TITLE = sharedPreferences.getString("selectedBrand", null);
+		SELECTED_BRAND_LOGO = sharedPreferences.getString("selectedBrandLogo", null);
+		SELECTED_BRANCH_ID = sharedPreferences.getString("selectedBranchId", null);
+		SELECTED_BRANCH_TITLE = sharedPreferences.getString("selectedBranch", null);
+		SELECTED_LOCATION = sharedPreferences.getString("selectedLocation", null);
+		
+		app_name = (TextView) findViewById(R.id.app_name);
+		headerText = (TextView) findViewById(R.id.headerText);
+		menuIcon  = (Button) findViewById(R.id.menu_icon);
+		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+  		cartButton = (Button) findViewById(R.id.cartButton);
+  		cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+
+		thankYouMessage = (TextView) findViewById(R.id.thankYouMessage);
+		thankYouMessage2 = (TextView) findViewById(R.id.thankYouMessage2);
+		thankYouMessage3 = (TextView) findViewById(R.id.thankYouMessage3);
+		shoppingEnded = (Button) findViewById(R.id.shoppingEnded);
+		outlet = (TextView) findViewById(R.id.outlet);
+		outletext = (TextView) findViewById(R.id.outletext);
+		
+		totald = (TextView) findViewById(R.id.totald);
+		totaltext = (TextView) findViewById(R.id.totaltext);
+		ordertext = (TextView) findViewById(R.id.ordertext);
+		order = (TextView) findViewById(R.id.order);
+    	exit = (TextView) findViewById(R.id.exit);
+    	
+    	payment = (TextView) findViewById(R.id.payment);
+		paymenttext = (TextView) findViewById(R.id.paymenttext);
+		collection = (TextView) findViewById(R.id.collection);
+		collectiontext = (TextView) findViewById(R.id.collectiontext);
+
+    	headerText.setText("Thank you");
+		
+		// call AsynTask to perform network operation on separate thread
+        new HttpAsyncTask().execute("http://www.smokesignal.co.ke/mobile_trolley_app/saveorder.php");
+		
+		//LOAD QUICKLINKS
+  		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
+  		helperQuickLinks.create(menuIcon,shoppingButton,cartButton,cartButtonNotification,ActivityStep12ThankYou.this,sharedPreferences);
+  		
+  		shoppingEnded.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+        		Intent intent = new Intent(ActivityStep12ThankYou.this, ActivityStep01ListOutlets.class);
+        	    startActivity(intent);
+            }
+        });
+  		
+  		exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	onEXIT();
+            }
+        });
+	    
+        
+	}
+	
+	
+	
+	
+	public void onEXIT() {
+	    new AlertDialog.Builder(this)
+	        .setIcon(android.R.drawable.ic_dialog_alert)
+	        .setTitle("Exit")
+	        .setMessage("Are you sure you want to exit?")
+	        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+	        
+	        
+	    {
+	        @Override
+	        public void onClick(DialogInterface dialog, int which) {
+	        	overridePendingTransition(R.anim.slide_menu_in,R.anim.slide_menu_out);//SlideIn animation
+	        	Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+            	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            	intent.putExtra("EXIT", true);
+            	startActivity(intent); 
+	        	finish();
+	        }
+
+	    })
+	    .setNegativeButton("No", null)
+	    .show();
+	}
+	
+	public void exitFunction() {	
+		new AlertDialog.Builder(this)
+        .setIcon(android.R.drawable.ic_dialog_alert)
+        .setTitle("Exit")
+        .setMessage("Are you sure you want to exit?")
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        
+        
+    {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+        	//Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+        	//intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        	//intent.putExtra("EXIT", true);
+        	//startActivity(intent); 
+        	//finish();
+        	android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
+        }
+
+    })
+    .setNegativeButton("No", null)
+    .show();
+
+	}
+	
+	@Override
+	public void finish() {
+	    super.finish();
+	}
+	
+	public void onBackPressed() {
+		Intent intent = new Intent(ActivityStep12ThankYou.this, ActivityStep01ListOutlets.class);
+	    startActivity(intent);
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	
+        	layout_progressbar.setVisibility(View.GONE);
+            super.onPostExecute(result);
+            
+            //Toast.makeText(getBaseContext(), "Checkout", Toast.LENGTH_LONG).show();
+            
+            String order_ref_number = "0";
+            try {
+				JSONArray jsonArr = new JSONArray(result);
+
+		        Log.i("selected item ", "row clickd --> " + result);
+	        	
+				for(int i = 0; i < jsonArr.length(); i++){
+					JSONObject jsonObj = jsonArr.getJSONObject(i); 
+					order_ref_number = jsonObj.getString("id");
+				}
+				
+				outletext.setText(SELECTED_BRANCH_TITLE);
+				totaltext.setText("Ksh."+ reciepttotaltextdata2);
+				ordertext.setText(Transaction_Ref);
+				
+				if(sharedPreferences.getString("deliverShopping", null).equals("No")){
+					collectiontext.setText("Counter Pick - UP");
+				}else{
+					collectiontext.setText("Home Delivery");
+				}
+				
+				paymenttext.setText(paymentOption);
+				//thankYouMessage.setText("Thank you " + CUSTOMER_FIRST_NAME + " for shopping on E-fam at " + SELECTED_BRAND_TITLE + " " + SELECTED_BRANCH_TITLE +  " \nTotal: KES."+TOTAL);
+				thankYouMessage.setText("Thank you " + CUSTOMER_FIRST_NAME + " for shopping on E-fam");
+				thankYouMessage2.setText("Your delivery will arrive in 1Hr at " + CUSTOMER_ADDRESS);
+				if(sharedPreferences.getString("deliverShopping", null).equals("No")){
+					thankYouMessage2.setText("Please make sure to pick your shopping today before shop closes");
+				}
+		        thankYouMessage3.setText("Order # " + order_ref_number);
+	            
+		        
+		        //sharedPreferences.edit().clear().commit();//Remove all shared preferences
+		        //Remove specific shared preference
+		        sharedPreferences.edit().remove("myTrolley").commit();
+		        sharedPreferences.edit().remove("selectedBrandId").commit();
+		        sharedPreferences.edit().remove("selectedBrand").commit();
+		        sharedPreferences.edit().remove("selectedBrandLogo").commit();
+		        sharedPreferences.edit().remove("selectedBranchId").commit();
+		        sharedPreferences.edit().remove("selectedBranch").commit();
+		        sharedPreferences.edit().remove("selectedLocationId").commit();
+		        sharedPreferences.edit().remove("selectedLocation").commit();
+		        sharedPreferences.edit().remove("selectedOutletId").commit();
+		        sharedPreferences.edit().remove("selectedOutlet").commit();
+		        sharedPreferences.edit().remove("transactionRef").commit();
+		        sharedPreferences.edit().remove("paymentOption").commit();
+		        sharedPreferences.edit().remove("reciepttotaltextdata2").commit();
+		        sharedPreferences.edit().remove("deliverShopping").commit();
+		        
+		        
+
+			}catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
+           
+        }
+    
+        
+        @Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+	}
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("customer_fname",CUSTOMER_FIRST_NAME));
+        nameValuePairs.add(new BasicNameValuePair("customer_lname",CUSTOMER_LAST_NAME));
+        nameValuePairs.add(new BasicNameValuePair("customer_email",CUSTOMER_EMAIL_ADDRESS));
+        nameValuePairs.add(new BasicNameValuePair("customer_phone",CUSTOMER_PHONE_NUMBER));
+        nameValuePairs.add(new BasicNameValuePair("customer_address",CUSTOMER_ADDRESS));
+        nameValuePairs.add(new BasicNameValuePair("customer_order_item_price",CUSTOMER_ORDER_ITEM_PRICE));
+        nameValuePairs.add(new BasicNameValuePair("transactionRef",Transaction_Ref));
+        nameValuePairs.add(new BasicNameValuePair("customer_order",CUSTOMER_ORDER));
+        nameValuePairs.add(new BasicNameValuePair("customer_order_total",reciepttotaltextdata2));
+        nameValuePairs.add(new BasicNameValuePair("branch_id",SELECTED_BRANCH_ID));
+        nameValuePairs.add(new BasicNameValuePair("brand_id",SELECTED_BRAND_ID));
+        nameValuePairs.add(new BasicNameValuePair("outlet_id",selectedOutletId));
+        nameValuePairs.add(new BasicNameValuePair("payment_pref",paymentOption));
+
+        //nameValuePairs.add(new BasicNameValuePair("selectedOutletId",selectedOutletId));
+        
+        
+        try {
+        	 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+
+
+}

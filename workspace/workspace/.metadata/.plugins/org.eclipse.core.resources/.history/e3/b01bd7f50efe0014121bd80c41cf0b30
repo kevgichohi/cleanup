@@ -1,0 +1,300 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+
+public class ActivityStep05ListAisles extends Activity {
+	
+	SQLiteDatabase nunuaRahaDatabase;
+	SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+	public static final String MY_SESSION = "mySession";
+	Gson gson;
+	
+	ArrayList<RequestedResultsSimpleList> AISLELIST;
+	AdapterSimpleList myadapter;
+	ListView listView;
+	LinearLayout layout_progressbar;
+	RelativeLayout headersection;
+	RelativeLayout footersection;
+	public static String SELECTED_BRANCH_ID;
+	public static String SELECTED_BRANCH_TITLE;
+	public static String SELECTED_BRAND_ID;
+	public static String SELECTED_BRAND_TITLE;
+	public static String SELECTED_BRAND_LOGO;
+	public static String SELECTED_LOCATION_ID;
+	public static String SELECTED_LOCATION_TITLE;
+	public static String SELECTED_OUTLET_ID;
+	public static String SELECTED_OUTLET_TITLE;
+	Typeface EkMukta_Light;
+	TextView app_name;
+	TextView headerText;
+	Button menuIcon;
+	Button shoppingButton;
+	Button homeButton;
+	Button accountButton;
+	Button cartButton;
+	TextView cartButtonNotification;
+	Button backButton;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.scroller_simple_list);
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+		listView = (ListView) findViewById(R.id.simpleListView);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+	    headersection = (RelativeLayout) findViewById(R.id.header);
+	    footersection = (RelativeLayout) findViewById(R.id.footer);
+	    sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+	    gson = new Gson();
+		SELECTED_OUTLET_ID = sharedPreferences.getString("selectedOutletId", null);
+	    SELECTED_OUTLET_TITLE = sharedPreferences.getString("selectedOutlet", null);
+	    SELECTED_LOCATION_ID = sharedPreferences.getString("selectedLocationId", null);
+		SELECTED_LOCATION_TITLE = sharedPreferences.getString("selectedLocation", null);
+		SELECTED_BRAND_ID = sharedPreferences.getString("selectedBrandId", null);
+		SELECTED_BRAND_TITLE = sharedPreferences.getString("selectedBrand", null);
+		SELECTED_BRAND_LOGO = sharedPreferences.getString("selectedBrandLogo", null);
+		SELECTED_BRANCH_ID = sharedPreferences.getString("selectedBranchId", null);
+		SELECTED_BRANCH_TITLE = sharedPreferences.getString("selectedBranch", null);
+	    EkMukta_Light = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+  		app_name = (TextView) findViewById(R.id.app_name);
+		menuIcon  = (Button) findViewById(R.id.menu_icon);
+		headerText = (TextView) findViewById(R.id.headerText);
+		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+  		homeButton = (Button) findViewById(R.id.homeButton);
+  		accountButton = (Button) findViewById(R.id.accountButton);
+  		cartButton = (Button) findViewById(R.id.cartButton);
+		cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+		backButton = (Button) findViewById(R.id.backButton);
+		
+		
+    	headerText.setText(SELECTED_BRANCH_TITLE);
+	    app_name.setTypeface(EkMukta_Light);
+  		
+	    //LOAD QUICKLINKS
+  		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
+  		helperQuickLinks.create(menuIcon,shoppingButton,cartButton,cartButtonNotification,ActivityStep05ListAisles.this,sharedPreferences);
+
+		//LOAD ADDTIONAL HEADER ITEMS LIKE BRAND LOGO
+  		//HelperHeader helperHeader = new HelperHeader();
+  		//helperHeader.create(headersection,shopLogoview,SELECTED_BRAND_LOGO,ActivityStep03ListNeighbourhood.this);
+  		
+        //LIST VIEW
+  		new retrieveFromDBTask().execute();
+  		AISLELIST = new ArrayList<RequestedResultsSimpleList>();
+		myadapter = new AdapterSimpleList(ActivityStep05ListAisles.this, AISLELIST,EkMukta_Light);
+		listView.setAdapter(myadapter);
+        new populateListViewTask().execute();
+        
+        footersection.setVisibility(View.VISIBLE);
+		backButton.setVisibility(View.VISIBLE);
+		backButton.setText("Back to "+SELECTED_BRAND_TITLE+" branches");
+		backButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	finish();
+            }
+        });
+	}
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+	}
+	
+	@Override
+	public void finish() {
+	    super.finish();
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();  // Always call the superclass method first
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+		
+		myadapter = new AdapterSimpleList(ActivityStep05ListAisles.this, AISLELIST,EkMukta_Light);
+		listView.setAdapter(myadapter);
+		myadapter.notifyDataSetChanged();
+
+		//LOAD QUICKLINKS
+  		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
+  		helperQuickLinks.create(menuIcon,shoppingButton,cartButton,cartButtonNotification,ActivityStep05ListAisles.this,sharedPreferences);
+	}
+
+	private class retrieveFromDBTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        listView.setVisibility(View.GONE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+        	layout_progressbar.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            myadapter.notifyDataSetChanged();
+            //super.onPostExecute();
+            
+	    	nunuaRahaDatabase = openOrCreateDatabase("nunuaRahaDatabase",MODE_PRIVATE,null);
+	    	
+	    	//GET AISLES IDS FROM SELECTED BRANCH
+	    	Cursor resultsBranchCursor = nunuaRahaDatabase.rawQuery("SELECT * FROM hdjgf_shops_branches WHERE id ="+SELECTED_BRANCH_ID,null);
+	    	resultsBranchCursor.moveToFirst();
+	    	String aislesIds = resultsBranchCursor.getString(4);
+	    	String aislesIdsString = "";
+	    	JSONArray jsonArr;
+			try {
+				jsonArr = new JSONArray(aislesIds);
+				for(int j = 0; j < jsonArr.length(); j++){
+					String aisle_id = jsonArr.getString(j); 
+					aislesIdsString = aislesIdsString+aisle_id+",";
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String[] aislesIdsArr = aislesIdsString.split(",");
+	    	String inClause = gson.toJson(aislesIdsArr); //at this point inClause will look like ["23","343","33","55","43"]
+	    	inClause = inClause.replace("[","(");//at this point inClause will look like ("23","343","33","55","43"]
+	    	inClause = inClause.replace("]",")");//at this point inClause will look like ("23","343","33","55","43")
+	    	inClause = inClause.replace("\"","");//now at this point inClause will look like  (23,343,33,55,43) so use it to construct your SELECT
+			
+			//GET AISLES BY ID FROM ID LIST ABOVE
+	    	Cursor resultsAislesCursor = nunuaRahaDatabase.rawQuery("SELECT * FROM hdjgf_shops_aisles WHERE id IN " + inClause,null);
+	    	resultsAislesCursor.moveToFirst();
+        	String[] list_item_ids = new String[resultsAislesCursor.getCount()];
+			String[] list_item_titles = new String[resultsAislesCursor.getCount()];
+			
+			ArrayList<ArrayList<ArrayList<String>>> aislesIdListCont = new ArrayList<ArrayList<ArrayList<String>>>(); //Outer Array
+			ArrayList<ArrayList<String>> aislesIdList = new ArrayList<ArrayList<String>>(); //Inner Array
+			
+			int k = 0;
+	    	while (resultsAislesCursor.isAfterLast() == false) {
+				String item_id = resultsAislesCursor.getString(0);
+				String item_title = resultsAislesCursor.getString(1);
+				
+				ArrayList<String> aislesListInfo = new ArrayList<String>(); //Inner array
+				aislesListInfo.add(item_id);
+				aislesListInfo.add(item_title);
+				aislesIdList.add(new ArrayList<String>(aislesListInfo)); 
+				
+				list_item_ids[k] = item_id;
+				list_item_titles[k] = item_title;
+				
+				RequestedResultsSimpleList d = new RequestedResultsSimpleList();
+				
+				d.setTitle(item_title);
+				
+			    d.item_id = item_id;
+			    d.item_title = item_title;
+			    AISLELIST.add(d);
+				
+	    	    k++;
+	    	    resultsAislesCursor.moveToNext();
+	    	}
+	    	
+	    	//ADD INNER ARRAY TO OUTER ARRAY
+			aislesIdListCont.add(new ArrayList<ArrayList<String>>(aislesIdList)); 
+			aislesIdList.clear();
+			
+			sharedPreferences = getSharedPreferences(MY_SESSION,MODE_PRIVATE);
+    		SharedPreferences.Editor editor = sharedPreferences.edit();
+            String jsonAislesIdList = gson.toJson(aislesIdListCont);
+            editor.putString("ailsesIdList", jsonAislesIdList);
+            editor.commit();
+	    }
+	    
+	 }
+	
+	private class populateListViewTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+			listView.setTextFilterEnabled(true);
+			listView.setOnItemClickListener(new OnItemClickListener() {
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+					RequestedResultsSimpleList  item = (RequestedResultsSimpleList) listView.getItemAtPosition(position);
+					
+				    sharedPreferences = getSharedPreferences(MY_SESSION,MODE_PRIVATE);
+		    		SharedPreferences.Editor editor = sharedPreferences.edit();
+		            editor.putString("currentAisleListPosition",String.valueOf(position));
+		            editor.putString("selectedAisle",item.item_title);
+		            editor.putString("selectedAisleId",item.item_id);
+		            editor.commit();
+		            
+				    Intent intent = new Intent(ActivityStep05ListAisles.this, ActivityStep06ListGoods.class);
+		    	    startActivity(intent);
+				}
+			});
+	    }
+	    
+	 }
+	
+}

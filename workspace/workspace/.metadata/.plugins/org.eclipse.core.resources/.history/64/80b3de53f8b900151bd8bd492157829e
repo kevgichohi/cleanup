@@ -1,0 +1,373 @@
+package com.redhering.nunuaraha;
+
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.redhering.nunuaraha.R;
+import com.google.gson.Gson;
+ 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.graphics.BitmapFactory.Options;
+import android.graphics.drawable.Drawable;
+import android.view.LayoutInflater;
+import android.widget.TextView;
+ 
+public class AdapterProducts extends BaseAdapter implements android.view.View.OnClickListener {
+	private static ArrayList<RequestedResults> searchArrayList;
+    private LayoutInflater mInflater;
+    private Context context;
+    private TextView cartButtonNotification;
+    private LinearLayout layout_progressbar;
+    private int resource;
+    public static Integer COUNT_CART_ITEMS;
+    
+	public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    Gson gson;
+    Typeface EkMukta_Light;
+    
+    public AdapterProducts(Context ctx, ArrayList<RequestedResults> results, TextView cartBtnNotification, LinearLayout progressbar) {
+        searchArrayList = results;
+        mInflater = LayoutInflater.from(ctx);
+        context=ctx;
+  		EkMukta_Light = Typeface.createFromAsset(context.getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+        sharedPreferences = context.getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        gson = new Gson();
+        cartButtonNotification = cartBtnNotification;
+        
+        layout_progressbar = progressbar;
+
+        COUNT_CART_ITEMS = 0;
+        if(sharedPreferences.contains("myTrolley")) {
+        	String jsonMyCartString = sharedPreferences.getString("myTrolley", null);
+			JSONObject jsonMyCartObject;
+			try {
+				jsonMyCartObject = new JSONObject(jsonMyCartString);
+				Integer numberOfItemsInMyTrolley = 0;
+				Iterator<String> loop = jsonMyCartObject.keys();
+			    while (loop.hasNext()) {
+			        String key = loop.next();
+			        try {
+			            String unitsValue = jsonMyCartObject.getString(key);
+			            numberOfItemsInMyTrolley = numberOfItemsInMyTrolley + Integer.parseInt(unitsValue);
+			            COUNT_CART_ITEMS = numberOfItemsInMyTrolley;
+			        } catch (JSONException e) {
+			            // Something went wrong!
+			        }
+			    }
+			    cartButtonNotification.setText(numberOfItemsInMyTrolley.toString());
+			    //ItemperPrice.setText(numberOfItemsInMyTrolley.toString());
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+    }
+
+	public int getCount() {
+        return searchArrayList.size();
+    }
+ 
+    public Object getItem(int position) {
+        return searchArrayList.get(position);
+    }
+ 
+    public long getItemId(int position) {
+        return position;
+    }
+ 
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        String itemId = searchArrayList.get(position).getId();
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.simple_list_products, null);
+            holder = new ViewHolder();
+            holder.title = (TextView) convertView.findViewById(R.id.title);
+            holder.size = (TextView) convertView.findViewById(R.id.size);
+            holder.price = (TextView) convertView.findViewById(R.id.price);
+            holder.thumbnail = (ImageView) convertView.findViewById(R.id.thumbnail);
+            holder.addtocart = (Button) convertView.findViewById(R.id.addtocart);
+            holder.removefromcart = (Button) convertView.findViewById(R.id.removefromcart);
+            holder.itemperprice = (TextView) convertView.findViewById(R.id.itemperprice);
+           
+
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+  		
+  		//TITLE
+        holder.title.setText(searchArrayList.get(position).getTitle());
+        holder.title.setTypeface(EkMukta_Light);
+        
+        
+        //SIZE
+        if(searchArrayList.get(position).getSize() != ""){
+        	holder.size.setText(searchArrayList.get(position).getSize());
+        	holder.size.setTypeface(EkMukta_Light);
+        }else{
+        	holder.size.setVisibility(View.GONE);
+        	holder.addtocart.setVisibility(View.GONE);
+        }
+        
+        //PRICE
+        String price = searchArrayList.get(position).getPrice();
+        if(android.text.TextUtils.isEmpty(price) == false && android.text.TextUtils.isDigitsOnly(price)){
+			DecimalFormat precision = new DecimalFormat("0.00");
+			Double item_price_double = Double.parseDouble(searchArrayList.get(position).getPrice()); 
+			String item_price = "KES. " + precision.format(item_price_double);
+	        holder.price.setText(item_price);
+	  		holder.price.setTypeface(EkMukta_Light);
+        }else{
+        	holder.price.setVisibility(View.GONE);
+        }
+        
+        
+        //THUMBNAIL IMAGE
+        if(itemId.equals("0")){
+        	holder.thumbnail.setVisibility(View.GONE);
+        	holder.addtocart.setBackgroundResource(0);
+        	holder.title.setGravity(Gravity.CENTER_HORIZONTAL);
+        	Log.i("Thumbnail", " --> No image");
+        }else{
+        	//UNITS IN CART
+            Integer unitsInCart = searchArrayList.get(position).getUnits();
+            holder.addtocart.setTypeface(EkMukta_Light);
+            if(unitsInCart != null && !unitsInCart.equals(0)){
+    	        holder.addtocart.setText("+"+searchArrayList.get(position).getUnits());
+    	        holder.removefromcart.setVisibility(View.VISIBLE);
+            }else{
+            	holder.addtocart.setText("0");
+            	//holder.removefromcart.setVisibility(View.GONE);
+            }
+            
+            holder.addtocart.setTag("add");
+	        holder.addtocart.setOnClickListener(this);
+	        
+	        holder.removefromcart.setTag("remove");
+	        holder.removefromcart.setOnClickListener(this);
+            
+        	// download image
+            ImageDownloader imageDownloader = new ImageDownloader();
+            imageDownloader.download(searchArrayList.get(position).getThumbnailUrl(), holder.thumbnail);
+        }
+        
+        
+        return convertView;
+    }
+    
+
+	static class ViewHolder {
+        TextView title;
+        TextView size;
+        TextView price;
+        ImageView thumbnail;
+        Button addtocart;
+        Button removefromcart;
+        TextView itemperprice;
+    }
+    
+    public void onClick(View v) {
+    	View parentRow = (View) v.getParent();
+		ListView listView = (ListView) parentRow.getParent();
+		final int position = listView.getPositionForView(parentRow);
+		RequestedResults  item = (RequestedResults) listView.getItemAtPosition(position);
+		String action = v.getTag().toString();
+		Button addtocart =(Button) parentRow.findViewById(R.id.addtocart);
+		Button removefromcart =(Button) parentRow.findViewById(R.id.removefromcart);
+		TextView itemperprice = (TextView) parentRow.findViewById(R.id.itemperprice);
+		Map<String, Integer> myCart = new HashMap<String, Integer>();
+		Map<String, String> myCartItemPrice = new HashMap<String, String>();
+        if(sharedPreferences.contains("myTrolley")) { 
+        	//UPDATE CART
+        	String jsonMyCartString = sharedPreferences.getString("myTrolley", (new JSONObject()).toString());
+        	String jsonMyCartItemPriceString = sharedPreferences.getString("myTrolleyItemPrice", (new JSONObject()).toString());
+        	try {
+        		Integer units = 1;
+				JSONObject jsonMyCartObject = new JSONObject(jsonMyCartString);
+				JSONObject jsonMyCartItemPriceObject = new JSONObject(jsonMyCartItemPriceString);
+				if(jsonMyCartObject.has(item.item_id)){
+					units = Integer.parseInt(jsonMyCartObject.getString(item.item_id));
+					if(action.equals("add")){//ADD UNITS
+						units++;
+						if(units.equals(1)){
+							removefromcart.setVisibility(View.VISIBLE);
+			                Toast.makeText(context, "Added to cart" , Toast.LENGTH_SHORT).show();
+						}
+						addtocart.setText("+"+units);
+		                COUNT_CART_ITEMS ++;
+		  
+		                Integer total = searchArrayList.get(position).getUnits() * Integer.parseInt(searchArrayList.get(position).getPrice());
+		    	        String totalString = total.toString();
+		    	        DecimalFormat precisionTotal = new DecimalFormat("0.00");
+		    			Double item_total_double = Double.parseDouble(totalString); 
+		    			String item_total = precisionTotal.format(item_total_double);
+		    				
+
+		    			 
+						// Populate the data into the template view using the data object
+		                itemperprice.setText(item_total);
+						Log.i("item total per price->",item_total);
+		    			
+						jsonMyCartItemPriceObject.put(item.item_id,item.item_title+"_"+item.item_price+"_"+item.item_size);
+					}else{//REMOVE UNITS
+						units--;
+						if(units.equals(0)){
+				        	addtocart.setText("0");
+							//removefromcart.setVisibility(View.GONE);
+				        	 Integer total = searchArrayList.get(position).getUnits() * Integer.parseInt(searchArrayList.get(position).getPrice());
+			    	        String totalString = total.toString();
+			    	        DecimalFormat precisionTotal = new DecimalFormat("0.00");
+			    			Double item_total_double = Double.parseDouble(totalString); 
+			    			String item_total = precisionTotal.format(item_total_double);
+							jsonMyCartItemPriceObject.remove(item.item_id);
+						}else{
+				        	addtocart.setText("+"+units);
+				        	
+				        	 Integer total = searchArrayList.get(position).getUnits() * Integer.parseInt(searchArrayList.get(position).getPrice());
+				    	        String totalString = total.toString();
+				    	        DecimalFormat precisionTotal = new DecimalFormat("0.00");
+				    			Double item_total_double = Double.parseDouble(totalString); 
+				    			String item_total = precisionTotal.format(item_total_double);
+						}
+						
+						if(COUNT_CART_ITEMS > 0){
+							COUNT_CART_ITEMS --;
+							 Integer total = searchArrayList.get(position).getUnits() * Integer.parseInt(searchArrayList.get(position).getPrice());
+				    	        String totalString = total.toString();
+				    	        DecimalFormat precisionTotal = new DecimalFormat("0.00");
+				    			Double item_total_double = Double.parseDouble(totalString); 
+				    			String item_total = precisionTotal.format(item_total_double);
+						}
+						Toast.makeText(context, "Removed from cart" , Toast.LENGTH_SHORT).show(); 
+					}
+				}else{
+					removefromcart.setVisibility(View.VISIBLE);
+		        	addtocart.setText("+"+units);
+	                COUNT_CART_ITEMS ++;
+	                Integer total = searchArrayList.get(position).getUnits() * Integer.parseInt(searchArrayList.get(position).getPrice());
+	    	        String totalString = total.toString();
+	    	        DecimalFormat precisionTotal = new DecimalFormat("0.00");
+	    			Double item_total_double = Double.parseDouble(totalString); 
+	    			String item_total = precisionTotal.format(item_total_double);
+				}
+				jsonMyCartObject.put(item.item_id,units);
+				String newJsonMyCartString = jsonMyCartObject.toString();
+	            editor.putString("myTrolley", newJsonMyCartString);
+	            editor.commit();
+	            
+	            String newJsonMyCartItemPriceString = jsonMyCartItemPriceObject.toString();
+	            editor.putString("myTrolleyItemPrice", newJsonMyCartItemPriceString);
+	            editor.commit();
+				
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	Log.i("my cart hash map"," --> "+jsonMyCartString);
+
+        }else{ 
+        	//CREATE CART
+        	myCart.put(item.item_id, 1);
+        	JSONObject jsonMyCartObject = new JSONObject(myCart);
+            String jsonMyCartString = jsonMyCartObject.toString();
+            editor.putString("myTrolley", jsonMyCartString);
+            editor.commit();
+            
+            myCartItemPrice.put(item.item_id,item.item_title+"_"+item.item_price+"_"+item.item_size);
+        	JSONObject jsonMyCartItemPriceObject = new JSONObject(myCartItemPrice);
+            String jsonMyCartItemPriceString = jsonMyCartItemPriceObject.toString();
+            editor.putString("myTrolleyItemPrice", jsonMyCartItemPriceString);
+            editor.commit();
+            
+            removefromcart.setVisibility(View.VISIBLE);
+        	addtocart.setText("+1");
+            COUNT_CART_ITEMS++;
+            
+            
+        	
+        }
+        
+        
+        /**String unitsAdded = (String) addtocart.getText();
+        Integer newUnits = 1;
+        if(!unitsAdded.isEmpty()){
+            String units = unitsAdded.replaceAll("[^0-9]", "");
+            if(action.equals("add")){ //ADD TO CART
+                COUNT_CART_ITEMS ++;
+            	newUnits = Integer.parseInt(units) + 1;
+            	Toast.makeText(context, "Added to cart" , Toast.LENGTH_SHORT).show(); 
+			}else{ //REMOVE FROM CART
+				if(COUNT_CART_ITEMS > 0){
+					COUNT_CART_ITEMS --;
+				}
+				newUnits = Integer.parseInt(units) - 1;
+				Toast.makeText(context, "Removed from cart" , Toast.LENGTH_SHORT).show(); 
+			}
+            
+        }
+        
+        if(newUnits.equals(0)){
+        	addtocart.setText("");
+        }else{
+        	addtocart.setText("+"+newUnits);
+        }**/
+        
+
+        cartButtonNotification.setText(COUNT_CART_ITEMS.toString());
+
+        //searchArrayList.get(position).setUnits(newUnits);
+        //this.notifyDataSetChanged();
+
+        //Log.i("selected item ", "in cart -->" + inMyTrolleyCont);  
+        
+        //items.remove(item); //Actually change your list of items here
+        //listView.notifyDataSetChanged(); //notify for change
+		
+    }
+
+
+	private Context getContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

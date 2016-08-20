@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/quicklinks"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_quicklinks_shape" 
+	android:layout_gravity="bottom|end">
+    
+   
+
+    
+	   <Button
+	    android:id="@+id/menu_icon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="0dp"
+	    android:paddingLeft="0dp"
+	    android:paddingRight="0dp"
+	    android:text="Menu"
+	    android:textSize="12sp"
+		android:layout_gravity="bottom|end"
+	    android:textColor="@color/grey999"
+	    android:drawableTop="@drawable/ic_menu_icon"
+	    android:background="@drawable/selector" />
+    
+    <Button
+	    android:id="@+id/shoppingButton"
+		 android:layout_toRightOf="@+id/menu_icon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingTop="5dp"
+	    android:paddingBottom="0dp"
+	    android:paddingLeft="0dp"
+	    android:paddingRight="0dp"
+	    android:text="Shops"
+	    android:textSize="12sp"
+	    android:textColor="@color/grey999" 
+		android:layout_gravity="bottom|end"
+	    android:drawableTop="@drawable/ic_cart_green"
+	    android:background="@drawable/selector"/>
+    
+   
+     <RelativeLayout
+	    android:id="@+id/cartButtonCont"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+		android:layout_toRightOf="@+id/shoppingButton"
+	    android:padding="0dp" 
+		android:layout_gravity="bottom|end">
+	    
+	    <Button
+		    android:id="@+id/cartButton"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="0dp"
+		    android:paddingRight="0dp"
+		    android:text="Your Cart"
+		    android:textSize="12sp"
+	    	android:textColor="@color/grey999"
+		    android:drawableTop="@drawable/ic_money_green"
+	    	android:background="@drawable/selector"/>
+	    
+	    <TextView
+	        android:id="@+id/cartButtonNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+    		android:layout_marginRight="0dp"
+    		android:paddingLeft="15dp"
+    		android:paddingRight="0dp"
+    		android:paddingTop="0dp"
+    		android:paddingBottom="0dp"
+            android:background="@color/red"
+            android:textColor="@color/white"/>
+	 </RelativeLayout>
+	
+	    
+	    <Button
+	        android:id="@+id/clearcart"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+		    android:layout_toRightOf="@+id/cartButtonCont"
+	        android:paddingBottom="0dp"
+		    android:paddingLeft="2dp"
+		    android:paddingRight="2dp"
+		    android:paddingTop="5dp"
+		    android:minHeight="0dp"
+			android:minWidth="0dp"
+	        android:text="Empty Cart" 
+	      	android:textSize="12sp"
+	      	android:textColor="@color/grey666"
+		    android:drawableTop="@drawable/ic_menu_icon_close_green"
+	      	android:background="@drawable/selector"
+   			android:visibility="gone"
+			android:layout_gravity="bottom|end"/>
+	    
+	    <Button
+	        android:id="@+id/proceedToCheckout"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	      	android:layout_centerVertical="true"
+	        android:layout_alignParentRight="true"
+	        android:paddingBottom="0dp"
+		    android:paddingLeft="2dp"
+		    android:paddingRight="2dp"
+		    android:paddingTop="5dp"
+		    android:minHeight="0dp"
+			android:minWidth="0dp"
+	        android:text="Pay" 
+	      	android:textSize="12sp"
+	      	android:textColor="@color/grey666"
+		    android:drawableTop="@drawable/ic_money_green"
+	      	android:background="@drawable/selector"
+   			android:visibility="gone"
+			android:layout_gravity="bottom|end" />
+</RelativeLayout> 

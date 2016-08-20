@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingTop="6dip"
+    android:paddingBottom="6dip"
+    android:paddingLeft="11dip"
+    android:paddingRight="11dip"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/customproductslisting" >
+    
+ 	
+    <!-- Thumbnail Image -->
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
+        android:src="@drawable/ic_loader"
+        android:contentDescription="Item"
+		android:layout_alignParentLeft="true"
+		android:scaleType="fitCenter"
+		android:gravity="left"/>
+    
+     <RelativeLayout 
+      	  android:layout_width="wrap_content"
+		  android:layout_height="wrap_content"
+		  android:gravity="center"
+		  android:layout_marginTop="0dp"
+		  android:layout_toRightOf="@id/thumbnail"
+         android:id="@+id/centerwrap" >
+			  
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:textColor="@color/grey333"
+        android:layout_marginTop="0dp"
+		android:gravity="center"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+ 
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:gravity="left"
+		android:textColor="@color/darkgreen"
+        android:layout_below="@id/title" 
+         android:visibility="gone"/>
+ 
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:gravity="center"
+		android:orientation="vertical"
+		android:layout_gravity="center_vertical"
+		android:textColor="@color/darkgreen"
+        android:layout_below="@id/size"
+        android:visibility="gone"/>
+		</RelativeLayout>
+		
+	
+     
+		 <TextView
+		  android:layout_toRightOf="@id/centerwrap"
+        android:id="@+id/itemtotalprice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+	    android:layout_marginTop="0dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginLeft="35dp"
+		android:text="Cart" 
+		android:gravity="right"
+	    android:textColor="@color/grey333" />
+    
+    
+    <Button
+        android:id="@+id/addtocart"
+        android:layout_width="91dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginLeft="35dp"
+	    android:textSize="16sp"
+	    android:textStyle="bold"
+        android:textColor="@color/red"
+	    android:gravity="center"
+	    android:layout_toRightOf="@id/centerwrap"
+		android:layout_below="@id/itemtotalprice"
+		android:drawableLeft="@drawable/add"
+		android:background="@drawable/addtocart"
+		android:layout_alignParentRight="true"
+		android:layout_toLeftOf="@+id/removefromcart" /> 
+		
+    <Button
+        android:id="@+id/removefromcart"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:gravity="right"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/itemtotalprice"
+		android:drawableLeft="@drawable/removefromcart"
+		android:background="@drawable/removefromcart"/> 
+		
+    <!-- Arrow Image -->
+    <!-- ImageView
+        android:id="@+id/arrowRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_corner_right_bottom"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:clickable="false"
+		android:focusable="false"
+		android:focusableInTouchMode="false" /-->
+ 
+</RelativeLayout>

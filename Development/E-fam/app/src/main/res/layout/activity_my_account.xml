@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="top|left"
+    android:orientation="vertical"
+    android:background="@color/white">
+    
+	
+      <!-- =======================================CONTENT===================================== -->
+	  <RelativeLayout
+	    android:id="@+id/content"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/header"
+	    android:gravity="left" >
+	    
+	    <Button
+		    android:id="@+id/myOrders"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:paddingLeft="10dp"
+		    android:paddingRight="10dp"
+		    android:text="My Orders"
+	        android:textSize="16sp"
+	        android:textColor="@color/grey666"
+			android:inputType="textCapSentences"
+	    	android:gravity="left"
+		    android:drawableRight="@mipmap/ic_corner_right_bottom"
+		    android:background="@drawable/customlistshape"/>
+	    
+	    <Button
+		    android:id="@+id/accountInfo"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/myOrders"
+		    android:paddingLeft="10dp"
+		    android:paddingRight="10dp"
+		    android:text="Account Information"
+    		android:textSize="16sp"
+	        android:textColor="@color/grey666"
+	        android:inputType="textCapSentences"
+	    	android:gravity="left"
+		    android:drawableRight="@mipmap/ic_corner_right_bottom"
+		    android:background="@drawable/customlistshape"/>
+	    
+	  </RelativeLayout>
+    
+      <!-- =======================================ACTIONBAR===================================== -->
+	  <RelativeLayout
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:background="@drawable/custom_actionbar_shape"
+	    android:gravity="left">
+	    
+	    <ImageView
+	        android:id="@+id/logo"
+	        android:layout_width="35dip"
+	        android:layout_height="35dip"
+	      	android:layout_centerVertical="true"
+	        android:src="@mipmap/ic_image" />
+	
+	    <TextView
+	      android:id="@+id/app_name"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+          android:layout_toRightOf="@id/logo"
+	      android:layout_centerVertical="true"
+	      android:text="@string/app_name"
+	      android:textColor="#FFFFFF"
+	      android:textSize="20sp" />
+	    
+	    <ImageView
+	        android:id="@+id/menu_icon"
+	        android:layout_width="25dp"
+	        android:layout_height="25dp"
+	      	android:layout_centerVertical="true"
+	        android:layout_alignParentRight="true"
+	        android:src="@mipmap/ic_menu_icon" />
+	    
+	  </RelativeLayout>
+    
+	  <RelativeLayout
+	    android:id="@+id/header"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/quicklinks"
+	    android:background="@drawable/custompagetitleshape"
+	    android:gravity="center" >
+	
+	    <TextView
+	      android:id="@+id/headerText"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:textColor="@color/green"
+	      android:textSize="18sp"
+			android:inputType="textCapSentences"
+          android:background="@drawable/custom_headertext" />
+	    
+	  </RelativeLayout>
+     
+	 
+	  
+      <!-- ==========================================QUICKLINKS======================================== -->
+	<include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        layout="@layout/global_quicklinks" />
+	  
+	  <!-- ============================================LOADING PROGRESS BAR=========================================== -->
+     	
+	    <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+</RelativeLayout>

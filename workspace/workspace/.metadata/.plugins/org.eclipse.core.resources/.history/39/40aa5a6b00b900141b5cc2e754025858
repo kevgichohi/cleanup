@@ -1,0 +1,233 @@
+package com.example.mobiletrolley;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+
+
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class MyCartActivity extends Activity {
+	
+	ListView listView;
+	LinearLayout layout;
+	ArrayList<RequestedResults> MYCART;
+	MyCartAdapter myadapter;
+	
+    SharedPreferences mytrolley;
+	public static final String MY_CART = "MyCart";
+	
+	//get the passed parameter from the previous activity
+	//public static String SELECTED_ITEM_ID;
+	//public static String SELECTED_ITEM_TITLE;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.shoppingcart_scroller);
+		listView = (ListView) findViewById(R.id.productsListView);
+	    layout = (LinearLayout) findViewById(R.id.progressbar_view);
+
+		//Bundle extras = getIntent().getExtras();
+		//SELECTED_ITEM_ID = extras.getString("selectedItemId");
+		//SELECTED_ITEM_TITLE = extras.getString("selectedItemTitle");
+
+		//add header
+		TextView headerText = (TextView) findViewById(R.id.headerText);
+		headerText.setText("My Cart");
+		
+		//initialize checkout button 
+		Button checkout = (Button) findViewById(R.id.clearcart);
+  		
+  		//remove the default divider line
+  		listView.setDividerHeight(0); 
+  		
+  		//setup the adapter
+  		MYCART = new ArrayList<RequestedResults>();
+		myadapter = new MyCartAdapter(MyCartActivity.this, MYCART);
+		listView.setAdapter(myadapter);
+		
+		// call AsynTask to perform network operation on separate thread
+        new HttpAsyncTask().execute("");
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+	        layout.setVisibility(View.VISIBLE);
+	        listView.setVisibility(View.GONE);
+	        super.onPreExecute();
+	    }
+		
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	
+        	layout.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            myadapter.notifyDataSetChanged();
+            super.onPostExecute(result);
+            
+            Toast.makeText(getBaseContext(), "My Trolley", Toast.LENGTH_LONG).show();
+            
+            
+            
+
+        	// Get the items in the cart
+            mytrolley = getSharedPreferences(MY_CART,Context.MODE_PRIVATE);
+            
+            //Delete Shared preferences
+            mytrolley.edit().remove("myTrolley").commit();
+            
+            
+            if(mytrolley.contains("myTrolley")) {
+                
+                //initialize the array for the items that were already added to cart
+                List getMyCart = null;
+                
+                String jsongetMyCart = mytrolley.getString("myTrolley", null);
+                Gson gson = new Gson();
+                List[] catItems = gson.fromJson(jsongetMyCart,List[].class);
+                getMyCart = Arrays.asList(catItems);
+                getMyCart = new ArrayList<String>(getMyCart);
+                
+                for (int i = 0; i < getMyCart.size(); i++) {
+                    if(getMyCart.get(i).equals("")){
+                        //do something
+                    }
+                    
+                    Log.i("selected item ", "item -->" + i + "--> " + getMyCart.get(i));
+                }
+                
+                
+                //try {
+                
+	                //JSONArray jsonArr = new JSONArray(inMyTrolley);
+	                //String[] list_item_ids = new String[jsonArr.length()];
+					//String[] list_item_titles = new String[jsonArr.length()];
+	                
+					//for(int i = 0; i < jsonArr.length(); i++){
+	                	//JSONObject jsonObj = jsonArr.getJSONObject(i);
+						//String item_id = jsonObj.getString("id");
+						//String item_title = jsonObj.getString("title");
+						
+						//list_item_ids[i] = item_id;
+						//list_item_titles[i] = item_title;
+						
+						//RequestedResults d = new RequestedResults();
+						
+						//d.setTitle(item_title);
+						
+					    //d.item_id = item_id;
+					    //d.item_title = item_title;
+					    //MYCART.add(d);
+	                	
+	                	//Log.i("selected item ", "item id --> " + jsonObj);
+	                //}
+	                
+	                //Log.i("selected item ", "item id yeey--> " + getMyCart);
+	                
+                //} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				//} 
+            }
+        }
+    
+        
+        @Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+	}
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+
+	
+	
+	
+	
+
+}

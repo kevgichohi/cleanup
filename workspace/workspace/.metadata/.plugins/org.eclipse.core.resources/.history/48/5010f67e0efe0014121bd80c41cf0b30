@@ -1,0 +1,286 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+
+public class ActivityStep03ListNeighbourhood extends Activity {
+	SQLiteDatabase nunuaRahaDatabase;
+	public static final String MY_SESSION = "mySession";
+	SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+	Gson gson;
+	
+	ArrayList<RequestedResultsSimpleList> LOCATIONLIST;
+	AdapterSimpleList myadapter;
+	ListView listView;
+	LinearLayout layout_progressbar;
+	RelativeLayout headersection;
+	RelativeLayout footersection;
+	public static String SELECTED_BRANCH_ID;
+	public static String SELECTED_BRANCH_TITLE;
+	public static String SELECTED_BRAND_ID;
+	public static String SELECTED_BRAND_TITLE;
+	public static String SELECTED_BRAND_LOGO;
+	public static String SELECTED_OUTLET_ID;
+	public static String SELECTED_OUTLET_TITLE;
+	Typeface EkMukta_Light;
+	TextView app_name;
+	TextView headerText;
+	Button menuIcon;
+	Button shoppingButton;
+	Button cartButton;
+	TextView cartButtonNotification;
+	ImageView shopLogoview;
+	Button backButton;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.scroller_simple_list);
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+		listView = (ListView) findViewById(R.id.simpleListView);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+	    headersection = (RelativeLayout) findViewById(R.id.header);
+	    footersection = (RelativeLayout) findViewById(R.id.footer);
+	    sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+	    editor = sharedPreferences.edit();
+	    gson = new Gson();
+	    SELECTED_OUTLET_ID = sharedPreferences.getString("selectedOutletId", null);
+	    SELECTED_OUTLET_TITLE = sharedPreferences.getString("selectedOutlet", null);
+	    SELECTED_BRAND_ID = sharedPreferences.getString("selectedBrandId", null);
+		SELECTED_BRAND_TITLE = sharedPreferences.getString("selectedBrand", null);
+		SELECTED_BRAND_LOGO = sharedPreferences.getString("selectedBrandLogo", null);
+		SELECTED_BRANCH_ID = sharedPreferences.getString("selectedBranchId", null);
+		SELECTED_BRANCH_TITLE = sharedPreferences.getString("selectedBranch", null);
+		EkMukta_Light = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+  		app_name = (TextView) findViewById(R.id.app_name);
+		menuIcon  = (Button) findViewById(R.id.menu_icon);
+		headerText = (TextView) findViewById(R.id.headerText);
+		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+		cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+  		cartButton = (Button) findViewById(R.id.cartButton);
+    	shopLogoview = (ImageView) findViewById(R.id.shopLogo);
+		backButton = (Button) findViewById(R.id.backButton);
+
+	    app_name.setTypeface(EkMukta_Light);
+    	headerText.setText("Select Neighbourhoods");
+  		
+	    //LOAD QUICKLINKS
+  		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
+  		helperQuickLinks.create(menuIcon,shoppingButton,cartButton,cartButtonNotification,ActivityStep03ListNeighbourhood.this,sharedPreferences);
+
+		//LOAD ADDTIONAL HEADER ITEMS LIKE BRAND LOGO
+  		//HelperHeader helperHeader = new HelperHeader();
+  		//helperHeader.create(headersection,shopLogoview,SELECTED_BRAND_LOGO,ActivityStep03ListNeighbourhood.this);
+
+  		//LIST VIEW
+        new retrieveFromDBTask().execute();
+		LOCATIONLIST = new ArrayList<RequestedResultsSimpleList>();
+		myadapter = new AdapterSimpleList(ActivityStep03ListNeighbourhood.this, LOCATIONLIST,EkMukta_Light);
+		listView.setAdapter(myadapter);
+		new populateListViewTask().execute();
+		
+		footersection.setVisibility(View.VISIBLE);
+		backButton.setVisibility(View.VISIBLE);
+		backButton.setText("Back to "+SELECTED_OUTLET_TITLE);
+		backButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	finish();
+            }
+        });
+	}
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+	}
+	
+	@Override
+	public void finish() {
+	    super.finish();
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();  // Always call the superclass method first
+		overridePendingTransition(R.anim.slide_page_in,R.anim.slide_page_out);//SlideIn animation
+		
+		myadapter = new AdapterSimpleList(ActivityStep03ListNeighbourhood.this, LOCATIONLIST,EkMukta_Light);
+		listView.setAdapter(myadapter);
+		myadapter.notifyDataSetChanged();
+		
+		//LOAD QUICKLINKS
+  		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
+  		helperQuickLinks.create(menuIcon,shoppingButton,cartButton,cartButtonNotification,ActivityStep03ListNeighbourhood.this,sharedPreferences);
+		
+	}
+
+	private class retrieveFromDBTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        listView.setVisibility(View.GONE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+        	layout_progressbar.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            myadapter.notifyDataSetChanged();
+            //super.onPostExecute();
+            
+	    	nunuaRahaDatabase = openOrCreateDatabase("nunuaRahaDatabase",MODE_PRIVATE,null);
+	    	
+	    	//GET BRANCHES
+	    	Cursor resultsBranchesCursor = nunuaRahaDatabase.rawQuery("SELECT * FROM hdjgf_shops_branches WHERE shop_brand_id = "+SELECTED_BRAND_ID+" AND status = 1",null);
+	    	resultsBranchesCursor.moveToFirst();
+	    	int i = 0;
+	    	String deliveryAreasString = "";
+	    	while (resultsBranchesCursor.isAfterLast() == false) {
+				String item_delivery_areas = resultsBranchesCursor.getString(5);
+	            JSONArray jsonArr;
+				try {
+					jsonArr = new JSONArray(item_delivery_areas);
+					for(int j = 0; j < jsonArr.length(); j++){
+						String location_id = jsonArr.getString(j); 
+						deliveryAreasString = deliveryAreasString+location_id+",";
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    	    i++;
+	    	    resultsBranchesCursor.moveToNext();
+	    	}
+	    	String[] deliveryAreasArr = deliveryAreasString.split(",");
+	    	String inClause = gson.toJson(deliveryAreasArr); //at this point inClause will look like ["23","343","33","55","43"]
+	    	inClause = inClause.replace("[","(");//at this point inClause will look like ("23","343","33","55","43"]
+	    	inClause = inClause.replace("]",")");//at this point inClause will look like ("23","343","33","55","43")
+	    	inClause = inClause.replace("\"","");//now at this point inClause will look like  (23,343,33,55,43) so use it to construct your SELECT
+
+	    	
+	    	//GET LOCATIONS
+	    	Cursor resultsLocationsCursor = nunuaRahaDatabase.rawQuery("SELECT * FROM hdjgf_locations WHERE id IN " + inClause,null);
+	    	resultsLocationsCursor.moveToFirst();
+        	String[] list_item_ids = new String[resultsLocationsCursor.getCount()];
+			String[] list_item_titles = new String[resultsLocationsCursor.getCount()];
+			int k = 0;
+	    	while (resultsLocationsCursor.isAfterLast() == false) {
+				String item_id = resultsLocationsCursor.getString(0);
+				String item_title = resultsLocationsCursor.getString(1);
+				
+				list_item_ids[i] = item_id;
+				list_item_titles[i] = item_title;
+				
+				RequestedResultsSimpleList d = new RequestedResultsSimpleList();
+				
+				d.setTitle(item_title);
+				
+			    d.item_id = item_id;
+			    d.item_title = item_title;
+			    LOCATIONLIST.add(d);
+				
+	    	    k++;
+	    	    resultsLocationsCursor.moveToNext();
+	    	}
+	    	
+	    }
+	    
+	 }
+
+	private class populateListViewTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+	    	listView.setDividerHeight(0); //remove the default divider line
+			listView.setTextFilterEnabled(true);
+			listView.setOnItemClickListener(new OnItemClickListener() {
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					
+					
+					RequestedResultsSimpleList  item = (RequestedResultsSimpleList) listView.getItemAtPosition(position);
+					
+					sharedPreferences = getSharedPreferences(MY_SESSION,MODE_PRIVATE);
+		    		SharedPreferences.Editor editor = sharedPreferences.edit();
+		            editor.putString("selectedLocation",item.item_title);
+		            editor.putString("selectedLocationId",item.item_id);
+		            editor.commit();
+		            
+				    Intent intent = new Intent(ActivityStep03ListNeighbourhood.this, ActivityStep04ListBranches.class);
+		    	    startActivity(intent);
+				}
+			});
+	    }
+	    
+	 }
+	
+	
+
+}

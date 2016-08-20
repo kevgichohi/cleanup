@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+	
+    <include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+  <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/actionbar"
+        layout="@layout/global_footer" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/quicklinks" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+	
+	<!-- ============================================CONTENT=========================================== -->
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+   		android:layout_below="@+id/subHeader"
+	    android:orientation="vertical"
+	    android:gravity="left" >
+	    
+	    <Button
+	        android:id="@+id/optionPickup"
+	        android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="10dp"
+		    android:paddingRight="10dp"
+	        android:text="   | Counter Pick Up"
+	        android:textSize="14dp"
+	        android:textColor="@color/grey999"
+        	android:gravity="left|center_vertical"
+	        android:drawableLeft="@drawable/ic_delivery_pickup"
+	        android:drawableRight="@drawable/ic_corner_right_bottom"
+		    android:background="@drawable/customlistshape" />
+	    
+	    <Button
+	        android:id="@+id/optionDelivery"
+	        android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="10dp"
+		    android:paddingRight="10dp"
+	        android:text="   | Home Delivery"
+	        android:textSize="14dp"
+	        android:textColor="@color/grey999"
+        	android:gravity="left|center_vertical"
+	        android:drawableLeft="@drawable/ic_delivery_home"
+	        android:drawableRight="@drawable/ic_corner_right_bottom"
+		    android:background="@drawable/customlistshape" />
+	    
+	    <Button
+	        android:id="@+id/optionDeliveryFoot"
+	         android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+			android:text="       | Foot Delivery"
+	        android:textSize="0dp"
+	        android:textColor="@color/grey999"
+        	android:gravity="left|center_vertical"
+        	android:background="@drawable/customgreenbuttonshape"/>
+	       <!-- android:layout_marginTop="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="10dp"
+		    android:paddingRight="10dp"
+	        android:drawableLeft="@drawable/ic_delivery_foot"
+	        android:drawableRight="@drawable/ic_corner_right_bottom"
+		    --> 
+	    
+	</LinearLayout>
+
+<include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        layout="@layout/global_quicklinks" />
+     
+    <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+    
+</RelativeLayout>

@@ -1,0 +1,215 @@
+package com.example.mobiletrolley;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class ActivityListBranches extends Activity {
+	
+	ListView listView;
+	LinearLayout layout;
+	RelativeLayout header;
+	ArrayList<RequestedResultsSimpleList> SHOPSBRANCHLIST;
+	AdapterSimpleList myadapter;
+	
+	//get the passed parameter from the previous activity
+	public static String SELECTED_BRAND_ID;
+	public static String SELECTED_BRAND_TITLE;
+	public static String SELECTED_BRAND_LOGO;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.simple_list_scroller);
+		listView = (ListView) findViewById(R.id.simpleListView);
+	    layout = (LinearLayout) findViewById(R.id.progressbar_view);
+	    header = (RelativeLayout) findViewById(R.id.header);
+	    
+
+		Bundle extras = getIntent().getExtras();
+		
+		String selectedBrandId = extras.getString("selectedBrandId");
+		String selectedBrandTitle = extras.getString("selectedBrandTitle");
+		String selectedBrandLogo = extras.getString("selectedBrandLogo");
+		
+		SELECTED_BRAND_ID = selectedBrandId;
+		SELECTED_BRAND_TITLE = selectedBrandTitle;
+		SELECTED_BRAND_LOGO = selectedBrandLogo;
+		
+		//Add Brand logo at the header
+		ImageView logo = new ImageView(ActivityListBranches.this);
+		logo.setBackgroundResource(R.drawable.ic_launcher);
+		header.addView(logo);
+		
+		//Initialize fonts
+  		Typeface EkMukta_SemiBold = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-SemiBold.ttf");
+  		Typeface EkMukta_Light = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+		
+		//add header
+  		TextView headerText = (TextView) findViewById(R.id.headerText);
+  		headerText.setText(SELECTED_BRAND_TITLE);
+  		headerText.setTypeface(EkMukta_Light);
+  		
+  		//remove the default divider line
+  		listView.setDividerHeight(0); 
+  		
+  		//setup the adapter
+  		SHOPSBRANCHLIST = new ArrayList<RequestedResultsSimpleList>();
+		myadapter = new AdapterSimpleList(ActivityListBranches.this, SHOPSBRANCHLIST,EkMukta_Light);
+		listView.setAdapter(myadapter);
+		
+		listView.setTextFilterEnabled(true);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				
+				RequestedResultsSimpleList  item = (RequestedResultsSimpleList) listView.getItemAtPosition(position);
+			    Intent intent = new Intent(ActivityListBranches.this, ActivityListAisles.class);
+	    		intent.putExtra("selectedBranchTitle", item.item_title);
+	    		intent.putExtra("selectedBranchId", item.item_id);
+	    	    startActivity(intent);
+			}
+		});
+		
+		// call AsynTask to perform network operation on separate thread
+        new HttpAsyncTask().execute("http://www.smokesignal.co.ke/mobile_trolley_app/getshopsbranches.php");
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+	        layout.setVisibility(View.VISIBLE);
+	        listView.setVisibility(View.GONE);
+	        super.onPreExecute();
+	    }
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	layout.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            myadapter.notifyDataSetChanged();
+            super.onPostExecute(result);
+            
+            Toast.makeText(getBaseContext(), "Received "+SELECTED_BRAND_TITLE+" Branches!", Toast.LENGTH_LONG).show();
+            
+	        try {
+				
+				JSONArray jsonArr = new JSONArray(result);
+	        	String[] list_item_ids = new String[jsonArr.length()];
+				String[] list_item_titles = new String[jsonArr.length()];
+	        	
+				for(int i = 0; i < jsonArr.length(); i++){
+					JSONObject jsonObj = jsonArr.getJSONObject(i); 
+					String item_id = jsonObj.getString("id");
+					String item_title = jsonObj.getString("title");
+					
+					list_item_ids[i] = item_id;
+					list_item_titles[i] = item_title;
+					
+					RequestedResultsSimpleList d = new RequestedResultsSimpleList();
+					
+					d.setTitle(item_title);
+					
+				    d.item_id = item_id;
+				    d.item_title = item_title;
+				    SHOPSBRANCHLIST.add(d);
+				}
+				
+			}catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+       }
+    
+
+        
+		@Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+		
+	}
+	
+	
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("brand_id",SELECTED_BRAND_ID));
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+}

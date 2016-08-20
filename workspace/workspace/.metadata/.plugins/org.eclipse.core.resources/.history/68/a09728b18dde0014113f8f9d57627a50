@@ -1,0 +1,260 @@
+package com.redhering.nunuaraha;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.google.gson.Gson;
+import com.redhering.nunuaraha.R;
+
+public class ActivityMyAccount extends Activity {
+	
+	TextView app_name;
+	LinearLayout layout_progressbar;
+	ImageView menuIcon;
+	TextView headerText;
+	TextView breadcrumb;
+	
+	Button homeButton;
+	Button accountButton;
+	Button shoppingButton;
+	Button cartButton;
+	
+	Button myOrders;
+	Button accountInfo;
+	
+	
+	public static final String MY_SESSION = "mySession";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    
+    Gson gson;
+	
+    public static Typeface FONT_EKMUKTA_LIGHT;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.my_account);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+		menuIcon  = (ImageView) findViewById(R.id.menu_icon);
+		sharedPreferences = getSharedPreferences(MY_SESSION,Context.MODE_PRIVATE);
+		editor = sharedPreferences.edit();
+		gson = new Gson();
+		FONT_EKMUKTA_LIGHT = Typeface.createFromAsset(getAssets(),"fonts/ek_mukta/EkMukta-Light.ttf");
+		
+
+		breadcrumb = (TextView) findViewById(R.id.breadcrumb);
+  		headerText = (TextView) findViewById(R.id.headerText);
+  		app_name = (TextView) findViewById(R.id.app_name);
+  		homeButton = (Button) findViewById(R.id.homeButton);
+  		accountButton = (Button) findViewById(R.id.accountButton);
+  		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+  		cartButton = (Button) findViewById(R.id.cartButton);
+  		myOrders = (Button) findViewById(R.id.myOrders);
+  		accountInfo = (Button) findViewById(R.id.accountInfo);
+  		
+	    
+	    //SET TEXT, APPLY FONTS, SETONCLICKLISTENERS
+  		new ApplyViewParamsTask().execute();
+        
+	}
+	
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();  // Always call the superclass method first
+		
+		//SET NOTIFICATION FOR THE NUMBER OF ITEMS CURRENTLY IN THE TROLLEY
+		TextView cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+		if(sharedPreferences.contains("myTrolley")) {
+			String inMyTrolley = sharedPreferences.getString("myTrolley", null);
+			Gson gson = new Gson();
+			List[] jsonMyTrolley = gson.fromJson(inMyTrolley,List[].class);
+            List getjsonMyTrolley = Arrays.asList(jsonMyTrolley);
+            
+            Object getObject = getjsonMyTrolley.get(0);
+            ArrayList myTrolley = (ArrayList) getObject;
+            Integer numberOfItemsInMyTrolley = myTrolley.size();
+            cartButtonNotification.setText(numberOfItemsInMyTrolley.toString());
+            
+	  		cartButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	Intent intent = new Intent(ActivityMyAccount.this, ActivityMyCart.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        });
+		}else{
+			cartButtonNotification.setText("0");
+	  		cartButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	Toast.makeText(getBaseContext(), "Your trolley is empty!", Toast.LENGTH_LONG).show();
+	            }
+	        });
+		}
+	}
+	
+	private class ApplyViewParamsTask extends AsyncTask<String, Void, String> {
+		
+		@Override
+	    protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+	        super.onPreExecute();
+	    }
+		
+		protected String doInBackground(String...params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+		
+	    protected void onPostExecute(String params) {
+
+			layout_progressbar.setVisibility(View.GONE);
+			
+  			//MENU ICON
+  			menuIcon.setImageResource(R.drawable.ic_account_grey);
+	  		
+	    	//SET TEXTS
+	  		headerText.setText("My Account");
+			breadcrumb.setText("Home / My Account");
+			
+			//SET FONT
+			app_name.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		headerText.setTypeface(FONT_EKMUKTA_LIGHT);
+			breadcrumb.setTypeface(FONT_EKMUKTA_LIGHT);
+		    homeButton.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		accountButton.setTypeface(FONT_EKMUKTA_LIGHT);
+			shoppingButton.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		cartButton.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		myOrders.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		accountInfo.setTypeface(FONT_EKMUKTA_LIGHT);
+	  		
+	  		//SET COLOR
+	  		accountButton.setTextColor(getResources().getColor(R.color.green));
+	  		
+	  		//SET ONCLICKLISTENER
+	  		myOrders.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	
+	            	Intent intent = new Intent(ActivityMyAccount.this, ActivityMyOrders.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        }); 
+	  		
+	  		accountInfo.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	
+	            	Intent intent = new Intent(ActivityMyAccount.this, ActivityMyProfile.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        }); 
+	  		
+
+	  		homeButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	
+	            	Intent intent = new Intent(ActivityMyAccount.this, ActivityMain.class);
+		    	    startActivity(intent);
+	                
+	            }
+	        }); 
+	  		
+	  		shoppingButton.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	            	
+	            	Intent intent = new Intent(ActivityMyAccount.this, ActivityListOutlets.class);
+	            	if(sharedPreferences.contains("myTrolley")) {
+	            		intent = new Intent(ActivityMyAccount.this, ActivityListAisles.class);
+	            	}
+		    	    startActivity(intent);
+	            }
+	        }); 
+	  		
+	  		
+	  		//SET NOTIFICATION FOR THE NUMBER OF ITEMS CURRENTLY IN THE TROLLEY
+			TextView cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+			if(sharedPreferences.contains("myTrolley")) {
+				String inMyTrolley = sharedPreferences.getString("myTrolley", null);
+				Gson gson = new Gson();
+				List[] jsonMyTrolley = gson.fromJson(inMyTrolley,List[].class);
+                List getjsonMyTrolley = Arrays.asList(jsonMyTrolley);
+                
+                Object getObject = getjsonMyTrolley.get(0);
+                ArrayList myTrolley = (ArrayList) getObject;
+                Integer numberOfItemsInMyTrolley = myTrolley.size();
+                cartButtonNotification.setText(numberOfItemsInMyTrolley.toString());
+                
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	Intent intent = new Intent(ActivityMyAccount.this, ActivityMyCart.class);
+    		    	    startActivity(intent);
+    	                
+    	            }
+    	        });
+			}else{
+				cartButtonNotification.setText("0");
+    	  		cartButton.setOnClickListener(new View.OnClickListener() {
+    	            @Override
+    	            public void onClick(View v) {
+    	            	Toast.makeText(getBaseContext(), "Your trolley is empty!", Toast.LENGTH_LONG).show();
+    	            }
+    	        });
+			}
+
+	    }
+	    
+	 }
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/actionbar"
+   android:gravity="left"
+   android:src="@drawable/bg_btn_green" 
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:orientation="vertical"/>
+   <!--     android:layout_width="match_parent"
+   android:layout_height="wrap_content"
+   android:background="@drawable/custom_actionbar_shape2"-->
+   
+   
+   <ImageView
+       android:id="@+id/logo"
+       android:layout_width="55dip"
+       android:layout_height="55dip"
+       android:layout_centerVertical="true"
+       android:src="@drawable/innerlogo" />
+
+   <TextView
+     android:id="@+id/app_name"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_toRightOf="@id/logo"
+     android:layout_centerVertical="true"
+     android:text="@string/app_name"
+     android:textColor="#FFFFFF"
+     android:textSize="0sp" />
+   
+ <ImageView
+       android:id="@+id/shopLogo"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentRight="true" />
+ </RelativeLayout>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="@color/white">
+    
+	<include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+    <include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_below="@+id/actionbar"
+        layout="@layout/global_quicklinks" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/quicklinks" 
+	    layout="@layout/global_header" />
+	
+    <!-- =======================================CONTENT===================================== -->
+    <ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@id/header"
+    	android:orientation="vertical" >
+	    
+	    <LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:layout_below="@id/header"
+	    	android:orientation="vertical" >
+	    	
+			<RelativeLayout
+			   android:id="@+id/sectionInfoHeader"
+			   android:layout_width="match_parent"
+			   android:layout_height="wrap_content"
+			   android:background="@drawable/custompagesubtitleshape"
+			   android:gravity="left" >
+			
+			   <TextView
+				    android:id="@+id/sectionInfo"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:layout_centerVertical="true"
+				    android:text="Give Us Feedback"
+				    android:textColor="@color/grey666"
+				    android:textSize="12sp"
+			        android:textAllCaps="true" />
+			   
+			   <TextView
+				    android:id="@+id/systemMessage"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+			    	android:layout_below="@+id/sectionInfo"
+		          	android:layout_marginTop="10dp"
+				    android:textColor="@color/red"
+				    android:textSize="12sp"
+		   			android:visibility="gone" />
+			 </RelativeLayout>
+			    
+			 <RelativeLayout
+			    android:id="@+id/personalInfo"
+			    android:layout_width="match_parent"
+			    android:layout_height="fill_parent"
+			    android:layout_below="@+id/sectionInfoHeader"
+			    android:paddingLeft="10dp"
+			    android:paddingRight="10dp"
+			    android:gravity="left" >
+			   
+			    <Spinner
+			      android:id="@+id/shop"
+			      android:layout_width="match_parent"
+			      android:layout_height="wrap_content"
+		          android:layout_marginTop="10dp"
+			      android:textSize="13sp"
+			      android:textColor="@color/green"
+			      android:prompt="@string/neighbourhood_prompt" />
+			    
+			    <EditText
+			      android:id="@+id/talkToUs"
+			      android:layout_width="match_parent"
+			      android:layout_height="150dp"
+		          android:layout_below="@id/shop"
+		          android:layout_marginTop="10dp"
+			      android:hint="Talk to us"
+			      android:textStyle="italic"
+			      android:textSize="13sp"
+			      android:inputType="textMultiLine"
+		          android:clickable="true" />
+			    
+			    <Button
+				    android:id="@+id/submitFeedback"
+				    android:layout_width="wrap_content"
+				    android:layout_height="30dp"
+		          	android:layout_below="@id/talkToUs"
+		          	android:layout_marginTop="10dp"
+		          	android:layout_alignParentRight="true"
+				    android:paddingTop="5dp"
+				    android:paddingBottom="5dp"
+				    android:paddingLeft="0dp"
+				    android:paddingRight="0dp"
+				    android:text="Submit"
+				    android:textSize="16sp"
+				    android:textColor="@color/white"
+				    android:background="@drawable/customgreenbuttonshape"/>
+			    
+			  </RelativeLayout>
+		  </LinearLayout>
+	  </ScrollView>
+    
+      <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_alignParentBottom="true"
+        layout="@layout/global_footer" />
+      
+      <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+ 
+</RelativeLayout>

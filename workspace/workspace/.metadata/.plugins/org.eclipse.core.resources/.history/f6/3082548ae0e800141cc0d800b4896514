@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/menuListViewCont"
+   android:layout_width="250dp"
+   android:layout_height="match_parent"
+   android:layout_below="@+id/actionbar"
+   android:layout_marginTop="40dp"
+   android:layout_alignParentTop="true"
+   android:layout_alignParentLeft="true"
+   android:gravity="left"
+   android:visibility="gone"
+    	android:orientation="vertical"
+   android:background="@color/blackCC" >
+   
+     <TextView
+     android:id="@+id/previousListLink"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:layout_centerVertical="true"
+     android:paddingTop="10dp"
+     android:paddingBottom="10dp"
+     android:paddingLeft="10dp"
+     android:textColor="@color/green"
+     android:textSize="16sp"
+        android:textAllCaps="true"
+     android:shadowColor="@color/text_shadow"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"/>
+   
+   <ListView
+       android:id="@+id/menuListView"
+       android:layout_width="fill_parent"
+       android:layout_height="fill_parent" 
+     	android:paddingLeft="10dp"/>
+ </LinearLayout>

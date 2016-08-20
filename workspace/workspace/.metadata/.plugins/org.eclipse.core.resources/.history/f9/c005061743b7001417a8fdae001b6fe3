@@ -1,0 +1,228 @@
+package com.example.mobiletrolley;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.geeklab.shoppingcart.R;
+
+
+import android.app.Activity;
+import android.app.ListActivity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class ListProductsBrandActivity extends Activity {
+	
+	ListView listView;
+	LinearLayout layout;
+	ArrayList<RequestedResults> PRODUCTSBRANDSLIST;
+	ShelvesAdapter myadapter;
+	
+	//get the passed parameter from the previous activity
+	public static String SELECTED_PRODUCT_ID = "";
+	public static String SELECTED_PRODUCT_TITLE = "";
+	public static String SELECTED_AISLE_ID = "";
+	public static String SELECTED_AISLE_TITLE = "";
+	public static String SELECTED_BRANCH_ID = "";
+	public static String SELECTED_BRANCH_TITLE = "";
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.products_scroller);
+		listView = (ListView) findViewById(R.id.productsListView);
+	    layout = (LinearLayout) findViewById(R.id.progressbar_view);
+		
+
+		Bundle extras = getIntent().getExtras();
+		String selectedProductId = extras.getString("selectedProductId");
+		String selectedProductTitle = extras.getString("selectedProductTitle");
+		String selectedAisleId = extras.getString("selectedAisleId");
+		String selectedAisleTitle = extras.getString("selectedAisleTitle");
+		String selectedBranchId = extras.getString("selectedBranchId");
+		String selectedBranchTitle = extras.getString("selectedBranchTitle");
+		SELECTED_PRODUCT_ID = selectedProductId;
+		SELECTED_PRODUCT_TITLE = selectedProductTitle;
+		SELECTED_BRANCH_ID = selectedBranchId;
+		SELECTED_BRANCH_TITLE = selectedBranchTitle;
+		SELECTED_AISLE_ID = selectedAisleId;
+		SELECTED_AISLE_TITLE = selectedAisleTitle;
+		
+		//add header
+		TextView headerText = (TextView) findViewById(R.id.headerText);
+		headerText.setText(SELECTED_BRANCH_TITLE + " > " + SELECTED_AISLE_TITLE);
+  		
+  		//remove the default divider line
+  		listView.setDividerHeight(0); 
+  		
+  		//setup the adapter
+  		PRODUCTSBRANDSLIST = new ArrayList<RequestedResults>();
+		myadapter = new ShelvesAdapter(ListProductsBrandActivity.this, PRODUCTSBRANDSLIST);
+		listView.setAdapter(myadapter);
+		
+		
+		// call AsynTask to perform network operation on separate thread
+        new HttpAsyncTask().execute("http://www.smokesignal.co.ke/mobile_trolley_app/getproductsbrands.php");
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+ 
+        inputStream.close();
+        return result;
+ 
+    }
+	
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+	    protected void onPreExecute() {
+	        layout.setVisibility(View.VISIBLE);
+	        listView.setVisibility(View.GONE);
+	        super.onPreExecute();
+	    }
+		
+		
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+        	
+        	layout.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            myadapter.notifyDataSetChanged();
+            super.onPostExecute(result);
+            
+            Toast.makeText(getBaseContext(), "Received Product Brands!", Toast.LENGTH_LONG).show();
+            
+	        try {
+				
+				JSONArray jsonArr = new JSONArray(result);
+	        	String[] list_item_ids = new String[jsonArr.length()];
+				String[] list_item_titles = new String[jsonArr.length()];
+	        	
+				for(int i = 0; i < jsonArr.length(); i++){
+					JSONObject jsonObj = jsonArr.getJSONObject(i); 
+					String item_id = jsonObj.getString("id");
+					String item_title = jsonObj.getString("title");
+					String item_size = jsonObj.getString("size");
+					String item_price = jsonObj.getString("price");
+					String item_thumbnail_url = jsonObj.getString("image");
+
+					//NUmber format the price
+					DecimalFormat precision = new DecimalFormat("0.00");
+					Double item_price_double = Double.parseDouble(item_price); 
+					item_price = "KES " + precision.format(item_price_double);
+					
+					
+					list_item_ids[i] = item_id;
+					list_item_titles[i] = item_title;
+					
+					RequestedResults d = new RequestedResults();
+					
+					d.setId(item_id);
+					d.setTitle(item_title);
+				    d.setSize(item_size);
+				    d.setPrice(item_price);
+				    d.setThumbnailUrl("https://smokesignal.co.ke/mobiletrolley/img/uploads/" + item_thumbnail_url);
+					
+				    d.item_id = item_id;
+				    d.item_title = item_title;
+				    d.item_price = item_price;
+				    d.item_size = item_size;
+				    d.item_thumbnail_url = "https://smokesignal.co.ke/mobiletrolley/img/uploads/" + item_thumbnail_url;
+				    
+				    PRODUCTSBRANDSLIST.add(d);
+				}
+				
+				
+			}catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+       }
+    
+        
+        @Override
+        protected String doInBackground(String... urls) {
+ 
+            return GET(urls[0]);
+        }
+	}
+	
+	public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("branch_id",SELECTED_BRANCH_ID));
+        nameValuePairs.add(new BasicNameValuePair("aisle_id",SELECTED_AISLE_ID));
+        nameValuePairs.add(new BasicNameValuePair("product_id",SELECTED_PRODUCT_ID));
+        
+        try {
+ 
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            // make GET request to the given URL
+            HttpResponse response = httpclient.execute(httppost);
+            
+            // receive response as inputStream
+            inputStream = response.getEntity().getContent();
+ 
+            // convert inputstream to string
+            if(inputStream != null){
+                result = convertInputStreamToString(inputStream);
+            }else{
+                result = "Did not work!";
+            }
+ 
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+ 
+        return result;
+    }
+
+	
+	
+	
+	
+
+}

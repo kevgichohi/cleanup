@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+	
+	
+    <include 
+	    android:id="@+id/actionbar"
+	    android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true" 
+	    layout="@layout/global_actionbar" />
+	
+        <include 
+        android:id="@+id/footer" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/actionbar"
+        layout="@layout/global_footer" />
+	  
+	<include 
+	    android:id="@+id/header" 
+	   	android:layout_width="match_parent"
+	   	android:layout_height="wrap_content"
+	   	android:layout_below="@+id/footer" 
+	    layout="@layout/global_header" />
+	  
+	<include 
+	    android:id="@+id/subHeader" 
+   		android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_below="@+id/header"
+	    layout="@layout/global_sub_header" />
+	
+	
+	<!-- ============================================CONTENT=========================================== -->
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+   		android:layout_below="@+id/subHeader"
+	    android:orientation="vertical" 
+	    android:textColor="@color/grey666"
+	    android:textSize="13sp">
+	    
+    	<TextView 
+	        android:id="@+id/optionPayCash"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+   			android:paddingLeft="10dp"
+   			android:paddingRight="10dp"
+   			android:textColor="@color/grey666"
+	    	android:textSize="14sp"
+	        android:text="  Cash on delivery"
+	        android:drawableLeft="@drawable/cardpaymen"
+	        android:drawableRight="@drawable/imagepayment"
+    		android:background="@drawable/customlistshape"/>
+    	
+    	<TextView 
+	        android:id="@+id/optionPayOnline"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+   			android:paddingLeft="10dp"
+   			android:paddingRight="10dp"
+    		android:textColor="@color/grey666"
+	    	android:textSize="14sp"
+	        android:text="  Pay Now"
+	        android:drawableLeft="@drawable/cashdelivery"
+	        android:drawableRight="@drawable/imagepayment"
+    		android:background="@drawable/customlistshape"/>
+    	
+    	
+    	<RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/pointerwrapper5"
+        android:layout_below="@id/optionPayOnline"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        >  
+			        
+			         <TextView
+					    android:id="@+id/infoq"
+				        android:layout_height="wrap_content"
+				        android:layout_width="wrap_content"
+				        android:layout_marginTop="30dp"
+					    android:layout_alignParentLeft="true"
+						 android:paddingBottom="0dp"
+					     android:paddingLeft="5dp"
+					     android:paddingRight="5dp"
+					     android:minHeight="0dp"
+						 android:minWidth="0dp"
+					     android:text=""
+					     android:textColor="@color/grey666" 
+						 android:layout_gravity="left"
+					     android:drawableLeft="@drawable/customerinfo"
+					     android:background="@drawable/selector"
+					     />
+			        
+     <RelativeLayout
+	        android:id="@+id/infoqwrap"
+            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+			android:paddingBottom="0dp"
+		    android:paddingTop="5dp"
+		    android:minHeight="0dp"
+			android:minWidth="0dp"
+			android:layout_marginTop="15dp"
+			android:layout_toRightOf="@+id/infoq"
+			android:textSize="12sp"
+	        android:textColor="@color/grey666">
+	            
+			             <Button
+		    android:id="@+id/title1"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_marginTop="10dp"
+          	android:layout_marginRight="10dp"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="0dp"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="0dp"
+		    android:text="What is cash on delivery"
+		    android:textSize="13sp"
+		    android:textColor="@color/white"
+		    android:background="@drawable/purpleinfo"
+		    android:drawablePadding="10dp"
+		    android:gravity="center"
+		    android:textAlignment="gravity"/>
+			   
+			             <TextView
+        android:id="@+id/text1"
+        android:textSize="14sp"
+	    android:textColor="@color/grey999"
+	    android:paddingTop="0dp"
+		android:paddingBottom="5dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:layout_below="@id/title1"
+        android:layout_width="fill_parent"
+        android:layout_marginRight="10dp"
+        android:layout_height="wrap_content"
+        android:text="Cash on delivery means once you complete your shopping a
+Rider will be dispatched to your chosen address with your shopping and on verification that you have received all the goods you can then pay the rider. In the event there is an issue with any of the goods, please contact us using (talk to us in the menu)."
+        android:background="@drawable/infobg" 
+        android:visibility="gone"/>
+			             
+			  <Button
+		    android:id="@+id/title2"
+		    android:layout_width="fill_parent"
+		    android:layout_height="30dp"
+          	android:layout_marginTop="0dp"
+		    android:paddingTop="0dp"
+		    android:paddingBottom="5dp"
+		    android:paddingLeft="5dp"
+		    android:paddingRight="0dp"
+		    android:text="What is Pay Now"
+		 	android:layout_below="@id/text1"
+		    android:textSize="13sp"
+		    android:textColor="@color/col8965ab"
+		    android:background="@drawable/yellowinfo"
+		    android:drawablePadding="10dp"
+		    android:gravity="left"
+		    android:textAlignment="gravity"/>
+			            
+			     
+			  <TextView
+        android:id="@+id/text2"
+        android:textSize="14sp"
+	    android:textColor="@color/grey999"
+	    android:paddingTop="5dp"
+		android:paddingBottom="5dp"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:layout_below="@id/title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pay now means that once you are done with you shopping you have the option of paying for your goods using either Credit Card or Mobile Money. In the event there is an issue with any of the goods, please contact us using (talk to us in the menu)."
+        android:background="@drawable/infobg" 
+        android:visibility="gone"/>
+		
+			</RelativeLayout>			
+			            
+			        </RelativeLayout>
+		
+	</LinearLayout>
+
+	
+<include 
+        android:id="@+id/quicklinks" 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+        layout="@layout/global_quicklinks2" />
+     
+    <include 
+        android:id="@+id/progressbar_view" 
+   		android:layout_width="fill_parent"
+   		android:layout_height="fill_parent"
+   		android:layout_alignParentTop="true"
+        layout="@layout/global_progress_bar" />
+    
+</RelativeLayout>

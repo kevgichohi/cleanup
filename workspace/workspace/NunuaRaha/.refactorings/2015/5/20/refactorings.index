@@ -1,0 +1,46 @@
+1431331447846	Rename type 'ActivityListOutlets'
+1431331557576	Rename type 'ActivityListBrands'
+1431331582343	Rename type 'ActivityShopOutlets'
+1431331610721	Rename type 'ActivityListBranches'
+1431331632277	Rename type 'ActivityShopStep2ListBrands'
+1431331646124	Rename type 'ActivityShopStep1ListOutlets'
+1431331692287	Rename type 'ActivityListDeliveryLocations'
+1431331706765	Rename type 'ActivityStep3ListBranches'
+1431331724298	Rename type 'ActivityListAisles'
+1431331751436	Rename type 'ActivityListGoods'
+1431331815625	Rename type 'ActivityListProducts'
+1431331852291	Rename type 'ActivityMyCart'
+1431331917716	Rename type 'ActivityListPickUpOptions'
+1431331988861	Rename type 'ActivityMyReceipt'
+1431332008069	Rename type 'ActivityStep1ListOutlets'
+1431332018808	Rename type 'ActivityStep2ListBrands'
+1431332028224	Rename type 'ActivityStep3ListNeighbourhood'
+1431332037087	Rename type 'ActivityStep4ListBranches'
+1431332047341	Rename type 'ActivityStep5ListAisles'
+1431332060934	Rename type 'ActivityStep6ListGoods'
+1431332072563	Rename type 'ActivityStep7ListProducts'
+1431332086094	Rename type 'ActivityStep8ListCart'
+1431332096253	Rename type 'ActivityStep9ListDeliveryOptions'
+1431332158695	Rename type 'ActivityThankYou'
+1431332238411	Rename type 'ActivityMenuMain'
+1431332300978	Rename type 'ActivityMyOrders'
+1431332315929	Rename type 'ActivityMyProfile'
+1431332362652	Rename type 'ActivityViewOrder'
+1431332932034	Rename resource 'activity_checkout.xml'
+1431502850018	Copy file
+1431504213079	Copy compilation unit
+1431510305902	Copy compilation unit
+1431510378185	Rename type 'ActivityStep09ListDeliveryAddresses'
+1431510395151	Rename type 'ActivityStep09ListDeliveryOptionAddresses'
+1431511844138	Copy compilation unit
+1431511861134	Rename type 'ActivityStep10MyReceipt'
+1431511873642	Rename type 'ActivityStep11ThankYou'
+1431512000944	Copy file
+1431515094146	Delete element
+1431518628527	Copy file
+1431603688714	Copy compilation unit
+1431604030413	Copy file
+1431604278962	Delete element
+1431604308275	Copy compilation unit
+1431604327359	Delete element
+1431604345599	Copy file
