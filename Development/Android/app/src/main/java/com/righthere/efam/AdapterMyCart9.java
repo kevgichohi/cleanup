@@ -1,0 +1,388 @@
+package com.righthere.efam;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+
+public class AdapterMyCart9 extends BaseAdapter implements
+		View.OnClickListener {
+	private static ArrayList<RequestedResults> myCart;
+	private LayoutInflater mInflater;
+	private Context context;
+	private int resource;
+	public static Integer COUNT_CART_ITEMS;
+	private TextView cartButtonNotification;
+	private TextView subtitle;
+
+	public static final String MY_SESSION = "mySession";
+	private static final String TextView = null;
+	SharedPreferences sharedPreferences;
+	SharedPreferences.Editor editor;
+	Gson gson;
+	Typeface EkMukta_Light;
+
+	public AdapterMyCart9(Context ctx, ArrayList<RequestedResults> results,
+			TextView cartBtnNotification, TextView sub_title) {
+		myCart = results;
+		mInflater = LayoutInflater.from(ctx);
+		context = ctx;
+		EkMukta_Light = Typeface.createFromAsset(context.getAssets(),
+				"fonts/ek_mukta/EkMukta-Light.ttf");
+		sharedPreferences = context.getSharedPreferences(MY_SESSION,
+				Context.MODE_PRIVATE);
+		editor = sharedPreferences.edit();
+		gson = new Gson();
+		cartButtonNotification = cartBtnNotification;
+		subtitle = sub_title;
+
+		COUNT_CART_ITEMS = 0;
+		if (sharedPreferences.contains("myTrolley")) {
+			String jsonMyCartString = sharedPreferences.getString("myTrolley",
+					null);
+			JSONObject jsonMyCartObject;
+			try {
+				jsonMyCartObject = new JSONObject(jsonMyCartString);
+				Integer numberOfItemsInMyTrolley = 0;
+				Iterator<String> loop = jsonMyCartObject.keys();
+				while (loop.hasNext()) {
+					String key = loop.next();
+					try {
+						String unitsValue = jsonMyCartObject.getString(key);
+						numberOfItemsInMyTrolley = numberOfItemsInMyTrolley
+								+ Integer.parseInt(unitsValue);
+						COUNT_CART_ITEMS = numberOfItemsInMyTrolley;
+					} catch (JSONException e) {
+						// Something went wrong!
+					}
+				}
+				cartButtonNotification.setText(numberOfItemsInMyTrolley
+						.toString());
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	public int getCount() {
+		return myCart.size();
+	}
+
+	public Object getItem(int position) {
+		return myCart.get(position);
+	}
+
+	public long getItemId(int position) {
+		return position;
+	}
+
+	public View getView(int position, View convertView, ViewGroup parent) {
+		ViewHolder holder;
+		if (convertView == null) {
+			convertView = mInflater.inflate(R.layout.simple_list_products9,
+					null);
+			holder = new ViewHolder();
+			holder.title = (TextView) convertView.findViewById(R.id.title);
+			holder.size = (TextView) convertView.findViewById(R.id.size);
+			holder.price = (TextView) convertView.findViewById(R.id.price);
+			holder.thumbnail = (ImageView) convertView
+					.findViewById(R.id.thumbnail);
+			holder.addtocart = (Button) convertView
+					.findViewById(R.id.addtocart);
+			holder.removefromcart = (Button) convertView
+					.findViewById(R.id.removefromcart);
+			holder.itemtotalprice = (TextView) convertView
+					.findViewById(R.id.itemtotalprice);
+
+			convertView.setTag(holder);
+		} else {
+			holder = (ViewHolder) convertView.getTag();
+		}
+
+		holder.title.setText(myCart.get(position).getTitle());
+		holder.size.setText(myCart.get(position).getSize());
+
+		String price = myCart.get(position).getPrice();
+		if (android.text.TextUtils.isEmpty(price) == false
+				&& android.text.TextUtils.isDigitsOnly(price)) {
+			DecimalFormat precision = new DecimalFormat("0.00");
+			Double item_price_double = Double.parseDouble(myCart.get(position)
+					.getPrice());
+			String item_price = "KES. " + precision.format(item_price_double);
+			holder.price.setText(item_price);
+		} else {
+			holder.price.setVisibility(View.GONE);
+		}
+
+		// download image
+		ImageDownloader imageDownloader = new ImageDownloader();
+		imageDownloader.download(myCart.get(position).getThumbnailUrl(),
+				holder.thumbnail);
+
+		// UNITS IN CART
+		Integer unitsInCart = myCart.get(position).getUnits();
+
+		if (unitsInCart != null && !unitsInCart.equals(0)) {
+			holder.addtocart.setText("  " + myCart.get(position).getUnits());
+
+			Integer total = myCart.get(position).getUnits()
+					* Integer.parseInt(myCart.get(position).getPrice());
+			String totalString = total.toString();
+			DecimalFormat precisionTotal = new DecimalFormat("0.00");
+			Double item_total_double = Double.parseDouble(totalString);
+			String item_total = precisionTotal.format(item_total_double);
+			holder.itemtotalprice.setText("KES. " + item_total);
+
+		} else {
+			holder.addtocart.setText("0");
+
+			Integer total = myCart.get(position).getUnits()
+					* Integer.parseInt(myCart.get(position).getPrice());
+			String totalString = total.toString();
+			DecimalFormat precisionTotal = new DecimalFormat("0.00");
+			Double item_total_double = Double.parseDouble(totalString);
+			String item_total = precisionTotal.format(item_total_double);
+			holder.itemtotalprice.setText("KES. " + item_total);
+		}
+
+		holder.addtocart.setTag("add");
+		holder.addtocart.setOnClickListener(this);
+
+		holder.removefromcart.setTag("remove");
+		holder.removefromcart.setOnClickListener(this);
+
+		return convertView;
+
+	}
+
+	static class ViewHolder {
+		TextView title;
+		TextView size;
+		TextView price;
+		ImageView thumbnail;
+		Button removefromcart;
+		Button addtocart;
+		TextView itemtotalprice;
+	}
+
+	@Override
+	public void onClick(View v) {
+		View parentRow = (View) v.getParent();
+		ListView listView = (ListView) parentRow.getParent();
+		final int position = listView.getPositionForView(parentRow);
+		RequestedResults item = (RequestedResults) listView
+				.getItemAtPosition(position);
+		String action = v.getTag().toString();
+
+		if (action.equals("add")) {
+			// ADD UNITS
+			Button addtocart = (Button) parentRow.findViewById(R.id.addtocart);
+			TextView itemtotalprice = (TextView) parentRow
+					.findViewById(R.id.itemtotalprice);
+
+			String jsonMyCartString = sharedPreferences.getString("myTrolley",
+					(new JSONObject()).toString());
+			try {
+				Integer units = 1;
+				JSONObject jsonMyCartObject = new JSONObject(jsonMyCartString);
+				if (jsonMyCartObject.has(item.item_id)) {
+					units = Integer.parseInt(jsonMyCartObject
+							.getString(item.item_id));
+					units++;
+					addtocart.setText("  " + units);
+
+					Integer total = units
+							* Integer.parseInt(myCart.get(position).getPrice());
+					String totalString = total.toString();
+					DecimalFormat precisionTotal = new DecimalFormat("0.00");
+					Double item_total_double = Double.parseDouble(totalString);
+					String item_total = precisionTotal
+							.format(item_total_double);
+
+					itemtotalprice.setText("KES. " + item_total);
+
+				}
+				jsonMyCartObject.put(item.item_id, units);
+				String newJsonMyCartString = jsonMyCartObject.toString();
+				editor.putString("myTrolley", newJsonMyCartString);
+				editor.commit();
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			COUNT_CART_ITEMS++;
+			cartButtonNotification.setText(COUNT_CART_ITEMS.toString());
+
+			String currentTotal = subtitle.getText().toString()
+					.replaceAll("[^0-9]", "");
+
+			Log.i("currentTotal", " --> " + currentTotal);
+
+			DecimalFormat twoDecimal = new DecimalFormat("0.00");
+			Double currentTotalDouble = Double.parseDouble(currentTotal);
+			currentTotalDouble /= 100;
+			Double itemPriceDouble = Double.parseDouble(item.item_price);
+			Double newTotal = currentTotalDouble + itemPriceDouble;
+			String newTotalString = twoDecimal.format(newTotal);
+			subtitle.setText("My Cart (KES." + newTotalString + ")");
+
+		} else {
+			// REMOVE UNITS
+			try {
+				showDialogRemoveFromCart(item, position, "Remove Item?", v);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	public void showDialogRemoveFromCart(final RequestedResults item,
+			final int position, final String message, final View v)
+			throws Exception {
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		final String jsonMyCartString = sharedPreferences.getString(
+				"myTrolley", (new JSONObject()).toString());
+		try {
+			Integer units = 1;
+			JSONObject jsonMyCartObject = new JSONObject(jsonMyCartString);
+			if (jsonMyCartObject.has(item.item_id)) {
+				units = Integer.parseInt(jsonMyCartObject
+						.getString(item.item_id));
+				units--;
+				if (units.equals(0)) {
+					builder.setMessage(item.item_title
+							+ " will be removed from your Cart completely. "
+							+ message);
+				} else {
+					builder.setMessage("1 " + item.item_title
+							+ " will be removed from your Cart." + message);
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+				// UPDATE CART
+				View parentRow = (View) v.getParent();
+				Button addtocart = (Button) parentRow
+						.findViewById(R.id.addtocart);
+				TextView itemtotalprice = (TextView) parentRow
+						.findViewById(R.id.itemtotalprice);
+				try {
+					Integer units = 1;
+					JSONObject jsonMyCartObject = new JSONObject(
+							jsonMyCartString);
+					if (jsonMyCartObject.has(item.item_id)) {
+						units = Integer.parseInt(jsonMyCartObject
+								.getString(item.item_id));
+						units--;
+						if (units <= 0) {
+							jsonMyCartObject.remove(item.item_id);
+							Toast.makeText(context,
+									item.item_title + " removed.",
+									Toast.LENGTH_SHORT).show();
+							Intent intent = new Intent(context,
+									ActivityStep08ListCart.class);
+							context.startActivity(intent);
+						} else {
+							jsonMyCartObject.put(item.item_id, units);
+							Toast.makeText(context,
+									"1 " + item.item_title + " removed",
+									Toast.LENGTH_SHORT).show();
+							addtocart.setText("  " + units.toString());
+
+							String currentTotal = subtitle.getText().toString()
+									.replaceAll("[^0-9]", "");
+							// Log.i("currentTotal"," --> "+currentTotal);
+
+							DecimalFormat twoDecimal = new DecimalFormat("0.00");
+							Double currentTotalDouble = Double
+									.parseDouble(currentTotal);
+							currentTotalDouble /= 100;
+							Double itemPriceDouble = Double
+									.parseDouble(item.item_price);
+							Double newTotal = currentTotalDouble
+									- itemPriceDouble;
+							String newTotalString = twoDecimal.format(newTotal);
+							subtitle.setText("My Cart (KES." + newTotalString
+									+ ")");
+
+							Integer total = units
+									* Integer.parseInt(myCart.get(position)
+											.getPrice());
+							String totalString = total.toString();
+							DecimalFormat precisionTotal = new DecimalFormat(
+									"0.00");
+							Double item_total_double = Double
+									.parseDouble(totalString);
+							String item_total = precisionTotal
+									.format(item_total_double);
+
+							itemtotalprice.setText("KES. " + item_total);
+
+						}
+					}
+
+					String newJsonMyCartString = jsonMyCartObject.toString();
+					editor.putString("myTrolley", newJsonMyCartString);
+					editor.commit();
+
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				COUNT_CART_ITEMS--;
+				cartButtonNotification.setText(COUNT_CART_ITEMS.toString());
+				dialog.dismiss();
+
+				Log.i("Removed from cart", " --> " + item.item_title);
+				Log.i("my cart hash map", " --> " + jsonMyCartString);
+			}
+		});
+
+		builder.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+
+		builder.show();
+	}
+
+	private Context getContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

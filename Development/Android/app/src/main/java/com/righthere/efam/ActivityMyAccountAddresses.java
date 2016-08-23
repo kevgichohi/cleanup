@@ -1,0 +1,796 @@
+package com.righthere.efam;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.View;
+import android.view.View.MeasureSpec;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.google.gson.Gson;
+
+public class ActivityMyAccountAddresses extends Activity {
+	SQLiteDatabase nunuaRahaDatabase;
+	public static final String MY_SESSION = "mySession";
+	SharedPreferences sharedPreferences;
+	SharedPreferences.Editor editor;
+	Gson gson;
+	Bundle extras;
+
+	public static ArrayList<RequestedResultsSimpleList> MYADDRESSES;
+	AdapterSimpleListaddress myadapter;
+	ListView listView;
+
+	HashMap<String, String> spinnerMapNeighbourhood;
+	List<String> list = new ArrayList<String>();
+
+	TextView app_name;
+
+	LinearLayout layout_progressbar;
+	RelativeLayout headersection;
+	RelativeLayout centerwrap;
+	RelativeLayout footersection;
+	Button menuIcon;
+	TextView headerText;
+	Button shoppingButton;
+	Button cartButton;
+
+	Typeface EkMukta_Light;
+	String prevActivity;
+	TextView sectionInfo;
+	Spinner neighbourhood;
+	TextView aptName;
+	TextView road;
+	TextView landmark;
+	TextView aptNo;
+	TextView description;
+	Button saveCustomerInfo;
+	TextView cartButtonNotification;
+	TextView errorMessage;
+	Boolean error;
+	Button addAddress;
+	Button arrowRight;
+	Button proceedToCheckout;
+	Button clearcart;
+
+	public static String CUSTOMER_PHONE_NUMBER;
+	public static String CUSTOMER_FIRST_NAME;
+	public static String CUSTOMER_LAST_NAME;
+	public static String CUSTOMER_EMAIL;
+	public static String CUSTOMER_ADDRESS_NEIGHBOURHOOD;
+	public static String CUSTOMER_ADDRESS_APTNAME;
+	public static String CUSTOMER_ADDRESS_APTNO;
+	public static String CUSTOMER_LANDMARK;
+	public static String CUSTOMER_ROAD;
+	public static String CUSTOMER_ADDRESS_DESCRIPTION;
+	public static String SELECTED_BRAND_ID;
+	private ImageView headerTextimage2;
+	private OnClickListener myButtonClickListener;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_my_addresses);
+		overridePendingTransition(R.anim.slide_page_in, R.anim.slide_page_out);// SlideIn
+																				// animation
+		listView = (ListView) findViewById(R.id.simpleListView);
+		layout_progressbar = (LinearLayout) findViewById(R.id.progressbar_view);
+		menuIcon = (Button) findViewById(R.id.menu_icon);
+		sharedPreferences = getSharedPreferences(MY_SESSION,
+				Context.MODE_PRIVATE);
+		editor = sharedPreferences.edit();
+		gson = new Gson();
+		extras = getIntent().getExtras();
+		headerText = (TextView) findViewById(R.id.headerText);
+		sectionInfo = (TextView) findViewById(R.id.sectionInfo);
+		app_name = (TextView) findViewById(R.id.app_name);
+		shoppingButton = (Button) findViewById(R.id.shoppingButton);
+		cartButton = (Button) findViewById(R.id.cartButton);
+		neighbourhood = (Spinner) findViewById(R.id.neighbourhood);
+		aptName = (TextView) findViewById(R.id.aptName);
+		aptNo = (TextView) findViewById(R.id.aptNo);
+		landmark = (TextView) findViewById(R.id.landmark);
+		road = (TextView) findViewById(R.id.road);
+		description = (TextView) findViewById(R.id.description);
+		saveCustomerInfo = (Button) findViewById(R.id.saveCustomerInfo);
+		cartButtonNotification = (TextView) findViewById(R.id.cartButtonNotification);
+		SELECTED_BRAND_ID = sharedPreferences
+				.getString("selectedBrandId", null);
+		EkMukta_Light = Typeface.createFromAsset(getAssets(),
+				"fonts/ek_mukta/EkMukta-Light.ttf");
+		errorMessage = (TextView) findViewById(R.id.systemMessage);
+		addAddress = (Button) findViewById(R.id.addAddress);
+		proceedToCheckout = (Button) findViewById(R.id.proceedToCheckout);
+		clearcart = (Button) findViewById(R.id.clearcart);
+
+		headerTextimage2 = (ImageView) findViewById(R.id.headerTextimage);
+		headerTextimage2.setVisibility(View.VISIBLE);
+		headerTextimage2.setImageResource(R.mipmap.menuaddressactive);
+
+		CUSTOMER_PHONE_NUMBER = sharedPreferences.getString("userPhoneNumber", null);
+		// LOAD QUICKLINKS
+		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
+		helperQuickLinks.create(menuIcon, shoppingButton, cartButton,
+				cartButtonNotification, ActivityMyAccountAddresses.this,
+				sharedPreferences);
+
+		clearcart.setVisibility(View.VISIBLE);
+		clearcart.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				if (sharedPreferences.contains("myTrolley")) {
+					try {
+						showDialogEmptyTrolley("Are you sure?");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				} else {
+					Toast.makeText(ActivityMyAccountAddresses.this,
+							"No items in your cart to clear!",
+							Toast.LENGTH_LONG).show();
+				}
+
+			}
+		});
+
+		proceedToCheckout.setVisibility(View.VISIBLE);
+		proceedToCheckout.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				// Intent intent = new Intent(ActivityMyAccountAddresses.this,
+				// ActivityStep09ListCart.class);
+				// startActivity(intent);
+				if (sharedPreferences.contains("myTrolley")) {
+					// Intent intent = new
+					// Intent(ActivityMyAccountAddresses.this,
+					// ActivityStep09ListDeliveryOptions.class);
+					// startActivity(intent);
+					Toast.makeText(ActivityMyAccountAddresses.this,
+							"click your cart to confirm first",
+							Toast.LENGTH_LONG).show();
+				} else {
+					Toast.makeText(ActivityMyAccountAddresses.this,
+							"No items in your cart !", Toast.LENGTH_LONG)
+							.show();
+				}
+			}
+		});
+		
+	
+		//Log.i("Testing"," --> am here" + getIntent().hasExtra("from"));
+			if (sharedPreferences.contains("customerInfo")) {
+
+				if (getIntent().hasExtra("from") == false) {
+
+					Log.i("Testing"," --> am here" + getIntent().hasExtra("from"));
+
+					// LIST VIEW
+					new HttpAsyncTask()
+							.execute("http://www.e-fam.com/mobile_trolley_app/getcustomeraddresses.php");
+					MYADDRESSES = new ArrayList<RequestedResultsSimpleList>();
+					myadapter = new AdapterSimpleListaddress(
+							ActivityMyAccountAddresses.this, MYADDRESSES,
+							EkMukta_Light);
+					listView.setAdapter(myadapter);
+					new populateListViewTask().execute();
+
+				}
+
+				new retrieveNeighbourhoodsFromDBTask().execute();
+
+				spinnerMapNeighbourhood = new HashMap<String, String>();
+				spinnerMapNeighbourhood.put("Select Neighbourhood", "0");
+
+				list = new ArrayList<String>();
+				list.add("Select Neighbourhood");
+
+				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
+						this, android.R.layout.simple_spinner_item, list);
+				dataAdapter
+						.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				neighbourhood.setAdapter(dataAdapter);
+				// neighbourhood.setVisibility(View.GONE);
+
+				new ApplyViewParamsTask().execute();
+
+			} else {
+				Intent intent = new Intent(ActivityMyAccountAddresses.this,
+						ActivityMyAccountLogin.class);
+				intent.putExtra("from", "ActivityMyAccountProfile");
+				startActivity(intent);
+			}
+
+		
+
+	}
+
+	public void onItemSelected(AdapterView<?> parent, View view, int pos,
+			long id) {
+		Toast.makeText(
+				parent.getContext(),
+				"OnItemSelectedListener : "
+						+ parent.getItemAtPosition(pos).toString(),
+				Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void onBackPressed() {
+		finish();
+		overridePendingTransition(R.anim.slide_page_in, R.anim.slide_page_out);// SlideIn
+																				// animation
+	}
+
+	@Override
+	public void finish() {
+		super.finish();
+		overridePendingTransition(R.anim.slide_page_in, R.anim.slide_page_out);// SlideIn
+																				// animation
+	}
+
+	@Override
+	public void onResume() {
+		overridePendingTransition(R.anim.slide_page_in, R.anim.slide_page_out);// SlideIn
+
+		super.onResume(); // Always call the superclass method first// animation
+		if (sharedPreferences.contains("customerInfo")) {
+
+		if (getIntent().hasExtra("from") == false) {
+			myadapter = new AdapterSimpleListaddress(ActivityMyAccountAddresses.this,
+					MYADDRESSES, EkMukta_Light);
+			listView.setAdapter(myadapter);
+			myadapter.notifyDataSetChanged();
+		}
+		} else {
+
+			Intent intent = new Intent(ActivityMyAccountAddresses.this,
+					ActivityMyAccountLogin.class);
+			intent.putExtra("from", "ActivityMyAccountProfile");
+			startActivity(intent);
+		}
+	}
+
+	public class populateListViewTask extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+
+		protected void onPostExecute(String params) {
+			listView.setDividerHeight(0); // remove the default divider line
+			listView.setTextFilterEnabled(true);
+
+			myadapter = new AdapterSimpleListaddress(ActivityMyAccountAddresses.this,
+					MYADDRESSES, EkMukta_Light);
+			listView.setAdapter(myadapter);
+			ActivityMyAccountAddresses
+					.setListViewHeightBasedOnChildren(listView);
+
+			listView.setOnItemClickListener(new OnItemClickListener() {
+
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+
+					RequestedResultsSimpleList item = (RequestedResultsSimpleList) listView
+							.getItemAtPosition(position);
+
+					try {
+						if (item.item_id.equals("0")) {
+							Log.i("testsdf ", item.item_title);
+							Intent intent = new Intent(
+									ActivityMyAccountAddresses.this,
+									ActivityMyAccountAddresses.class);
+							intent.putExtra("from",
+									"ActivityStep09ListDeliveryOptionsAddresses");
+							startActivity(intent);
+						} else {
+							editor.putString("deliveryAddress", item.item_title)
+									.commit();
+							Log.i("testsdf ", item.item_title);
+							Intent intent = new Intent(
+									ActivityMyAccountAddresses.this,
+									ActivityStep10ListPaymentOptions.class);
+							startActivity(intent);
+						}
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+
+			});
+
+		}
+	}
+
+	private class retrieveNeighbourhoodsFromDBTask extends
+			AsyncTask<String, Void, String> {
+
+		@Override
+		protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+			// neighbourhood.setVisibility(View.GONE);
+			super.onPreExecute();
+		}
+
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+
+		protected void onPostExecute(String params) {
+			layout_progressbar.setVisibility(View.GONE);
+			// neighbourhood.setVisibility(View.VISIBLE);
+			// super.onPostExecute();
+
+			nunuaRahaDatabase = openOrCreateDatabase("nunuaRahaDatabase",
+					MODE_PRIVATE, null);
+
+			
+			// GET BRANCHES
+			Cursor resultsBranchesCursor;
+			if (getIntent().hasExtra("from") && SELECTED_BRAND_ID != null) {
+				resultsBranchesCursor = nunuaRahaDatabase.rawQuery(
+						"SELECT * FROM hdjgf_shops_branches WHERE shop_brand_id = "
+								+ SELECTED_BRAND_ID + " AND status = 1", null);
+			} else {
+				resultsBranchesCursor = nunuaRahaDatabase.rawQuery(
+						"SELECT * FROM hdjgf_shops_branches WHERE status = 1",
+						null);
+			}
+
+			resultsBranchesCursor.moveToFirst();
+			int i = 0;
+			String deliveryAreasString = "";
+			while (resultsBranchesCursor.isAfterLast() == false) {
+				String item_delivery_areas = resultsBranchesCursor.getString(5);
+				JSONArray jsonArr;
+				try {
+					jsonArr = new JSONArray(item_delivery_areas);
+					for (int j = 0; j < jsonArr.length(); j++) {
+						String location_id = jsonArr.getString(j);
+						deliveryAreasString = deliveryAreasString + location_id
+								+ ",";
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				i++;
+				resultsBranchesCursor.moveToNext();
+			}
+			String[] deliveryAreasArr = deliveryAreasString.split(",");
+			String inClause = gson.toJson(deliveryAreasArr); // at this point
+																// inClause will
+																// look like
+																// ["23","343","33","55","43"]
+			inClause = inClause.replace("[", "(");// at this point inClause will
+													// look like
+													// ("23","343","33","55","43"]
+			inClause = inClause.replace("]", ")");// at this point inClause will
+													// look like
+													// ("23","343","33","55","43")
+			inClause = inClause.replace("\"", "");// now at this point inClause
+													// will look like
+													// (23,343,33,55,43) so use
+													// it to construct your
+													// SELECT
+
+			// GET LOCATIONS
+			Cursor resultsLocationsCursor = nunuaRahaDatabase.rawQuery(
+					"SELECT * FROM hdjgf_locations WHERE id IN " + inClause,
+					null);
+			resultsLocationsCursor.moveToFirst();
+			int k = 0;
+			while (resultsLocationsCursor.isAfterLast() == false) {
+				String item_id = resultsLocationsCursor.getString(0);
+				String item_title = resultsLocationsCursor.getString(1);
+
+				spinnerMapNeighbourhood.put(item_title, item_id);
+				list.add(item_title);
+
+				k++;
+				resultsLocationsCursor.moveToNext();
+			}
+
+		}
+
+	}
+
+	private class ApplyViewParamsTask extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected void onPreExecute() {
+			
+			
+			if (sharedPreferences.contains("customerInfo")) {
+
+				if (getIntent().hasExtra("from") == false) {
+					layout_progressbar.setVisibility(View.VISIBLE);
+				}
+				} else {
+
+					Intent intent = new Intent(ActivityMyAccountAddresses.this,
+							ActivityMyAccountLogin.class);
+					intent.putExtra("from", "ActivityMyAccountAddresses");
+					startActivity(intent);
+				}
+			super.onPreExecute();
+		}
+
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			return "Done";
+		}
+
+		protected void onPostExecute(String params) {
+			layout_progressbar.setVisibility(View.GONE);
+			headerText.setText("My Address");
+			if (getIntent().hasExtra("from")) {
+				prevActivity = extras.getString("from");
+				sectionInfo.setText("Add Address");
+			}
+
+			addAddress.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					neighbourhood.setVisibility(View.VISIBLE);
+					aptName.setVisibility(View.VISIBLE);
+					aptNo.setVisibility(View.VISIBLE);
+					landmark.setVisibility(View.VISIBLE);
+					road.setVisibility(View.VISIBLE);
+					description.setVisibility(View.VISIBLE);
+					saveCustomerInfo.setVisibility(View.VISIBLE);
+					sectionInfo.setText("Add Address");
+				}
+			});
+
+			saveCustomerInfo.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					String selectedNeighbourhood = neighbourhood
+							.getSelectedItem().toString();
+
+					CUSTOMER_ADDRESS_NEIGHBOURHOOD = spinnerMapNeighbourhood
+							.get(selectedNeighbourhood);
+					CUSTOMER_ADDRESS_APTNAME = aptName.getText().toString();
+					CUSTOMER_ADDRESS_APTNO = aptNo.getText().toString();
+					CUSTOMER_ADDRESS_DESCRIPTION = description.getText()
+							.toString();
+					CUSTOMER_ROAD = road.getText().toString();
+					CUSTOMER_LANDMARK = landmark.getText().toString();
+
+					errorMessage.setVisibility(View.GONE);// Hide all errors
+															// before displaying
+															// new ones
+					Boolean error = false;
+					if (CUSTOMER_ADDRESS_NEIGHBOURHOOD.equals("0")) {
+						errorMessage.setVisibility(View.VISIBLE);
+						errorMessage.setText("Select your neighbourhood");
+						neighbourhood.requestFocus();
+						error = true;
+					}
+
+					else if (CUSTOMER_LANDMARK == null
+							|| CUSTOMER_LANDMARK.isEmpty()) {
+						errorMessage.setVisibility(View.VISIBLE);
+						errorMessage
+								.setText("Fill in Distinguished feature near your home");
+						landmark.requestFocus();
+						error = true;
+					}
+
+					else if (CUSTOMER_ROAD == null || CUSTOMER_ROAD.isEmpty()) {
+						errorMessage.setVisibility(View.VISIBLE);
+						errorMessage.setText("Fill in the road near your home");
+						road.requestFocus();
+						error = true;
+					}
+
+					else if (CUSTOMER_ADDRESS_DESCRIPTION == null
+							|| CUSTOMER_ADDRESS_DESCRIPTION.isEmpty()) {
+						errorMessage.setVisibility(View.VISIBLE);
+						errorMessage.setText("Briefly describe your location");
+						description.requestFocus();
+						error = true;
+					} else if (error == false) {
+						// editor.putString("customerInfo","Yes").commit();
+						new HttpAsyncTask()
+								.execute("http://www.e-fam.com/mobile_trolley_app/savecustomerbasicinfo.php");
+					}
+
+				}
+			});
+		}
+
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream)
+			throws IOException {
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(inputStream));
+		String line = "";
+		String result = "";
+		while ((line = bufferedReader.readLine()) != null)
+			result += line;
+
+		inputStream.close();
+		return result;
+
+	}
+
+	public class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+		protected void onPreExecute() {
+			layout_progressbar.setVisibility(View.VISIBLE);
+
+			AnimatedGifImageView animatedGifImageView = ((AnimatedGifImageView) findViewById(R.id.animatedGifImageView));
+			animatedGifImageView.setAnimatedGif(R.mipmap.loading_bar,
+					AnimatedGifImageView.TYPE.FIT_CENTER);
+			// animatedGifImageView.setImageResource(R.drawable.loading_bar);
+			super.onPreExecute();
+		}
+
+		// onPostExecute displays the results of the AsyncTask.
+		@Override
+		protected void onPostExecute(String result) {
+			layout_progressbar.setVisibility(View.GONE);
+			super.onPostExecute(result);
+
+			// Toast.makeText(getBaseContext(), "Pick up options!",
+			// Toast.LENGTH_LONG).show();
+			try {
+				Log.i("Results", " --> " + result);
+
+				JSONArray jsonArr = new JSONArray(result);
+
+				for (int i = 0; i < jsonArr.length(); i++) {
+					JSONObject jsonObj = jsonArr.getJSONObject(i);
+					String querytype = jsonObj.getString("querytype");
+
+					if (querytype.equals("insert info")) {
+						String message = jsonObj.getString("message");
+						if (message.equals("success")) {
+							// this activity was requested from an activity in
+							// the shopping process and thus after filling in
+							// the customer info
+							// it needs to be redirected back to the shopping
+							// process that requested for it
+
+							if (getIntent().hasExtra("from")) {
+								Class callerClass;
+								try {
+									callerClass = Class
+											.forName("com.redhering.nunuaraha."
+													+ prevActivity);
+									Intent intent = new Intent(
+											ActivityMyAccountAddresses.this,
+											callerClass);
+									startActivity(intent);
+								} catch (ClassNotFoundException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+
+							} else {
+								Intent intent = new Intent(
+										ActivityMyAccountAddresses.this,
+										ActivityMyAccountAddresses.class);
+								startActivity(intent);
+							}
+						}
+
+						if (message.equals("fail")) {
+							Toast.makeText(
+									getBaseContext(),
+									"Error saving your info. Kindly contact our support team.",
+									Toast.LENGTH_LONG).show();
+						}
+
+					} else {
+
+						String item_id = jsonObj.getString("id");
+						String item_title;
+
+						if (item_id.equals("0")) {
+							item_title = "No address found";
+
+						} else {
+
+							String item_neighbourhood_id = jsonObj
+									.getString("location_id");
+							String item_neighbourhood = jsonObj
+									.getString("title");
+							String item_apt_name = jsonObj
+									.getString("apt_name");
+							String item_apt_number = jsonObj
+									.getString("apt_number");
+							String item_landmark = jsonObj
+									.getString("landmark");
+							String item_road = jsonObj.getString("road");
+							String item_description = jsonObj
+									.getString("description");
+							
+							item_title = item_neighbourhood + "\n"
+									+ item_landmark  + "\n" + item_road 
+									+ "\n" + item_apt_name + "\n" + item_apt_number
+									+ "\n" + item_description;
+						}
+
+						RequestedResultsSimpleList d = new RequestedResultsSimpleList();
+
+						d.setTitle(item_title);
+
+						d.item_id = item_id;
+						d.item_title = item_title;
+						MYADDRESSES.add(d);
+
+					}
+				}
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+			return GET(urls[0]);
+		}
+
+	}
+
+	public static String GET(String url) {
+		InputStream inputStream = null;
+		String result = "";
+
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("phone",
+				CUSTOMER_PHONE_NUMBER));
+		nameValuePairs.add(new BasicNameValuePair("neighbourhood",
+				CUSTOMER_ADDRESS_NEIGHBOURHOOD));
+		nameValuePairs.add(new BasicNameValuePair("aptName",
+				CUSTOMER_ADDRESS_APTNAME));
+		nameValuePairs.add(new BasicNameValuePair("aptNo",
+				CUSTOMER_ADDRESS_APTNO));
+		nameValuePairs.add(new BasicNameValuePair("road", CUSTOMER_ROAD));
+		nameValuePairs
+				.add(new BasicNameValuePair("landmark", CUSTOMER_LANDMARK));
+		nameValuePairs.add(new BasicNameValuePair("description",
+				CUSTOMER_ADDRESS_DESCRIPTION));
+
+		try {
+
+			// create HttpClient
+			HttpClient httpclient = new DefaultHttpClient();
+
+			HttpPost httppost = new HttpPost(url);
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			// make GET request to the given URL
+			HttpResponse response = httpclient.execute(httppost);
+
+			// receive response as inputStream
+			inputStream = response.getEntity().getContent();
+
+			// convert inputstream to string
+			if (inputStream != null) {
+				result = convertInputStreamToString(inputStream);
+			} else {
+				result = "Did not work!";
+			}
+
+		} catch (Exception e) {
+			Log.d("InputStream", e.getLocalizedMessage());
+		}
+
+		return result;
+	}
+
+	public static void setListViewHeightBasedOnChildren(ListView listView) {
+		ListAdapter listAdapter = listView.getAdapter();
+		if (listAdapter == null) {
+			// pre-condition
+			return;
+		}
+
+		int totalHeight = 0;
+		int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(),
+				MeasureSpec.AT_MOST);
+		for (int i = 0; i < listAdapter.getCount(); i++) {
+			View listItem = listAdapter.getView(i, null, listView);
+			listItem.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
+			totalHeight += listItem.getMeasuredHeight();
+		}
+
+		ViewGroup.LayoutParams params = listView.getLayoutParams();
+		params.height = totalHeight
+				+ (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+		listView.setLayoutParams(params);
+		listView.requestLayout();
+	}
+
+	public void showDialogEmptyTrolley(final String message) throws Exception {
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				ActivityMyAccountAddresses.this);
+		builder.setMessage("You will lose all the items that you have selected. "
+				+ message);
+
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// Clear Cart Session
+				sharedPreferences.edit().remove("myTrolley").commit();
+
+				Intent intent = new Intent(ActivityMyAccountAddresses.this,
+						ActivityStep05ListAisles.class);
+				startActivity(intent);
+
+				// Go back to previous page
+				// finish();
+				dialog.dismiss();
+			}
+		});
+
+		builder.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+
+		builder.show();
+	}
+
+}

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingTop="6dip"
+    android:paddingBottom="6dip"
+    android:paddingLeft="11dip"
+    android:paddingRight="11dip"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/customproductslisting" >
+    
+ 	
+    <!-- Thumbnail Image -->
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="40dip"
+        android:src="@mipmap/imageholder"
+        android:contentDescription="Item"
+		android:layout_alignParentLeft="true"
+		android:scaleType="fitCenter"
+		android:gravity="left"/>
+    
+     <RelativeLayout 
+      	  android:layout_width="wrap_content"
+		  android:layout_height="wrap_content"
+		  android:gravity="center"
+		  android:layout_marginTop="0dp"
+		  android:layout_toRightOf="@id/thumbnail"
+         android:id="@+id/centerwrap" >
+			  
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:textColor="@color/darkgreen"
+        android:layout_marginTop="0dp"
+		android:gravity="left"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+ 
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:gravity="left"
+		android:textColor="@color/darkgreen"
+        android:layout_below="@id/title" />
+ 
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:gravity="center"
+		android:orientation="vertical"
+		android:layout_gravity="center_vertical"
+		android:textColor="@color/darkgreen"
+        android:layout_below="@id/size"/>
+		</RelativeLayout>
+		
+	
+     
+		
+    
+    
+    <Button
+        android:id="@+id/addtocart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginLeft="35dp"
+	    android:gravity="center"
+		android:drawableLeft="@mipmap/addtocart3"
+		android:background="@drawable/selector"
+		android:layout_alignParentRight="true" /> 
+		
+     
+		
+   
+ 
+</RelativeLayout>
