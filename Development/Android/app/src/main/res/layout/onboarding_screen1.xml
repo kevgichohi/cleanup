@@ -6,6 +6,6 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/activation_notification" />
+        android:src="@mipmap/mother_daughter_screen" />
 
 </LinearLayout>
