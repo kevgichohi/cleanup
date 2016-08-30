@@ -193,10 +193,11 @@
 					android:textColor="@color/grey999"/>
     </LinearLayout>
     
-   		  <ListView
+   		  <com.righthere.efam.model.ExpandedListView
 	        android:id="@+id/receiptView"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_height="0dip"
+			android:layout_weight="1"
 	   		android:divider="@null"
 	   		android:dividerHeight="0dip" 
 	   		android:clickable="true"

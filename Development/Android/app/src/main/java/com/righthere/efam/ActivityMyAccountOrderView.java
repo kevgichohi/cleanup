@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
+import com.righthere.efam.adapters.DynamicListView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -176,6 +177,8 @@ public class ActivityMyAccountOrderView extends Activity {
 				ActivityMyAccountOrderView.this, MYRECEIPT);
 		// setListViewHeightBasedOnChildren(listView);
 		listView.setAdapter(myadapterreceipt);
+		boolean resized = DynamicListView.setListViewHeightBasedOnItems(listView);
+		Log.d("MAOV_resized", String.valueOf(resized));
 		new populateListViewTask().execute();
 
 	}

@@ -59,6 +59,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
+import com.righthere.efam.adapters.DynamicListView;
 
 public class ActivityStep11MyReceipt extends Activity {
 	SQLiteDatabase nunuaRahaDatabase;
@@ -71,55 +72,19 @@ public class ActivityStep11MyReceipt extends Activity {
 	AdapterMyReceipt myadapterreceipt;
 
 	LinearLayout layout_progressbar;
-	RelativeLayout headersection;
-	RelativeLayout centerwrap;
-	RelativeLayout footersection;
-	RelativeLayout subtitlesection;
+	RelativeLayout headersection,centerwrap,footersection,subtitlesection;
+
 	ListView listView;
 	public Integer TOTAL = 0;
-	public static String SELECTED_OUTLET_TITLE;
-	public static String SELECTED_BRANCH_ID;
-	public static String SELECTED_BRANCH_TITLE;
-	public static String SELECTED_BRAND_ID;
-	public static String SELECTED_BRAND_TITLE;
-	public static String SELECTED_BRAND_LOGO;
-	public static String SELECTED_LOCATION;
-	public static String SELECTED_LOCATION_ID;
-	public static String SELECTED_DELIVERY_CHARGES;
-	public static String CUSTOMER_FIRST_NAME;
-	public static String CUSTOMER_LAST_NAME;
-	public static String CUSTOMER_PHONE_NUMBER;
-	public static String CUSTOMER_EMAIL_ADDRESS;
-	public static String CUSTOMER_ADDRESS;
-	public static String Ovaraltatol;
-	public static String totalitem2;
-	public static String vatrate2;
-	public static String vatable2;
-	public static String vatamt2;
+	public static String SELECTED_OUTLET_TITLE,SELECTED_BRANCH_ID,SELECTED_BRANCH_TITLE,SELECTED_BRAND_ID,SELECTED_BRAND_TITLE,SELECTED_BRAND_LOGO
+	,SELECTED_LOCATION,SELECTED_LOCATION_ID,SELECTED_DELIVERY_CHARGES,CUSTOMER_FIRST_NAME,CUSTOMER_LAST_NAME,CUSTOMER_PHONE_NUMBER,CUSTOMER_EMAIL_ADDRESS
+	,CUSTOMER_ADDRESS,Ovaraltatol,totalitem2,vatrate2,vatable2,vatamt2;
 
 	Boolean error;
 	Typeface EkMukta_Light;
-	TextView app_name;
-	TextView headerText;
-	Button menuIcon;
-	Button shoppingButton;
-	Button cartButton;
-	Button paycash;
-	Button paycreditcard;
-	Button paymobilemoney;
-	TextView shopDetails;
-	TextView userName;
-	TextView emailAddress;
-	TextView totalovaraltext;
-	TextView totalitem;
-	TextView vatrate;
-	TextView vatable;
-	TextView vatamt;
-	TextView phoneNumber;
-	TextView delivery;
-	Button checkout;
-	TextView errorMessage;
-	Button backToAisles;
+    Button menuIcon,shoppingButton,cartButton,paycash,paycreditcard,paymobilemoney,checkout,backToAisles;
+    TextView app_name, headerText,shopDetails,userName,emailAddress,totalovaraltext,totalitem,vatrate,vatable, vatamt, phoneNumber, delivery,errorMessage;
+
 	ImageView shopLogoview;
 	String extStorageDirectory;
 	Bitmap bm;
@@ -152,6 +117,8 @@ public class ActivityStep11MyReceipt extends Activity {
 				MYRECEIPT);
 		setListViewHeightBasedOnChildren(listView);
 		listView.setAdapter(myadapterreceipt);
+	//	boolean resized = DynamicListView.setListViewHeightBasedOnItems(listView);
+	//	Log.d("AS11MR_resized", String.valueOf(resized));
 	}
 
 	private void initViews() {
@@ -257,10 +224,15 @@ public class ActivityStep11MyReceipt extends Activity {
 		Log.i("SELECTED_BRANCH_TITLE", SELECTED_BRANCH_TITLE);
 
 		Ovaraltatol = sharedPreferences.getString("myTrolleyTotal", null);
+        Log.i("Ovaraltatol ", Ovaraltatol);
 		totalitem2 = sharedPreferences.getString("totalitem", null);
+		Log.i("totalitem2 ", totalitem2);
 		vatrate2 = sharedPreferences.getString("vatrate", null);
+        Log.i("vatrate2 ", vatrate2);
 		vatable2 = sharedPreferences.getString("vatable", null);
+        Log.i("vatable2 ", vatable2);
 		vatamt2 = sharedPreferences.getString("vatamt", null);
+        Log.i("vatamt2 ", vatamt2);
 
 		// LOAD QUICKLINKS
 		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
@@ -697,6 +669,8 @@ public class ActivityStep11MyReceipt extends Activity {
 				d.item_price = item_price;
 				d.item_size = item_size;
 				d.item_units_in_cart = item_units_in_cart;
+
+                Log.d("item: ",item_title +" price: "+ item_price+" quantity: "+ item_units_in_cart);
 
 				MYRECEIPT.add(d);
 

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.righthere.efam.adapters.DynamicListView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -207,6 +208,8 @@ public class ActivityMyAccountOrdersView extends Activity {
 				ActivityMyAccountOrdersView.this, MYRECEIPT);
 		// setListViewHeightBasedOnChildren(listView);
 		listView.setAdapter(myadapterreceipt);
+		boolean resized = DynamicListView.setListViewHeightBasedOnItems(listView);
+        Log.d("MAOVS_resized", String.valueOf(resized));
 		new populateListViewTask().execute();
 
 	}

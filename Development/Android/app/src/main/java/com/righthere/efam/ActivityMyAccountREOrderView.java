@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
+import com.righthere.efam.adapters.DynamicListView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -124,6 +125,8 @@ public class ActivityMyAccountREOrderView extends Activity {
 				ActivityMyAccountREOrderView.this, MYRECEIPT);
 		setListViewHeightBasedOnChildren(listView);
 		listView.setAdapter(myadapterreceipt);
+		boolean resized = DynamicListView.setListViewHeightBasedOnItems(listView);
+		Log.d("MAROV_resized", String.valueOf(resized));
 
 		clearcart.setVisibility(View.VISIBLE);
 		clearcart.setOnClickListener(new View.OnClickListener() {
