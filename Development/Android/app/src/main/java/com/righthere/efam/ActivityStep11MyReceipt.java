@@ -78,7 +78,7 @@ public class ActivityStep11MyReceipt extends Activity {
 	public Integer TOTAL = 0;
 	public static String SELECTED_OUTLET_TITLE,SELECTED_BRANCH_ID,SELECTED_BRANCH_TITLE,SELECTED_BRAND_ID,SELECTED_BRAND_TITLE,SELECTED_BRAND_LOGO
 	,SELECTED_LOCATION,SELECTED_LOCATION_ID,SELECTED_DELIVERY_CHARGES,CUSTOMER_FIRST_NAME,CUSTOMER_LAST_NAME,CUSTOMER_PHONE_NUMBER,CUSTOMER_EMAIL_ADDRESS
-	,CUSTOMER_ADDRESS,Ovaraltatol,totalitem2,vatrate2,vatable2,vatamt2;
+	,CUSTOMER_ADDRESS,Ovaraltatol,total_items,totalitem2,vat_able,vatrate2,vatable2,vat_amt,vatamt2;
 
 	Boolean error;
 	Typeface EkMukta_Light;
@@ -104,17 +104,18 @@ public class ActivityStep11MyReceipt extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_receipt);
 		overridePendingTransition(R.anim.slide_page_in, R.anim.slide_page_out);// SlideIn
-																				// animation
+
+		MYRECEIPT = new ArrayList<RequestedResultsReceipt>();
+		myadapterreceipt = new AdapterMyReceipt(ActivityStep11MyReceipt.this,
+				MYRECEIPT);																	// animation
 
 		initViews();
 
+        // LIST VIEW
+        new populateListViewTask().execute();
+
 		new ApplyViewParamsTask().execute();
 
-		// LIST VIEW
-		new populateListViewTask().execute();
-		MYRECEIPT = new ArrayList<RequestedResultsReceipt>();
-		myadapterreceipt = new AdapterMyReceipt(ActivityStep11MyReceipt.this,
-				MYRECEIPT);
 		setListViewHeightBasedOnChildren(listView);
 		listView.setAdapter(myadapterreceipt);
 	//	boolean resized = DynamicListView.setListViewHeightBasedOnItems(listView);
@@ -594,6 +595,8 @@ public class ActivityStep11MyReceipt extends Activity {
 			if (sharedPreferences.contains("myTrolley")) {
 				String jsonMyCartString = sharedPreferences.getString(
 						"myTrolley", null);
+
+				Log.d("myTrolley",jsonMyCartString);
 				try {
 					jsonMyCartObject = new JSONObject(jsonMyCartString);
 					Iterator<String> loop = jsonMyCartObject.keys();
@@ -699,11 +702,24 @@ public class ActivityStep11MyReceipt extends Activity {
 
 			editor.putString("vatable", vatableAmtStr).commit();
 
+            Log.d("vat_able: ",vatableAmtStr);
+
+            vat_able = vatableAmtStr;
+
 			editor.putString("vatamt", vatdouble.toString()).commit();
+
+            Log.d("vat_amt: ",vatdouble.toString());
+
+            vat_amt = vatdouble.toString();
 
 			editor.putString("totalitem", totalItems.toString()).commit();
 
-			RequestedResultsReceipt d = new RequestedResultsReceipt();
+            Log.d("totalitem: ",totalItems.toString());
+
+            total_items = totalItems.toString();
+
+
+            RequestedResultsReceipt d = new RequestedResultsReceipt();
 			d.setId("100001");
 			d.setTitle("TOTAL");
 			d.setPrice(total_price);
@@ -730,6 +746,8 @@ public class ActivityStep11MyReceipt extends Activity {
 			e.item_size = "";
 			e.item_units_in_cart = totalItems;
 			// MYRECEIPT.add(e);
+
+            Log.d("totalItems: ",totalItems.toString());
 
 			// VAT RATE
 			RequestedResultsReceipt f = new RequestedResultsReceipt();
@@ -837,12 +855,12 @@ public class ActivityStep11MyReceipt extends Activity {
 			phoneNumber.setText(" - " + CUSTOMER_PHONE_NUMBER);
 			totalovaraltext.setText(Ovaraltatol);
 
-			totalitem.setText(" " + totalitem2);
+			totalitem.setText(" " + total_items);
 			vatrate.setText(" " + vatrate2);
-			vatable.setText(" " + vatable2);
-			vatamt.setText(" " + vatamt2);
+			vatable.setText(" " + vat_able);
+			vatamt.setText(" " + vat_amt);
 
-			Log.i("totalitem", " --> " + totalitem2);
+			Log.i("total_items ", " --> " + total_items);
 			Log.i("vatrate", " --> " + vatrate2);
 			Log.i("vatable", " --> " + vatable2);
 			Log.i("vatamt", " --> " + vatamt2);
