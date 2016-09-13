@@ -225,15 +225,15 @@ public class ActivityStep11MyReceipt extends Activity {
 		Log.i("SELECTED_BRANCH_TITLE", SELECTED_BRANCH_TITLE);
 
 		Ovaraltatol = sharedPreferences.getString("myTrolleyTotal", null);
-        Log.i("Ovaraltatol ", Ovaraltatol);
+    //    Log.i("Ovaraltatol ", Ovaraltatol);
 		totalitem2 = sharedPreferences.getString("totalitem", null);
-		Log.i("totalitem2 ", totalitem2);
+//		Log.i("totalitem2 ", totalitem2);
 		vatrate2 = sharedPreferences.getString("vatrate", null);
-        Log.i("vatrate2 ", vatrate2);
+    //    Log.i("vatrate2 ", vatrate2);
 		vatable2 = sharedPreferences.getString("vatable", null);
-        Log.i("vatable2 ", vatable2);
+     //   Log.i("vatable2 ", vatable2);
 		vatamt2 = sharedPreferences.getString("vatamt", null);
-        Log.i("vatamt2 ", vatamt2);
+     //   Log.i("vatamt2 ", vatamt2);
 
 		// LOAD QUICKLINKS
 		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
