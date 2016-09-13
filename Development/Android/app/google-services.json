@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "99092607702",
+    "firebase_url": "https://e-fam-7f113.firebaseio.com",
+    "project_id": "e-fam-7f113",
+    "storage_bucket": "e-fam-7f113.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99092607702:android:bbbd7c18b65c89c4",
+        "android_client_info": {
+          "package_name": "com.righthere.efam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "99092607702-of8mnu6tj021g7k4h91fnesqtk4c2sf6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwZWRa0fHU4PxTlxJh_fPrrZkRFDBO4L8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

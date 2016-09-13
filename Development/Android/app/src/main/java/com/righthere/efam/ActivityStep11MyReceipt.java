@@ -57,6 +57,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
 import com.righthere.efam.adapters.DynamicListView;
@@ -97,13 +98,20 @@ public class ActivityStep11MyReceipt extends Activity {
 	Button proceedToCheckout;
 	Button clearcart;
 	private String SELECTED_OUTLET_ID;
+	private FirebaseAnalytics firebaseAnalytics;
 	private String reorderif2;
+    Bundle bundle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_receipt);
 		overridePendingTransition(R.anim.slide_page_in, R.anim.slide_page_out);// SlideIn
+
+        // Obtain the Firebase Analytics instance.
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        bundle = new Bundle();
 
 		MYRECEIPT = new ArrayList<RequestedResultsReceipt>();
 		myadapterreceipt = new AdapterMyReceipt(ActivityStep11MyReceipt.this,
@@ -227,6 +235,7 @@ public class ActivityStep11MyReceipt extends Activity {
 		Ovaraltatol = sharedPreferences.getString("myTrolleyTotal", null);
     //    Log.i("Ovaraltatol ", Ovaraltatol);
 		totalitem2 = sharedPreferences.getString("totalitem", null);
+<<<<<<< HEAD
 //		Log.i("totalitem2 ", totalitem2);
 		vatrate2 = sharedPreferences.getString("vatrate", null);
     //    Log.i("vatrate2 ", vatrate2);
@@ -234,6 +243,15 @@ public class ActivityStep11MyReceipt extends Activity {
      //   Log.i("vatable2 ", vatable2);
 		vatamt2 = sharedPreferences.getString("vatamt", null);
      //   Log.i("vatamt2 ", vatamt2);
+=======
+	//	Log.i("totalitem2 ", totalitem2);
+		vatrate2 = sharedPreferences.getString("vatrate", null);
+    //  Log.i("vatrate2 ", vatrate2);
+		vatable2 = sharedPreferences.getString("vatable", null);
+     //   Log.i("vatable2 ", vatable2);
+		vatamt2 = sharedPreferences.getString("vatamt", null);
+    //    Log.i("vatamt2 ", vatamt2);
+>>>>>>> 64b7a57c178ec7c20278ab11dc16385bbbd1c390
 
 		// LOAD QUICKLINKS
 		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();
@@ -674,8 +692,12 @@ public class ActivityStep11MyReceipt extends Activity {
 				d.item_units_in_cart = item_units_in_cart;
 
                 Log.d("item: ",item_title +" price: "+ item_price+" quantity: "+ item_units_in_cart);
+                bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, Integer.parseInt(item_id));
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, item_title);
+                bundle.putInt(FirebaseAnalytics.Param.QUANTITY,item_units_in_cart);
+                bundle.putInt(FirebaseAnalytics.Param.PRICE, Integer.parseInt(item_price));
 
-				MYRECEIPT.add(d);
+                MYRECEIPT.add(d);
 
 				k++;
 				resultsProductsCursor.moveToNext();
@@ -790,6 +812,24 @@ public class ActivityStep11MyReceipt extends Activity {
 			h.item_size = "";
 			h.item_units_in_cart = 0;
 			// MYRECEIPT.add(h);
+
+            //Logs an app event.
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+            //Sets whether analytics collection is enabled for this app on this device.
+            firebaseAnalytics.setAnalyticsCollectionEnabled(true);
+
+            //Sets the minimum engagement time required before starting a session. The default value is 10000 (10 seconds). Let's make it 20 seconds just for the fun
+            firebaseAnalytics.setMinimumSessionDuration(20000);
+
+            //Sets the duration of inactivity that terminates the current session. The default value is 1800000 (30 minutes).
+            firebaseAnalytics.setSessionTimeoutDuration(500);
+
+            //Sets the user ID property.
+            firebaseAnalytics.setUserId(String.valueOf(totalItems));
+
+            //Sets a user property to a given value.
+            firebaseAnalytics.setUserProperty("Food", "Receipt");
 		}
 
 		private void getText(String total_price) {
