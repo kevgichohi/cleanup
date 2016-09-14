@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
+import com.righthere.efam.interfaces.Constants;
 
 public class ActivityStep04ListBranches extends Activity {
 	SQLiteDatabase nunuaRahaDatabase;
@@ -296,7 +297,7 @@ public class ActivityStep04ListBranches extends Activity {
 				branchesListInfo.add(item_id);
 				branchesListInfo.add(item_title);
 				branchesListInfo
-						.add("http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+						.add(Constants.IMAGES_URL
 								+ item_image_url);
 
 				branchesIdList.add(new ArrayList<String>(branchesListInfo));
@@ -312,7 +313,7 @@ public class ActivityStep04ListBranches extends Activity {
 
 				d.item_id = item_id;
 				d.item_title = SELECTED_BRAND_TITLE + " - " + item_title;
-				d.setThumbnailUrl("http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+				d.setThumbnailUrl(Constants.IMAGES_URL
 						+ item_image_url);
 				// d.delivery_charge = delivery_charge;
 				SHOPSBRANCHLIST.add(d);

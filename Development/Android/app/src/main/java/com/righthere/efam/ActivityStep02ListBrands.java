@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
 
 import com.google.gson.Gson;
+import com.righthere.efam.interfaces.Constants;
 
 public class ActivityStep02ListBrands extends Activity {
 
@@ -263,7 +264,7 @@ public class ActivityStep02ListBrands extends Activity {
 				outletBrandsListInfo.add(item_id);
 				outletBrandsListInfo.add(item_title);
 				outletBrandsListInfo
-						.add("http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+						.add(Constants.IMAGES_URL
 								+ item_image_url);
 				outletBrandsIdList.add(new ArrayList<String>(
 						outletBrandsListInfo));
@@ -274,12 +275,12 @@ public class ActivityStep02ListBrands extends Activity {
 				RequestedResults d = new RequestedResults();
 
 				d.setTitle(item_title);
-				d.setThumbnailUrl("http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+				d.setThumbnailUrl(Constants.IMAGES_URL
 						+ item_image_url);
 
 				d.item_id = item_id;
 				d.item_title = item_title;
-				d.item_thumbnail_url = "http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+				d.item_thumbnail_url = Constants.IMAGES_URL
 						+ item_image_url;
 
 				SHOPSBRANDSLIST.add(d);

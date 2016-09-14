@@ -38,8 +38,8 @@
 	        <shape xmlns:android="http://schemas.android.com/apk/res/android" 
 			     android:shape="rectangle"> 
 			    <gradient 
-			         android:startColor="@color/lightgreen"
-			         android:endColor="@color/lightgreen" 
+			         android:startColor="@color/light_purple"
+			         android:endColor="@color/light_purple"
 			         android:angle="270"/> 
 			
 			     <corners 
@@ -67,8 +67,8 @@
 	        <shape xmlns:android="http://schemas.android.com/apk/res/android" 
 			     android:shape="rectangle"> 
 			     <gradient 
-			         android:startColor="@color/lightgreen"
-			         android:endColor="@color/lightgreen" 
+			         android:startColor="@color/light_purple"
+			         android:endColor="@color/light_purple"
 			         android:angle="270"/> 
 			
 			     <corners 

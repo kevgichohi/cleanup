@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 
 import com.righthere.efam.AnimatedGifImageView;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
+import com.righthere.efam.interfaces.Constants;
 
 public class ActivityStep07ListProducts extends Activity {
 	SQLiteDatabase nunuaRahaDatabase;
@@ -367,7 +368,7 @@ public class ActivityStep07ListProducts extends Activity {
 				d.setTitle(item_title);
 				d.setSize(item_size);
 				d.setPrice(item_price);
-				d.setThumbnailUrl("http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+				d.setThumbnailUrl(Constants.IMAGES_URL
 						+ item_thumbnail_url);
 				d.setUnits(item_units_in_cart);
 
@@ -375,7 +376,7 @@ public class ActivityStep07ListProducts extends Activity {
 				d.item_title = item_title;
 				d.item_price = item_price;
 				d.item_size = item_size;
-				d.item_thumbnail_url = "http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+				d.item_thumbnail_url = Constants.IMAGES_URL
 						+ item_thumbnail_url;
 				d.item_units_in_cart = item_units_in_cart;
 

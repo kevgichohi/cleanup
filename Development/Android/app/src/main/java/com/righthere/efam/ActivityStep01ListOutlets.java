@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import com.righthere.efam.AnimatedGifImageView.TYPE;
+import com.righthere.efam.interfaces.Constants;
 
 public class ActivityStep01ListOutlets extends Activity {
 	SQLiteDatabase nunuaRahaDatabase;
@@ -284,7 +285,7 @@ public class ActivityStep01ListOutlets extends Activity {
 				outlestListInfo.add(item_title);
 
 				outlestListInfo
-						.add("http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+						.add(Constants.IMAGES_URL
 								+ item_image_url);
 
 				outletsIdList.add(new ArrayList<String>(outlestListInfo));
@@ -296,7 +297,7 @@ public class ActivityStep01ListOutlets extends Activity {
 
 				d.setTitle(item_title);
 
-				d.setThumbnailUrl("http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+				d.setThumbnailUrl(Constants.IMAGES_URL
 						+ item_image_url);
 
 				d.item_id = item_id;

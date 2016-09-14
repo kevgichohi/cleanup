@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
+import com.righthere.efam.interfaces.Constants;
 
 public class ActivityStep08ListCart extends Activity {
 
@@ -287,7 +288,7 @@ public class ActivityStep08ListCart extends Activity {
 				String item_title = resultsProductsCursor.getString(1);
 				String item_size = resultsProductsCursor.getString(2);
 				String item_price = resultsProductsCursor.getString(3);
-				String item_thumbnail_url = "http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+				String item_thumbnail_url = Constants.IMAGES_URL
 						+ resultsProductsCursor.getString(4);
 				Integer item_units_in_cart = 0;
 

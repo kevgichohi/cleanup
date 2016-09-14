@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
 import com.righthere.efam.adapters.DynamicListView;
+import com.righthere.efam.interfaces.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -293,11 +294,11 @@ public class ActivityMyAccountREOrderView extends Activity {
 
 								Integer item_units_in_cart = 0;
 
-								d.setThumbnailUrl("http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+								d.setThumbnailUrl(Constants.IMAGES_URL
 										+ item_thumbnail_url);
 								d.setUnits(item_units_in_cart);
 
-								d.item_thumbnail_url = "http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+								d.item_thumbnail_url = Constants.IMAGES_URL
 										+ item_thumbnail_url;
 								d.item_units_in_cart = item_units_in_cart;
 

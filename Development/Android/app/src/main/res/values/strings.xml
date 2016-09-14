@@ -23,14 +23,14 @@
     <string name="play_again">Play Again</string>
     <string name="play_again_desc">To see the welcome slider again, go to help introduction</string>
     <string name="skip">SKIP</string>
-    <string name="slide_1_desc">"Your loved ones are the most important part of your life. That's why e-fam is making your shopping experience easier, leaving you with plenty of quality time for your family"</string>
-    <string name="slide_1_title">A different way of shopping!</string>
-    <string name="slide_2_desc">Get every grocery item you could possibly want without leaving the comfort of your home. Your convenience is our priority at e-fam</string>
-    <string name="slide_2_title">Shopping made faster</string>
-    <string name="slide_3_desc">Having a hectic work-day? Not to worry! e-fam delivers your shopping right to your office, hassle-free!</string>
-    <string name="slide_3_title">Home/Office delivery</string>
-    <string name="slide_4_desc">Beat the crazy lines at the supermarket. You can shop with e-fam right on your phone and they will be packed and ready for collection by the time you get to store!</string>
-    <string name="slide_4_title">Counter pickup</string>
+    <string name="different_way_of_shopping_desc">"Your loved ones are the most important part of your life. That's why e-fam is making your shopping experience easier, leaving you with plenty of quality time for your family"</string>
+    <string name="different_way_of_shopping">A different way \n of shopping</string>
+    <string name="faster_shopping_desc">Get every grocery item you could possibly want without leaving the comfort of your home. Your convenience is our priority at e-fam</string>
+    <string name="faster_shopping">Shopping \n made faster</string>
+    <string name="home_office_delivery_desc">Having a hectic work-day? Not to worry! e-fam delivers your shopping right to your office, hassle-free!</string>
+    <string name="home_office_delivery">Home/Office \n delivery</string>
+    <string name="counter_pick_up_desc">Beat the crazy lines at the supermarket. You can shop with e-fam right on your phone and they will be packed and ready for collection by the time you get to store!</string>
+    <string name="counter_pick_up">Counter Pick-Up</string>
     <string name="start">GOT IT</string>
     <string name="title_activity_welcome">Home Screen</string>
 

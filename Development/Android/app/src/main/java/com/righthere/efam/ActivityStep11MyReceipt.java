@@ -235,7 +235,7 @@ public class ActivityStep11MyReceipt extends Activity {
 		Ovaraltatol = sharedPreferences.getString("myTrolleyTotal", null);
     //    Log.i("Ovaraltatol ", Ovaraltatol);
 		totalitem2 = sharedPreferences.getString("totalitem", null);
-<<<<<<< HEAD
+
 //		Log.i("totalitem2 ", totalitem2);
 		vatrate2 = sharedPreferences.getString("vatrate", null);
     //    Log.i("vatrate2 ", vatrate2);
@@ -243,7 +243,7 @@ public class ActivityStep11MyReceipt extends Activity {
      //   Log.i("vatable2 ", vatable2);
 		vatamt2 = sharedPreferences.getString("vatamt", null);
      //   Log.i("vatamt2 ", vatamt2);
-=======
+
 	//	Log.i("totalitem2 ", totalitem2);
 		vatrate2 = sharedPreferences.getString("vatrate", null);
     //  Log.i("vatrate2 ", vatrate2);
@@ -251,7 +251,7 @@ public class ActivityStep11MyReceipt extends Activity {
      //   Log.i("vatable2 ", vatable2);
 		vatamt2 = sharedPreferences.getString("vatamt", null);
     //    Log.i("vatamt2 ", vatamt2);
->>>>>>> 64b7a57c178ec7c20278ab11dc16385bbbd1c390
+
 
 		// LOAD QUICKLINKS
 		HelperQuickLinks helperQuickLinks = new HelperQuickLinks();

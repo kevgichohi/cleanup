@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 
 import com.righthere.efam.AnimatedGifImageView;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
+import com.righthere.efam.interfaces.Constants;
 
 public class ActivityStep05ListAisles extends Activity {
 
@@ -339,7 +340,7 @@ public class ActivityStep05ListAisles extends Activity {
 				aislesListInfo.add(item_id);
 				aislesListInfo.add(item_title);
 				aislesListInfo
-						.add("http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+						.add(Constants.IMAGES_URL
 								+ item_image_url);
 				// aislesListInfo.add(item_image_url);
 				aislesIdList.add(new ArrayList<String>(aislesListInfo));
@@ -355,7 +356,7 @@ public class ActivityStep05ListAisles extends Activity {
 				d.item_id = item_id;
 				d.item_title = item_title;
 				// d.item_thumbnail_url = item_image_url;
-				d.item_thumbnail_url = "http://smokesignal.co.ke/mobiletrolley/img/uploads/"
+				d.item_thumbnail_url = Constants.IMAGES_URL
 						+ item_image_url;
 
 				Log.i("Image url", " --> " + d.item_thumbnail_url);

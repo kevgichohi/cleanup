@@ -60,17 +60,11 @@ public class OnboardingActivity extends AppCompatActivity {
 
         // layouts of all welcome sliders
         // add few more layouts if you want
-        layouts = new int[]{
+       layouts = new int[]{
                 R.layout.onboarding_screen1,
                 R.layout.onboarding_screen2,
                 R.layout.onboarding_screen3,
-                R.layout.onboarding_screen4,
-                R.layout.onboarding_screen5,
-                R.layout.onboarding_screen6,
-                R.layout.onboarding_screen7,
-                R.layout.onboarding_screen8,
-                R.layout.onboarding_screen9,
-                R.layout.onboarding_screen10};
+                R.layout.onboarding_screen4};
 
         // adding bottom dots
         addBottomDots(0);
