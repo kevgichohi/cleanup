@@ -61,6 +61,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.righthere.efam.AnimatedGifImageView.TYPE;
 import com.righthere.efam.adapters.DynamicListView;
+import com.righthere.efam.interfaces.Constants;
 
 public class ActivityStep11MyReceipt extends Activity {
 	SQLiteDatabase nunuaRahaDatabase;
@@ -353,14 +354,12 @@ public class ActivityStep11MyReceipt extends Activity {
 				// Create Payment Token
 				// String OrderTransactionRef = "1006";
 
-				String OrderCompanyToken = "68B90B5E-25F6-4146-8AB1-C7A3A0C41A7F";
-				editor.putString("companyToken", OrderCompanyToken).commit();
-
-				
+			//	String OrderCompanyToken = "68B90B5E-25F6-4146-8AB1-C7A3A0C41A7F";
+				editor.putString("companyToken", Constants.COMPANY_TOKEN).commit();
 
 				// XML example to send via Web Service.
 				String createToken = "<API3G>" + "<CompanyToken>"
-						+ OrderCompanyToken + "</CompanyToken>"
+						+ Constants.COMPANY_TOKEN + "</CompanyToken>"
 						+ "<Request>createToken</Request>" + "<Transaction>"
 						+ "<PaymentAmount>" + xmlTotalPrice3
 						+ "</PaymentAmount>"
@@ -369,7 +368,7 @@ public class ActivityStep11MyReceipt extends Activity {
 						+ "</CompanyRef>"
 						+ "<CompanyRefUnique>0</CompanyRefUnique>"
 						+ "</Transaction>" + "<Services>" + "<Service>"
-						+ "<ServiceType>1058</ServiceType>"
+						+ "<ServiceType>" + Constants.SERVICE_TYPE + "</ServiceType>"
 						+ "<ServiceDescription>Shopping at"
 						+ SELECTED_BRAND_TITLE + SELECTED_BRANCH_TITLE
 						+ SELECTED_OUTLET_TITLE + "</ServiceDescription>"

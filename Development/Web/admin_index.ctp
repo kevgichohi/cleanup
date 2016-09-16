@@ -62,9 +62,11 @@
              <?php
 			 $stack = array();
 
-       $new_array = json_decode($item['Order']['user_order'],true);
+       $user_order = $item['Order']['user_order'];
 
-        foreach($new_array as $key=>$value){
+       $new_array = json_decode($user_order,true);
+
+        foreach($new_array as $value){
 
               $price = $value['price'];
 
