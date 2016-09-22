@@ -20,6 +20,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -79,6 +80,8 @@ public class ActivityStep03ListNeighbourhood extends Activity {
 		overridePendingTransition(R.anim.slide_page_in, R.anim.slide_page_out);// SlideIn
 																				// animation
 		initViews();
+
+		Log.d("ActivityStep", " Step 3");
 
 		// LIST VIEW
 		new retrieveFromDBTask().execute();

@@ -312,13 +312,14 @@ public class ActivityStep11MyReceipt extends Activity {
 		if (sharedPreferences.contains("paymentOption")) {
 			String paymentOption = sharedPreferences.getString("paymentOption",
 					null);
-			Log.i("xmlTotalPrice", " --> " + paymentOption);
+			Log.i("paymentOption", " --> " + paymentOption);
 
 			Calendar c = Calendar.getInstance();
 			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMddHHmmss");
 			String strDate1 = sdf1.format(c.getTime());
 			Random rand = new Random();
 			int max = 1000;
+
 			int min = 10;
 			int randomNum = min + (int) (Math.random() * ((max - min) + 1));
 			String OrderTransactionRef = randomNum + "_" + strDate1;
@@ -455,7 +456,8 @@ public class ActivityStep11MyReceipt extends Activity {
 							if (transactionToken != null) {
 
 								String getServices = "<API3G>"
-										+ "<CompanyToken>68B90B5E-25F6-4146-8AB1-C7A3A0C41A7F</CompanyToken>"
+										+ "<CompanyToken>"
+										+ Constants.COMPANY_TOKEN + "</CompanyToken>"
 										+ "<Request>getServices</Request>"
 										+ "</API3G>";
 								try {

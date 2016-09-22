@@ -297,8 +297,7 @@ public class ActivityStep01ListOutlets extends Activity {
 
 				d.setTitle(item_title);
 
-				d.setThumbnailUrl(Constants.IMAGES_URL
-						+ item_image_url);
+				d.setThumbnailUrl(Constants.IMAGES_URL + item_image_url);
 
 				d.item_id = item_id;
 				d.item_title = item_title;

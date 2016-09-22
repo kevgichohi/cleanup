@@ -22,6 +22,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.righthere.efam.AnimatedGifImageView.TYPE;
+import com.righthere.efam.interfaces.Constants;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -390,7 +391,7 @@ public class ActivityStep11PaymentOptionsGateway extends Activity {
 							.getText().toString();
 
 					String chargeMpesaCardToken = "<API3G>" + "<CompanyToken>"
-							+ companyToken + "</CompanyToken>"
+							+ Constants.COMPANY_TOKEN + "</CompanyToken>"
 							+ "<Request>ChargeTokenMobile</Request>"
 							+ "<TransactionToken>" + transactionToken
 							+ "</TransactionToken>" + "<PhoneNumber>"
@@ -558,7 +559,7 @@ public class ActivityStep11PaymentOptionsGateway extends Activity {
 							.getText().toString();
 
 					String chargeAirtelCardToken = "<API3G>" + "<CompanyToken>"
-							+ companyToken + "</CompanyToken>"
+							+ Constants.COMPANY_TOKEN + "</CompanyToken>"
 							+ "<Request>ChargeTokenMobile</Request>"
 							+ "<TransactionToken>" + transactionToken
 							+ "</TransactionToken>" + "<PhoneNumber>"
@@ -730,7 +731,7 @@ public class ActivityStep11PaymentOptionsGateway extends Activity {
 
 					// XML example to send via Web Service.
 					String createCardToken = "<API3G>" + "<CompanyToken>"
-							+ companyToken + "</CompanyToken>"
+							+ Constants.COMPANY_TOKEN + "</CompanyToken>"
 							+ "<Request>chargeTokenCreditCard</Request>"
 							+ "<TransactionToken>" + transactionToken
 							+ "</TransactionToken>" + "<CreditCardNumber>"

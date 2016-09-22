@@ -210,7 +210,9 @@ public class ActivityStep09ListCart extends Activity {
 				// int resulttro = Integer.parseInt(Tro);
 				double d = Double.parseDouble(Tro);
 				int resulttro = (int) d;
-				if (resulttro >= 100) {
+
+				Log.d("resulttro ", String.valueOf(resulttro));
+				if (resulttro >= 10) {
 					Intent intent = new Intent(ActivityStep09ListCart.this,
 							ActivityStep09ListDeliveryOptions.class);
 					startActivity(intent);

@@ -64,6 +64,8 @@
 
        $user_order = $item['Order']['user_order'];
 
+    //   echo $user_order;
+
        $new_array = json_decode($user_order,true);
 
         foreach($new_array as $value){

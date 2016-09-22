@@ -169,7 +169,7 @@ public class AdapterListWithImage extends BaseAdapter {
 				holder.itemImage.setImageResource(R.mipmap.grocery_beverage);
 			}
 			if (searchArrayList.get(position).getTitle()
-					.equals("Dry/Baking Goods")) {
+					.equals("Dry Baking Goods")) {
 				holder.itemImage.setImageResource(R.mipmap.grocery_baking);
 			}
 			if (searchArrayList.get(position).getTitle().equals("Fruits")) {

@@ -359,7 +359,7 @@ public class ActivityStep05ListAisles extends Activity {
 				d.item_thumbnail_url = Constants.IMAGES_URL
 						+ item_image_url;
 
-				Log.i("Image url", " --> " + d.item_thumbnail_url);
+				Log.d("image_url", " --> " + d.item_thumbnail_url);
 
 				AISLELIST.add(d);
 

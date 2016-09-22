@@ -80,6 +80,8 @@ public class ActivityStep04ListBranches extends Activity {
 																				// animation
 		initViews();
 
+		Log.d("ActivityStep", " Step 4");
+
 		// LIST VIEW
 		new retrieveFromDBTask().execute();
 		SHOPSBRANCHLIST = new ArrayList<RequestedResults>();
