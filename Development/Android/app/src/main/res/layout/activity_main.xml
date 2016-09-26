@@ -17,6 +17,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/press_logo"
+			android:textSize="@dimen/text_size_large"
 			android:textColor="@color/yellow" />
         
 	       <Button 

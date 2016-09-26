@@ -1,35 +1,54 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@mipmap/counter_pickup_screen">
-
+    android:gravity="center"
+    android:weightSum="1">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center"
         android:layout_height="wrap_content"
+        android:background="@mipmap/top_bg"
         android:textSize="@dimen/text_size_large"
         android:text="@string/counter_pick_up"
         android:textColor="@color/yellow"
-        android:id="@+id/textView"
-        android:textStyle="bold"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/textView"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/counter_pickup_screen"
+        android:layout_weight="0.95">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_medium"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:text="@string/counter_pick_up_desc"
+            android:textColor="@color/white"
+            android:background="@color/whitet"
+            android:id="@+id/textView2"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="34dp" />
+
+
+    </RelativeLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_medium"
-        android:padding="10dp"
-        android:text="@string/counter_pick_up_desc"
-        android:textColor="@color/white"
-        android:background="@color/whitet"
-        android:id="@+id/textView2"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="81dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-</RelativeLayout>
+        android:textSize="@dimen/text_size_large"
+        android:textColor="@color/yellow"
+        android:background="@mipmap/top_bg"
+        android:textStyle="bold"
+        android:paddingBottom="@dimen/activity_horizontal_margin"/>
+
+
+</LinearLayout>

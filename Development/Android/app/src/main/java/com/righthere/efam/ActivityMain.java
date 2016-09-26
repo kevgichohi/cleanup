@@ -44,6 +44,8 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -112,6 +114,15 @@ public class ActivityMain extends Activity {
 		InternetIsConnected = (TextView) findViewById(R.id.InternetIsConnected);
 		startshopping = (Button) findViewById(R.id.startShopping);
 		shopping_trolley2 = (Button) findViewById(R.id.shopping_trolley);
+
+		TextView logo_text = (TextView) findViewById(R.id.press_logo );
+
+		Animation anim = new AlphaAnimation(0.0f, 1.0f);
+		anim.setDuration(250); //You can manage the blinking time with this parameter
+		anim.setStartOffset(40);
+		anim.setRepeatMode(Animation.REVERSE);
+		anim.setRepeatCount(Animation.INFINITE);
+        logo_text.startAnimation(anim);
 
 		app_name.setTypeface(EkMukta_SemiBold);
 
